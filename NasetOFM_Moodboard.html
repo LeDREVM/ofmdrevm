@@ -1,0 +1,985 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>𓂀 N'Aset OFM — Mood Board</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Inter:wght@300;400;500;600&display=swap');
+
+  :root {
+    --gold: #C9963A;
+    --gold-light: #E8BC6A;
+    --gold-glow: rgba(201,150,58,0.15);
+    --dark: #0A0A0F;
+    --dark-card: #111118;
+    --dark-surface: #16161E;
+    --skin: #6B3D2E;
+    --sss: #8B4E35;
+    --kohl: #1C1A3A;
+    --ivory: #FAFAF0;
+    --shuka: #C0392B;
+    --shuka-deep: #8B1A1A;
+    --hair: #0D0A08;
+    --lips: #7B2D2D;
+    --lapis: #1B3A6B;
+    --text: #E8E4DC;
+    --text-dim: #8A8478;
+    --text-muted: #5A564E;
+    --border: rgba(201,150,58,0.12);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--dark);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    font-weight: 300;
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  /* ── HERO ────────────────────────────────────────── */
+  .hero {
+    position: relative;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse at 50% 40%, var(--gold-glow) 0%, transparent 60%),
+                radial-gradient(ellipse at 30% 70%, rgba(107,61,46,0.08) 0%, transparent 50%);
+    pointer-events: none;
+  }
+  .hero-symbol {
+    font-size: 80px;
+    color: var(--gold);
+    margin-bottom: 20px;
+    text-shadow: 0 0 60px rgba(201,150,58,0.3);
+    animation: pulse-glow 4s ease-in-out infinite;
+  }
+  @keyframes pulse-glow {
+    0%, 100% { text-shadow: 0 0 40px rgba(201,150,58,0.2); }
+    50% { text-shadow: 0 0 80px rgba(201,150,58,0.4); }
+  }
+  .hero h1 {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 300;
+    font-size: clamp(40px, 7vw, 80px);
+    letter-spacing: 0.15em;
+    color: var(--gold);
+    margin-bottom: 12px;
+  }
+  .hero-sub {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(16px, 2.5vw, 24px);
+    color: var(--text-dim);
+    font-weight: 300;
+    font-style: italic;
+    letter-spacing: 0.08em;
+    margin-bottom: 40px;
+  }
+  .hero-quote {
+    max-width: 500px;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 18px;
+    font-style: italic;
+    color: var(--text-muted);
+    line-height: 1.8;
+    margin-top: 40px;
+  }
+  .scroll-hint {
+    position: absolute;
+    bottom: 40px;
+    font-size: 12px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    animation: float 2s ease-in-out infinite;
+  }
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(8px); }
+  }
+
+  /* ── SECTIONS ────────────────────────────────────── */
+  .section {
+    padding: 80px 40px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  .section-label {
+    font-size: 11px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 8px;
+  }
+  .section-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(28px, 4vw, 42px);
+    font-weight: 300;
+    color: var(--text);
+    margin-bottom: 40px;
+    line-height: 1.2;
+  }
+  .divider {
+    width: 60px;
+    height: 1px;
+    background: var(--gold);
+    margin: 60px auto;
+    opacity: 0.4;
+  }
+
+  /* ── PALETTE ─────────────────────────────────────── */
+  .palette-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 16px;
+    margin-bottom: 20px;
+  }
+  .swatch {
+    position: relative;
+    aspect-ratio: 1;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: transform 0.3s, box-shadow 0.3s;
+    overflow: hidden;
+  }
+  .swatch:hover {
+    transform: scale(1.05);
+    box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+  }
+  .swatch-info {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    padding: 10px 12px;
+    background: linear-gradient(transparent, rgba(0,0,0,0.7));
+    font-size: 11px;
+  }
+  .swatch-name {
+    font-weight: 500;
+    margin-bottom: 2px;
+  }
+  .swatch-hex {
+    font-family: 'Courier New', monospace;
+    color: var(--text-dim);
+    font-size: 10px;
+  }
+  .swatch-usage {
+    color: var(--text-muted);
+    font-size: 9px;
+    margin-top: 3px;
+  }
+  .copied-toast {
+    position: fixed;
+    bottom: 40px;
+    left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: var(--gold);
+    color: var(--dark);
+    padding: 10px 24px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 500;
+    opacity: 0;
+    transition: opacity 0.3s, transform 0.3s;
+    pointer-events: none;
+    z-index: 100;
+  }
+  .copied-toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+
+  /* ── IDENTITÉ CARDS ──────────────────────────────── */
+  .identity-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+  }
+  .id-card {
+    background: var(--dark-card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 28px;
+    transition: border-color 0.3s;
+  }
+  .id-card:hover { border-color: var(--gold); }
+  .id-card-label {
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 12px;
+  }
+  .id-card-value {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 22px;
+    color: var(--text);
+    margin-bottom: 8px;
+  }
+  .id-card-detail {
+    font-size: 13px;
+    color: var(--text-dim);
+    line-height: 1.6;
+  }
+
+  /* ── CARACTÈRE VISUEL ────────────────────────────── */
+  .visual-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 16px;
+  }
+  .visual-item {
+    background: var(--dark-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+  }
+  .visual-item-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+  .visual-dot {
+    width: 24px; height: 24px;
+    border-radius: 6px;
+    flex-shrink: 0;
+    border: 1px solid rgba(255,255,255,0.08);
+  }
+  .visual-item-label {
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+  }
+  .visual-item-value {
+    font-size: 14px;
+    color: var(--text);
+    font-weight: 400;
+  }
+
+  /* ── SYMBOLES ────────────────────────────────────── */
+  .symbols-row {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    flex-wrap: wrap;
+    padding: 40px 0;
+  }
+  .symbol-card {
+    text-align: center;
+    cursor: default;
+    transition: transform 0.3s;
+  }
+  .symbol-card:hover { transform: translateY(-4px); }
+  .symbol-glyph {
+    font-size: 56px;
+    color: var(--gold);
+    margin-bottom: 12px;
+    text-shadow: 0 0 30px rgba(201,150,58,0.2);
+  }
+  .symbol-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 16px;
+    color: var(--text);
+    margin-bottom: 4px;
+  }
+  .symbol-meaning {
+    font-size: 11px;
+    color: var(--text-muted);
+  }
+
+  /* ── POUVOIRS ────────────────────────────────────── */
+  .power-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 16px;
+  }
+  .power-card {
+    background: var(--dark-card);
+    border-left: 3px solid var(--gold);
+    border-radius: 0 12px 12px 0;
+    padding: 24px;
+  }
+  .power-type {
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 8px;
+  }
+  .power-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 20px;
+    color: var(--text);
+  }
+
+  /* ── ÉQUIPEMENT ──────────────────────────────────── */
+  .equip-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 20px;
+  }
+  .equip-card {
+    background: var(--dark-surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 24px;
+    position: relative;
+    overflow: hidden;
+  }
+  .equip-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 3px;
+    background: linear-gradient(90deg, var(--gold), transparent);
+  }
+  .equip-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 18px;
+    color: var(--gold-light);
+    margin-bottom: 12px;
+  }
+  .equip-detail {
+    font-size: 13px;
+    color: var(--text-dim);
+    line-height: 1.7;
+  }
+  .equip-tag {
+    display: inline-block;
+    font-size: 10px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    color: var(--text-dim);
+    margin: 3px 2px 0 0;
+  }
+
+  /* ── RÉFÉRENCES ──────────────────────────────────── */
+  .ref-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 16px;
+  }
+  .ref-card {
+    background: var(--dark-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    text-align: center;
+    transition: border-color 0.3s, transform 0.3s;
+  }
+  .ref-card:hover {
+    border-color: var(--gold);
+    transform: translateY(-3px);
+  }
+  .ref-icon { font-size: 32px; margin-bottom: 10px; }
+  .ref-name {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text);
+    margin-bottom: 4px;
+  }
+  .ref-detail {
+    font-size: 11px;
+    color: var(--text-muted);
+  }
+
+  /* ── SHADER PARAMS ──────────────────────────────── */
+  .shader-section {
+    background: var(--dark-card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 32px;
+    margin-bottom: 20px;
+  }
+  .shader-title {
+    font-size: 12px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 16px;
+  }
+  .param-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    font-size: 13px;
+  }
+  .param-row:last-child { border-bottom: none; }
+  .param-key { color: var(--text-dim); }
+  .param-val {
+    font-family: 'Courier New', monospace;
+    color: var(--gold-light);
+    font-size: 12px;
+  }
+
+  /* ── TIMELINE ────────────────────────────────────── */
+  .timeline {
+    position: relative;
+    padding-left: 40px;
+  }
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 15px; top: 0; bottom: 0;
+    width: 1px;
+    background: linear-gradient(to bottom, var(--gold), transparent);
+  }
+  .timeline-item {
+    position: relative;
+    margin-bottom: 32px;
+  }
+  .timeline-dot {
+    position: absolute;
+    left: -33px; top: 6px;
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background: var(--gold);
+    box-shadow: 0 0 12px rgba(201,150,58,0.4);
+  }
+  .timeline-time {
+    font-family: 'Courier New', monospace;
+    font-size: 12px;
+    color: var(--gold);
+    margin-bottom: 4px;
+  }
+  .timeline-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 20px;
+    color: var(--text);
+    margin-bottom: 6px;
+  }
+  .timeline-desc {
+    font-size: 13px;
+    color: var(--text-dim);
+    line-height: 1.6;
+  }
+
+  /* ── LORE ────────────────────────────────────────── */
+  .lore-block {
+    max-width: 700px;
+    margin: 0 auto;
+    text-align: center;
+    padding: 60px 20px;
+  }
+  .lore-text {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(18px, 2.5vw, 24px);
+    font-style: italic;
+    color: var(--text-dim);
+    line-height: 1.9;
+  }
+  .lore-cite {
+    margin-top: 20px;
+    font-size: 12px;
+    color: var(--text-muted);
+    letter-spacing: 0.1em;
+  }
+
+  /* ── FOOTER ──────────────────────────────────────── */
+  .footer {
+    text-align: center;
+    padding: 60px 20px;
+    border-top: 1px solid var(--border);
+    margin-top: 40px;
+  }
+  .footer-symbol { font-size: 32px; color: var(--gold); margin-bottom: 16px; }
+  .footer-text {
+    font-size: 12px;
+    color: var(--text-muted);
+    letter-spacing: 0.1em;
+  }
+
+  /* ── NAV TABS ────────────────────────────────────── */
+  .nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 50;
+    background: rgba(10,10,15,0.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    justify-content: center;
+    gap: 4px;
+    padding: 0 20px;
+    overflow-x: auto;
+  }
+  .nav a {
+    display: block;
+    padding: 16px 16px;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    text-decoration: none;
+    transition: color 0.2s;
+    white-space: nowrap;
+  }
+  .nav a:hover, .nav a.active { color: var(--gold); }
+
+  /* ── RESPONSIVE ──────────────────────────────────── */
+  @media (max-width: 600px) {
+    .section { padding: 50px 20px; }
+    .palette-grid { grid-template-columns: repeat(3, 1fr); }
+    .symbols-row { gap: 20px; }
+    .nav a { font-size: 10px; padding: 14px 10px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <a href="#hero">Accueil</a>
+  <a href="#palette">Palette</a>
+  <a href="#identite">Identité</a>
+  <a href="#visuel">Visuel</a>
+  <a href="#symboles">Symboles</a>
+  <a href="#equipement">Équipement</a>
+  <a href="#shader">Shader</a>
+  <a href="#timeline">Timeline</a>
+  <a href="#references">Références</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="hero">
+  <div class="hero-symbol">𓂀</div>
+  <h1>N'ASET OFM</h1>
+  <div class="hero-sub">Divine Maasaï · Prêtresse Égyptienne Futuriste</div>
+  <div style="display:flex; gap:8px; justify-content:center; flex-wrap:wrap;">
+    <span style="font-size:10px; letter-spacing:0.15em; text-transform:uppercase; padding:6px 16px; border:1px solid var(--border); border-radius:20px; color:var(--text-muted);">Blender 5.0</span>
+    <span style="font-size:10px; letter-spacing:0.15em; text-transform:uppercase; padding:6px 16px; border:1px solid var(--border); border-radius:20px; color:var(--text-muted);">Unreal Engine 5</span>
+    <span style="font-size:10px; letter-spacing:0.15em; text-transform:uppercase; padding:6px 16px; border:1px solid var(--border); border-radius:20px; color:var(--text-muted);">After Effects</span>
+  </div>
+  <div class="hero-quote">"Avant que la mémoire du monde disparaisse, je me souviens."</div>
+  <div class="scroll-hint">↓ Scroll</div>
+</section>
+
+<!-- PALETTE -->
+<section class="section" id="palette">
+  <div class="section-label">01 — Couleurs</div>
+  <div class="section-title">Palette Sacrée</div>
+  <div class="palette-grid">
+    <div class="swatch" style="background:#C9963A" onclick="copyColor('#C9963A')">
+      <div class="swatch-info"><div class="swatch-name" style="color:#FFF">Or Sacré</div><div class="swatch-hex">#C9963A</div><div class="swatch-usage">Bijoux · Émission · Signature</div></div>
+    </div>
+    <div class="swatch" style="background:#E8BC6A" onclick="copyColor('#E8BC6A')">
+      <div class="swatch-info"><div class="swatch-name" style="color:#222">Or Clair</div><div class="swatch-hex" style="color:#555">#E8BC6A</div><div class="swatch-usage" style="color:#666">Highlights · Particules</div></div>
+    </div>
+    <div class="swatch" style="background:#6B3D2E" onclick="copyColor('#6B3D2E')">
+      <div class="swatch-info"><div class="swatch-name">Peau Base</div><div class="swatch-hex">#6B3D2E</div><div class="swatch-usage">Albedo skin shader</div></div>
+    </div>
+    <div class="swatch" style="background:#8B4E35" onclick="copyColor('#8B4E35')">
+      <div class="swatch-info"><div class="swatch-name">SSS Peau</div><div class="swatch-hex">#8B4E35</div><div class="swatch-usage">Subsurface Scattering</div></div>
+    </div>
+    <div class="swatch" style="background:#C0392B" onclick="copyColor('#C0392B')">
+      <div class="swatch-info"><div class="swatch-name">Rouge Shúkà</div><div class="swatch-hex">#C0392B</div><div class="swatch-usage">Drapé Maasaï</div></div>
+    </div>
+    <div class="swatch" style="background:#7B2D2D" onclick="copyColor('#7B2D2D')">
+      <div class="swatch-info"><div class="swatch-name">Bordeaux Lèvres</div><div class="swatch-hex">#7B2D2D</div><div class="swatch-usage">Makeup lips</div></div>
+    </div>
+    <div class="swatch" style="background:#0D0A08" onclick="copyColor('#0D0A08')">
+      <div class="swatch-info"><div class="swatch-name">Noir Cheveux</div><div class="swatch-hex">#0D0A08</div><div class="swatch-usage">Hair shader base</div></div>
+    </div>
+    <div class="swatch" style="background:#1C1A3A" onclick="copyColor('#1C1A3A')">
+      <div class="swatch-info"><div class="swatch-name">Khôl Accent</div><div class="swatch-hex">#1C1A3A</div><div class="swatch-usage">Maquillage · Ombres</div></div>
+    </div>
+    <div class="swatch" style="background:#FAFAF0; border:1px solid rgba(255,255,255,0.1)" onclick="copyColor('#FAFAF0')">
+      <div class="swatch-info"><div class="swatch-name" style="color:#333">Blanc Ivoire</div><div class="swatch-hex" style="color:#777">#FAFAF0</div><div class="swatch-usage" style="color:#888">Drapé sacré</div></div>
+    </div>
+    <div class="swatch" style="background:#1B3A6B" onclick="copyColor('#1B3A6B')">
+      <div class="swatch-info"><div class="swatch-name">Lapis-Lazuli</div><div class="swatch-hex">#1B3A6B</div><div class="swatch-usage">Pierres bijoux</div></div>
+    </div>
+  </div>
+  <p style="font-size:11px; color:var(--text-muted); text-align:center; margin-top:16px">Clique sur une couleur pour copier le code hex</p>
+</section>
+
+<div class="divider"></div>
+
+<!-- IDENTITÉ -->
+<section class="section" id="identite">
+  <div class="section-label">02 — Personnage</div>
+  <div class="section-title">Identité</div>
+  <div class="identity-grid">
+    <div class="id-card">
+      <div class="id-card-label">Nom Complet</div>
+      <div class="id-card-value">N'Aset OFM</div>
+      <div class="id-card-detail">Divine Maasaï — Prêtresse hors du temps née dans la lumière du Soleil de Rê</div>
+    </div>
+    <div class="id-card">
+      <div class="id-card-label">Archétype</div>
+      <div class="id-card-value">Prêtresse Égyptienne Futuriste</div>
+      <div class="id-card-detail">Entité divine — Gardienne des savoirs sacrés de l'Égypte antique</div>
+    </div>
+    <div class="id-card">
+      <div class="id-card-label">Univers</div>
+      <div class="id-card-value">Ordre du Feu Mystique</div>
+      <div class="id-card-detail">OFM — Ordre occulte protégeant les tablettes sacrées à travers les âges</div>
+    </div>
+    <div class="id-card">
+      <div class="id-card-label">Mission</div>
+      <div class="id-card-value">Protéger les Tablettes Sacrées</div>
+      <div class="id-card-detail">Face aux Sébau — voleurs d'âmes — alliée aux Gardiens Maasaï</div>
+    </div>
+    <div class="id-card">
+      <div class="id-card-label">Personnalité</div>
+      <div class="id-card-value">Souveraine · Mystique</div>
+      <div class="id-card-detail">Intuitive · Protectrice · Silencieuse · Lumineuse</div>
+    </div>
+    <div class="id-card">
+      <div class="id-card-label">Âge · Taille</div>
+      <div class="id-card-value">25–30 ans · 1.75–1.80 m</div>
+      <div class="id-card-detail">Silhouette élancée, athlétique, souveraine — A-Pose Blender</div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- VISUEL -->
+<section class="section" id="visuel">
+  <div class="section-label">03 — Apparence</div>
+  <div class="section-title">Caractéristiques Visuelles</div>
+  <div class="visual-grid">
+    <div class="visual-item">
+      <div class="visual-item-header">
+        <div class="visual-dot" style="background:#6B3D2E"></div>
+        <div class="visual-item-label">Peau</div>
+      </div>
+      <div class="visual-item-value">Marron doré · Lumineuse · SSS fort</div>
+    </div>
+    <div class="visual-item">
+      <div class="visual-item-header">
+        <div class="visual-dot" style="background:#1A0D00"></div>
+        <div class="visual-item-label">Yeux</div>
+      </div>
+      <div class="visual-item-value">Amande profonds · Khôl égyptien · Brun très foncé</div>
+    </div>
+    <div class="visual-item">
+      <div class="visual-item-header">
+        <div class="visual-dot" style="background:#0D0A08"></div>
+        <div class="visual-item-label">Cheveux</div>
+      </div>
+      <div class="visual-item-value">Afro long libre OU Carré droit égyptien · Perles Ankh</div>
+    </div>
+    <div class="visual-item">
+      <div class="visual-item-header">
+        <div class="visual-dot" style="background:#7B2D2D"></div>
+        <div class="visual-item-label">Lèvres</div>
+      </div>
+      <div class="visual-item-value">Bordeaux profond · Inférieure plus pleine</div>
+    </div>
+    <div class="visual-item">
+      <div class="visual-item-header">
+        <div class="visual-dot" style="background:#1C1A3A"></div>
+        <div class="visual-item-label">Maquillage</div>
+      </div>
+      <div class="visual-item-value">Khôl égyptien noir · Trait allongé · Sacré</div>
+    </div>
+    <div class="visual-item">
+      <div class="visual-item-header">
+        <div class="visual-dot" style="background:linear-gradient(135deg,#C9963A,#E8BC6A)"></div>
+        <div class="visual-item-label">Aura</div>
+      </div>
+      <div class="visual-item-value">Émission dorée subtile · Particules or flottantes</div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- SYMBOLES -->
+<section class="section" id="symboles">
+  <div class="section-label">04 — Sacré</div>
+  <div class="section-title" style="text-align:center">Symboles Sacrés</div>
+  <div class="symbols-row">
+    <div class="symbol-card">
+      <div class="symbol-glyph">𓋹</div>
+      <div class="symbol-name">Ankh</div>
+      <div class="symbol-meaning">Vie éternelle · Portail</div>
+    </div>
+    <div class="symbol-card">
+      <div class="symbol-glyph">𓂀</div>
+      <div class="symbol-name">Oudjat</div>
+      <div class="symbol-meaning">Perception divine · Bouclier</div>
+    </div>
+    <div class="symbol-card">
+      <div class="symbol-glyph">𓅃</div>
+      <div class="symbol-name">Faucon</div>
+      <div class="symbol-meaning">Vitesse · Messager de Rê</div>
+    </div>
+    <div class="symbol-card">
+      <div class="symbol-glyph">𓆣</div>
+      <div class="symbol-name">Scarabée</div>
+      <div class="symbol-meaning">Renaissance · Transformation</div>
+    </div>
+  </div>
+
+  <!-- POUVOIRS -->
+  <div style="margin-top:40px">
+    <div class="section-label">Pouvoirs</div>
+    <div class="power-list" style="margin-top:16px">
+      <div class="power-card"><div class="power-type">Primaire</div><div class="power-name">Magie Solaire Dorée</div></div>
+      <div class="power-card"><div class="power-type">Secondaire</div><div class="power-name">Lecture des Âmes</div></div>
+      <div class="power-card"><div class="power-type">Passif</div><div class="power-name">Aura de Protection</div></div>
+      <div class="power-card"><div class="power-type">Ultime</div><div class="power-name">Invocation Œil Oudjat 𓂀</div></div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ÉQUIPEMENT -->
+<section class="section" id="equipement">
+  <div class="section-label">05 — Costume</div>
+  <div class="section-title">Équipement & Tenue</div>
+  <div class="equip-grid">
+    <div class="equip-card">
+      <div class="equip-title">Collier Usekh</div>
+      <div class="equip-detail">Grand collier pectoral égyptien large — perles Maasaï multicolores (rouge, jaune, blanc, noir) avec triangles et motifs géométriques</div>
+      <div style="margin-top:10px">
+        <span class="equip-tag">Or + Lapis-lazuli</span>
+        <span class="equip-tag">Metallic 0.97</span>
+        <span class="equip-tag">Roughness 0.10</span>
+      </div>
+    </div>
+    <div class="equip-card">
+      <div class="equip-title">Drapé Shúkà</div>
+      <div class="equip-detail">Drapé rouge bordeaux/cramoisi — asymétrique sur l'épaule gauche, tombant sur le côté — lin égyptien fin, broderies dorées hiéroglyphiques</div>
+      <div style="margin-top:10px">
+        <span class="equip-tag">Cloth Sim</span>
+        <span class="equip-tag">Sheen 0.3</span>
+        <span class="equip-tag">Roughness 0.6</span>
+      </div>
+    </div>
+    <div class="equip-card">
+      <div class="equip-title">Manchettes Dorées</div>
+      <div class="equip-detail">Deux brassards or gravés — motifs hiéroglyphiques + Ankh — portés aux deux bras, au-dessus du coude</div>
+      <div style="margin-top:10px">
+        <span class="equip-tag">Metallic 1.0</span>
+        <span class="equip-tag">Roughness 0.25</span>
+        <span class="equip-tag">#C9963A</span>
+      </div>
+    </div>
+    <div class="equip-card">
+      <div class="equip-title">Tresses & Perles</div>
+      <div class="equip-detail">Tresses noires avec perles rouges et noires sur la ligne frontale — ornements Ankh dorés ponctuels</div>
+      <div style="margin-top:10px">
+        <span class="equip-tag">Hair Curves</span>
+        <span class="equip-tag">Melanin 0.9</span>
+        <span class="equip-tag">Geo Nodes instancing</span>
+      </div>
+    </div>
+    <div class="equip-card">
+      <div class="equip-title">Boucles d'Oreilles</div>
+      <div class="equip-detail">Pendants or — motif Oudjat ou goutte — subtils, discrets, accompagnent le mouvement</div>
+      <div style="margin-top:10px">
+        <span class="equip-tag">Or sacré</span>
+        <span class="equip-tag">Emission 0.1</span>
+      </div>
+    </div>
+    <div class="equip-card">
+      <div class="equip-title">Khôl & Makeup</div>
+      <div class="equip-detail">Trait de khôl noir allongé au-delà de l'œil — style prêtresse égyptienne — discret, précis, souverain</div>
+      <div style="margin-top:10px">
+        <span class="equip-tag">#1C1A3A</span>
+        <span class="equip-tag">Texture mask UV</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- SHADER -->
+<section class="section" id="shader">
+  <div class="section-label">06 — Technique</div>
+  <div class="section-title">Paramètres Shader (Blender Cycles)</div>
+
+  <div class="shader-section">
+    <div class="shader-title">Peau — Principled BSDF</div>
+    <div class="param-row"><span class="param-key">Base Color</span><span class="param-val">#6B3D2E (Albedo 4K)</span></div>
+    <div class="param-row"><span class="param-key">Subsurface</span><span class="param-val">0.25 – 0.35</span></div>
+    <div class="param-row"><span class="param-key">Subsurface Radius</span><span class="param-val">(1.2, 0.6, 0.3)</span></div>
+    <div class="param-row"><span class="param-key">Subsurface Color</span><span class="param-val">#8B4E35</span></div>
+    <div class="param-row"><span class="param-key">Specular</span><span class="param-val">0.45</span></div>
+    <div class="param-row"><span class="param-key">Roughness</span><span class="param-val">Map + Noise (0.35 – 0.55)</span></div>
+    <div class="param-row"><span class="param-key">Micro-sheen</span><span class="param-val">Fresnel IOR 1.4 → Multiply 0.03–0.05</span></div>
+  </div>
+
+  <div class="shader-section">
+    <div class="shader-title">Cheveux — Principled Hair BSDF</div>
+    <div class="param-row"><span class="param-key">Melanin</span><span class="param-val">0.9</span></div>
+    <div class="param-row"><span class="param-key">Roughness</span><span class="param-val">0.6</span></div>
+    <div class="param-row"><span class="param-key">Random Color</span><span class="param-val">0.03</span></div>
+    <div class="param-row"><span class="param-key">Root Radius</span><span class="param-val">0.025</span></div>
+    <div class="param-row"><span class="param-key">Tip Radius</span><span class="param-val">0.01</span></div>
+    <div class="param-row"><span class="param-key">Clump / Noise</span><span class="param-val">0.6 / 0.15</span></div>
+  </div>
+
+  <div class="shader-section">
+    <div class="shader-title">Or Sacré — Bijoux</div>
+    <div class="param-row"><span class="param-key">Metallic</span><span class="param-val">0.95 – 1.0</span></div>
+    <div class="param-row"><span class="param-key">Roughness</span><span class="param-val">0.08 – 0.15</span></div>
+    <div class="param-row"><span class="param-key">Base Color</span><span class="param-val">#C9963A</span></div>
+    <div class="param-row"><span class="param-key">Emissive</span><span class="param-val">0.2 (particules actives)</span></div>
+  </div>
+
+  <div class="shader-section">
+    <div class="shader-title">Yeux — Iris Réaliste</div>
+    <div class="param-row"><span class="param-key">Iris Color</span><span class="param-val">#1A0D00</span></div>
+    <div class="param-row"><span class="param-key">Clearcoat</span><span class="param-val">0.03 – 0.05</span></div>
+    <div class="param-row"><span class="param-key">Roughness</span><span class="param-val">0.25</span></div>
+    <div class="param-row"><span class="param-key">Emission (éveil)</span><span class="param-val">#C79A3C · 0.0 → 0.15</span></div>
+  </div>
+
+  <div class="shader-section">
+    <div class="shader-title">Tissu Shúkà — Cloth</div>
+    <div class="param-row"><span class="param-key">Base Color</span><span class="param-val">#C0392B (bordeaux)</span></div>
+    <div class="param-row"><span class="param-key">Roughness</span><span class="param-val">0.6</span></div>
+    <div class="param-row"><span class="param-key">Sheen</span><span class="param-val">0.3</span></div>
+    <div class="param-row"><span class="param-key">Quality Steps</span><span class="param-val">8 – 10</span></div>
+    <div class="param-row"><span class="param-key">Bending / Tension</span><span class="param-val">0.2 / 5–10</span></div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- TIMELINE COURT MÉTRAGE -->
+<section class="section" id="timeline">
+  <div class="section-label">07 — Court Métrage</div>
+  <div class="section-title">Timeline · 95 Secondes</div>
+  <div class="timeline">
+    <div class="timeline-item">
+      <div class="timeline-dot"></div>
+      <div class="timeline-time">S1 · 0 – 10s · frames 1 → 240</div>
+      <div class="timeline-title">Plan Large — Savane</div>
+      <div class="timeline-desc">Silhouette de dos · Vent dans le drapé Shúkà · Particules dorées flottantes · Caméra 35mm fixe</div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-dot"></div>
+      <div class="timeline-time">S2 · 10 – 40s · frames 241 → 960</div>
+      <div class="timeline-title">Travelling Avant</div>
+      <div class="timeline-desc">Dolly in 50mm ultra-lent · Lumière rasante golden hour · Approche contemplative · Le sujet ne bouge pas</div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-dot"></div>
+      <div class="timeline-time">S3 · 40 – 60s · frames 961 → 1440</div>
+      <div class="timeline-title">Regard Fixe</div>
+      <div class="timeline-desc">85mm close-up · Yeux amande · Silence absolu · Présence pure · f/2.8 focus iris</div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-dot"></div>
+      <div class="timeline-time">S4 · 60 – 80s · frames 1441 → 1920</div>
+      <div class="timeline-title">Fermeture</div>
+      <div class="timeline-desc">Yeux qui se ferment lentement · Slow motion · Cloth soulèvement par le vent · Émission or commence</div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-dot"></div>
+      <div class="timeline-time">S5 · 80 – 95s · frames 1921 → 2280</div>
+      <div class="timeline-title">Éveil Sacré</div>
+      <div class="timeline-desc">Yeux s'ouvrent · Émission 0.0 → 0.15 · Reflet doré dans iris · Cut noir final</div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- RÉFÉRENCES -->
+<section class="section" id="references">
+  <div class="section-label">08 — Inspirations</div>
+  <div class="section-title">Références Visuelles</div>
+  <div class="ref-grid">
+    <div class="ref-card">
+      <div class="ref-icon">🏛️</div>
+      <div class="ref-name">Assassin's Creed Origins</div>
+      <div class="ref-detail">Égypte antique · Architecture · Atmosphère</div>
+    </div>
+    <div class="ref-card">
+      <div class="ref-icon">🐾</div>
+      <div class="ref-name">Black Panther</div>
+      <div class="ref-detail">Afrofuturisme · Technologie sacrée · Royauté</div>
+    </div>
+    <div class="ref-card">
+      <div class="ref-icon">🔮</div>
+      <div class="ref-name">Agatha All Along</div>
+      <div class="ref-detail">Mystique · Sorcellerie · Ambiance sombre</div>
+    </div>
+    <div class="ref-card">
+      <div class="ref-icon">⚔️</div>
+      <div class="ref-name">Visions of Mana</div>
+      <div class="ref-detail">Fantasy sacré · Nature · Éléments divins</div>
+    </div>
+    <div class="ref-card">
+      <div class="ref-icon">🌟</div>
+      <div class="ref-name">Eternals (Phastos)</div>
+      <div class="ref-detail">Technologie divine · Présence · Spiritualité</div>
+    </div>
+    <div class="ref-card">
+      <div class="ref-icon">👑</div>
+      <div class="ref-name">Culture Maasaï</div>
+      <div class="ref-detail">Colliers perlés · Drapé rouge · Dignité · Tradition</div>
+    </div>
+  </div>
+</section>
+
+<!-- LORE -->
+<div class="divider"></div>
+<section class="lore-block">
+  <div class="lore-text">
+    "N'Aset est une entité hors du temps, née dans la lumière du Soleil de Rê. Prêtresse de l'Ordre du Feu Mystique, elle traverse les âges pour protéger les savoirs sacrés de l'Égypte antique, dissimulés dans les temples oubliés du futur."
+  </div>
+  <div class="lore-cite">— Lore OFM · Ordre du Feu Mystique</div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-symbol">𓋹 𓂀 𓅃 𓆣</div>
+  <div class="footer-text">
+    Mood Board créé par Négus Dja · Directeur Artistique · Guadeloupe<br>
+    N'Aset OFM v1.0 · Ordre du Feu Mystique · 2026
+  </div>
+</footer>
+
+<!-- TOAST -->
+<div class="copied-toast" id="toast">Couleur copiée !</div>
+
+<script>
+function copyColor(hex) {
+  navigator.clipboard.writeText(hex).then(() => {
+    const toast = document.getElementById('toast');
+    toast.textContent = hex + ' copié !';
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 1500);
+  });
+}
+
+// Nav highlight
+const navLinks = document.querySelectorAll('.nav a');
+const sections = document.querySelectorAll('section[id], .hero[id]');
+window.addEventListener('scroll', () => {
+  let current = '';
+  sections.forEach(s => {
+    if (window.scrollY >= s.offsetTop - 100) current = s.id;
+  });
+  navLinks.forEach(a => {
+    a.classList.toggle('active', a.getAttribute('href') === '#' + current);
+  });
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,428 @@
+
+<style>
+:root { --gold: #C9963A; --gold-light: #E8BC6A; --dark-bg: #0A0A0F; }
+* { box-sizing: border-box; }
+body { margin: 0; }
+
+.db-container {
+  font-family: var(--font-sans);
+  color: var(--color-text-primary);
+  padding: 1rem 0;
+}
+
+.header {
+  display: flex; align-items: center; gap: 16px;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 0.5px solid var(--color-border-tertiary);
+}
+
+.avatar {
+  width: 60px; height: 60px; border-radius: 50%;
+  background: linear-gradient(135deg, #C9963A 0%, #8B5E20 100%);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px; font-weight: 500; color: #FFF8E7;
+  flex-shrink: 0;
+  border: 1.5px solid #C9963A;
+}
+
+.header-text h1 { margin: 0; font-size: 20px; font-weight: 500; }
+.header-text p { margin: 4px 0 0; font-size: 13px; color: var(--color-text-secondary); }
+
+.badge {
+  display: inline-block; font-size: 11px; padding: 2px 10px;
+  border-radius: var(--border-radius-md);
+  background: var(--color-background-info); color: var(--color-text-info);
+  margin-left: 8px; vertical-align: middle;
+}
+
+.tabs {
+  display: flex; gap: 4px; margin-bottom: 1rem;
+  border-bottom: 0.5px solid var(--color-border-tertiary);
+  overflow-x: auto; padding-bottom: 0;
+}
+
+.tab {
+  padding: 8px 16px; font-size: 13px; cursor: pointer;
+  border: none; background: none; color: var(--color-text-secondary);
+  border-bottom: 2px solid transparent; margin-bottom: -0.5px;
+  white-space: nowrap; transition: color .15s;
+}
+
+.tab.active { color: var(--color-text-primary); border-bottom-color: var(--color-text-primary); font-weight: 500; }
+.tab:hover:not(.active) { color: var(--color-text-primary); }
+
+.panel { display: none; }
+.panel.active { display: block; }
+
+.section-title {
+  font-size: 11px; font-weight: 500; letter-spacing: .08em;
+  text-transform: uppercase; color: var(--color-text-tertiary);
+  margin: 1.2rem 0 .6rem;
+}
+
+.card {
+  background: var(--color-background-secondary);
+  border: 0.5px solid var(--color-border-tertiary);
+  border-radius: var(--border-radius-lg);
+  padding: .9rem 1.1rem;
+  margin-bottom: .6rem;
+}
+
+.prop-row {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 5px 0; font-size: 13px;
+  border-bottom: 0.5px solid var(--color-border-tertiary);
+}
+.prop-row:last-child { border-bottom: none; }
+.prop-key { color: var(--color-text-secondary); flex: 0 0 140px; }
+.prop-val { color: var(--color-text-primary); text-align: right; font-weight: 500; flex: 1; }
+
+.color-swatch {
+  display: inline-block; width: 14px; height: 14px; border-radius: 3px;
+  margin-right: 5px; vertical-align: middle; border: 0.5px solid var(--color-border-secondary);
+}
+
+.stat-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;
+  margin-bottom: 1rem;
+}
+
+.stat-card {
+  background: var(--color-background-secondary);
+  border: 0.5px solid var(--color-border-tertiary);
+  border-radius: var(--border-radius-md);
+  padding: .75rem;
+  text-align: center;
+}
+.stat-label { font-size: 11px; color: var(--color-text-tertiary); margin-bottom: 4px; }
+.stat-val { font-size: 18px; font-weight: 500; }
+
+.tag-list { display: flex; flex-wrap: wrap; gap: 6px; margin-top: .5rem; }
+.tag {
+  font-size: 12px; padding: 3px 10px;
+  border-radius: 999px;
+  background: var(--color-background-secondary);
+  border: 0.5px solid var(--color-border-secondary);
+  color: var(--color-text-secondary);
+}
+
+.ue5-block {
+  background: var(--color-background-secondary);
+  border-left: 3px solid #C9963A;
+  border-radius: 0 var(--border-radius-md) var(--border-radius-md) 0;
+  padding: .75rem 1rem;
+  margin-bottom: .6rem;
+  font-size: 13px;
+}
+.ue5-block strong { display: block; font-size: 12px; color: var(--color-text-tertiary); margin-bottom: 3px; font-weight: 500; }
+
+.export-btn {
+  margin-top: 1.2rem; width: 100%; padding: 10px;
+  border: 0.5px solid var(--color-border-secondary);
+  border-radius: var(--border-radius-md);
+  background: none; color: var(--color-text-primary);
+  font-size: 14px; cursor: pointer; transition: background .15s;
+}
+.export-btn:hover { background: var(--color-background-secondary); }
+</style>
+
+<div class="db-container">
+  <div class="header">
+    <div class="avatar">𓂀</div>
+    <div class="header-text">
+      <h1>N'Aset OFM <span class="badge">UE5 Ready</span></h1>
+      <p>Personnage féminin — Prêtresse Égyptienne Futuriste · Version 1.0</p>
+    </div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" onclick="showTab('identite')">Identité</button>
+    <button class="tab" onclick="showTab('visuel')">Visuel</button>
+    <button class="tab" onclick="showTab('equipement')">Équipement</button>
+    <button class="tab" onclick="showTab('ue5')">UE5 Setup</button>
+    <button class="tab" onclick="showTab('lore')">Lore</button>
+  </div>
+
+  <!-- IDENTITÉ -->
+  <div id="panel-identite" class="panel active">
+    <div class="stat-grid">
+      <div class="stat-card"><div class="stat-label">Archétype</div><div class="stat-val" style="font-size:13px">Prêtresse</div></div>
+      <div class="stat-card"><div class="stat-label">Univers</div><div class="stat-val" style="font-size:13px">OFM</div></div>
+      <div class="stat-card"><div class="stat-label">Niveau</div><div class="stat-val">Divin</div></div>
+    </div>
+
+    <div class="section-title">Identité du personnage</div>
+    <div class="card">
+      <div class="prop-row"><span class="prop-key">Nom complet</span><span class="prop-val">N'Aset OFM</span></div>
+      <div class="prop-row"><span class="prop-key">Titre</span><span class="prop-val">Divine Maasaï</span></div>
+      <div class="prop-row"><span class="prop-key">Origine</span><span class="prop-val">Égypte antique / Futur</span></div>
+      <div class="prop-row"><span class="prop-key">Rôle narratif</span><span class="prop-val">Gardienne des savoirs</span></div>
+      <div class="prop-row"><span class="prop-key">Alignement</span><span class="prop-val">Lumière souveraine</span></div>
+      <div class="prop-row"><span class="prop-key">Âge apparent</span><span class="prop-val">25–30 ans</span></div>
+    </div>
+
+    <div class="section-title">Personnalité</div>
+    <div class="tag-list">
+      <span class="tag">Souveraine</span><span class="tag">Mystique</span>
+      <span class="tag">Intuitif</span><span class="tag">Protectrice</span>
+      <span class="tag">Silencieuse</span><span class="tag">Lumineuse</span>
+    </div>
+
+    <div class="section-title">Pouvoirs</div>
+    <div class="card">
+      <div class="prop-row"><span class="prop-key">Primaire</span><span class="prop-val">Magie solaire dorée</span></div>
+      <div class="prop-row"><span class="prop-key">Secondaire</span><span class="prop-val">Lecture des âmes</span></div>
+      <div class="prop-row"><span class="prop-key">Passif</span><span class="prop-val">Aura de protection</span></div>
+      <div class="prop-row"><span class="prop-key">Ultime</span><span class="prop-val">Invocation Oeil Oudjat</span></div>
+    </div>
+  </div>
+
+  <!-- VISUEL -->
+  <div id="panel-visuel" class="panel">
+    <div class="section-title">Corps & Morphologie</div>
+    <div class="card">
+      <div class="prop-row"><span class="prop-key">Silhouette</span><span class="prop-val">Élancée, souveraine</span></div>
+      <div class="prop-row"><span class="prop-key">Taille estimée</span><span class="prop-val">175–180 cm</span></div>
+      <div class="prop-row"><span class="prop-key">Corpulence</span><span class="prop-val">Fine, athlétique</span></div>
+    </div>
+
+    <div class="section-title">Teinte de peau</div>
+    <div class="card">
+      <div class="prop-row">
+        <span class="prop-key">Base skin color</span>
+        <span class="prop-val"><span class="color-swatch" style="background:#6B3D2E"></span>#6B3D2E</span>
+      </div>
+      <div class="prop-row">
+        <span class="prop-key">Subsurface scatter</span>
+        <span class="prop-val"><span class="color-swatch" style="background:#8B4E35"></span>#8B4E35</span>
+      </div>
+      <div class="prop-row">
+        <span class="prop-key">Luminosité (SSS)</span>
+        <span class="prop-val">Marron doré — fort</span>
+      </div>
+      <div class="prop-row">
+        <span class="prop-key">Roughness</span>
+        <span class="prop-val">0.45 – 0.55</span>
+      </div>
+      <div class="prop-row">
+        <span class="prop-key">Metallic</span>
+        <span class="prop-val">0.0</span>
+      </div>
+    </div>
+
+    <div class="section-title">Visage</div>
+    <div class="card">
+      <div class="prop-row"><span class="prop-key">Forme</span><span class="prop-val">Ovale, traits fins</span></div>
+      <div class="prop-row"><span class="prop-key">Yeux</span><span class="prop-val">En amande, profonds</span></div>
+      <div class="prop-row"><span class="prop-key">Couleur yeux</span><span class="prop-val"><span class="color-swatch" style="background:#1A0D00"></span>Brun très foncé</span></div>
+      <div class="prop-row"><span class="prop-key">Maquillage</span><span class="prop-val">Khôl égyptien noir</span></div>
+      <div class="prop-row"><span class="prop-key">Lèvres</span><span class="prop-val"><span class="color-swatch" style="background:#7B2D2D"></span>Bordeaux profond</span></div>
+    </div>
+
+    <div class="section-title">Cheveux</div>
+    <div class="card">
+      <div class="prop-row"><span class="prop-key">Style option A</span><span class="prop-val">Afro long, libre</span></div>
+      <div class="prop-row"><span class="prop-key">Style option B</span><span class="prop-val">Carré droit égyptien</span></div>
+      <div class="prop-row"><span class="prop-key">Couleur</span><span class="prop-val"><span class="color-swatch" style="background:#0D0A08"></span>Noir profond</span></div>
+      <div class="prop-row"><span class="prop-key">Ornements</span><span class="prop-val">Perles dorées (Ankh)</span></div>
+      <div class="prop-row"><span class="prop-key">Shader UE5</span><span class="prop-val">Groom + Hair strand</span></div>
+    </div>
+
+    <div class="section-title">Palette de référence</div>
+    <div style="display:flex; gap:8px; flex-wrap:wrap; margin-top:.5rem">
+      <div style="text-align:center; font-size:11px; color:var(--color-text-tertiary)">
+        <div style="width:48px;height:48px;border-radius:8px;background:#C9963A;margin-bottom:4px"></div>Or sacré
+      </div>
+      <div style="text-align:center; font-size:11px; color:var(--color-text-tertiary)">
+        <div style="width:48px;height:48px;border-radius:8px;background:#FAFAF0;margin-bottom:4px"></div>Blanc ivoire
+      </div>
+      <div style="text-align:center; font-size:11px; color:var(--color-text-tertiary)">
+        <div style="width:48px;height:48px;border-radius:8px;background:#6B3D2E;margin-bottom:4px"></div>Peau base
+      </div>
+      <div style="text-align:center; font-size:11px; color:var(--color-text-tertiary)">
+        <div style="width:48px;height:48px;border-radius:8px;background:#0D0A08;margin-bottom:4px"></div>Cheveux
+      </div>
+      <div style="text-align:center; font-size:11px; color:var(--color-text-tertiary)">
+        <div style="width:48px;height:48px;border-radius:8px;background:#1C1A3A;margin-bottom:4px"></div>Khôl / Accent
+      </div>
+    </div>
+  </div>
+
+  <!-- ÉQUIPEMENT -->
+  <div id="panel-equipement" class="panel">
+    <div class="section-title">Vêtements</div>
+    <div class="card">
+      <div class="prop-row"><span class="prop-key">Pièce principale</span><span class="prop-val">Drapé sacré blanc/or</span></div>
+      <div class="prop-row"><span class="prop-key">Tissu</span><span class="prop-val">Lin égyptien fin</span></div>
+      <div class="prop-row"><span class="prop-key">Bordures</span><span class="prop-val">Broderies dorées hiéro.</span></div>
+      <div class="prop-row"><span class="prop-key">Shader</span><span class="prop-val">Cloth sim + Translucent</span></div>
+    </div>
+
+    <div class="section-title">Bijoux & Accessoires</div>
+    <div class="card">
+      <div class="prop-row"><span class="prop-key">Collier</span><span class="prop-val">Collier égyptien large (Usekh)</span></div>
+      <div class="prop-row"><span class="prop-key">Bras droit</span><span class="prop-val">Manchette or gravée</span></div>
+      <div class="prop-row"><span class="prop-key">Bras gauche</span><span class="prop-val">Manchette or gravée</span></div>
+      <div class="prop-row"><span class="prop-key">Symbole 1</span><span class="prop-val">𓋹 Ankh intégré</span></div>
+      <div class="prop-row"><span class="prop-key">Symbole 2</span><span class="prop-val">𓂀 Oeil Oudjat</span></div>
+      <div class="prop-row"><span class="prop-key">Matériau</span><span class="prop-val">Or + Lapis-lazuli</span></div>
+    </div>
+
+    <div class="section-title">Shaders bijoux (UE5)</div>
+    <div class="card">
+      <div class="prop-row"><span class="prop-key">Metallic</span><span class="prop-val">0.95 – 1.0</span></div>
+      <div class="prop-row"><span class="prop-key">Roughness</span><span class="prop-val">0.08 – 0.15</span></div>
+      <div class="prop-row"><span class="prop-key">Base color</span><span class="prop-val"><span class="color-swatch" style="background:#C9963A"></span>#C9963A</span></div>
+      <div class="prop-row"><span class="prop-key">Emissive</span><span class="prop-val">0.2 (particules actives)</span></div>
+    </div>
+
+    <div class="section-title">Effets visuels spéciaux</div>
+    <div class="card">
+      <div class="prop-row"><span class="prop-key">Particules</span><span class="prop-val">Dorées flottantes (Niagara)</span></div>
+      <div class="prop-row"><span class="prop-key">Aura</span><span class="prop-val">Lumière cinématique sacrée</span></div>
+      <div class="prop-row"><span class="prop-key">Oeil Oudjat</span><span class="prop-val">Emissive glow pulsant</span></div>
+      <div class="prop-row"><span class="prop-key">Post-process</span><span class="prop-val">Bloom doux + Lens flare or</span></div>
+    </div>
+  </div>
+
+  <!-- UE5 SETUP -->
+  <div id="panel-ue5" class="panel">
+    <div class="section-title">Pipeline d'importation</div>
+
+    <div class="ue5-block">
+      <strong>1. Modélisation</strong>
+      ZBrush / Blender → MetaHuman (base visage) → retopo Maya/Blender
+    </div>
+    <div class="ue5-block">
+      <strong>2. MetaHuman Creator</strong>
+      Créer la base : peau marron dorée · yeux amande · silhouette élancée
+    </div>
+    <div class="ue5-block">
+      <strong>3. Rigging & Animation</strong>
+      UE5 Control Rig · IK Retargeter · Animation Blueprint
+    </div>
+    <div class="ue5-block">
+      <strong>4. Groom (cheveux)</strong>
+      Groom Asset UE5 · Hair Strand Shader · Physics simulation
+    </div>
+    <div class="ue5-block">
+      <strong>5. Vêtements</strong>
+      Cloth Simulation (Chaos Cloth) · Blueprint pour état repos/combat
+    </div>
+    <div class="ue5-block">
+      <strong>6. VFX Niagara</strong>
+      Particules dorées · Aura · Oeil Oudjat emissive · Invocation ultime
+    </div>
+    <div class="ue5-block">
+      <strong>7. Lighting Setup</strong>
+      HDRI sacré · Directional light cinématique · Bloom + Lumen GI
+    </div>
+
+    <div class="section-title">Blueprint recommandés</div>
+    <div class="card">
+      <div class="prop-row"><span class="prop-key">BP_NasetCharacter</span><span class="prop-val">Classe principale</span></div>
+      <div class="prop-row"><span class="prop-key">BP_AuraEffect</span><span class="prop-val">Système aura</span></div>
+      <div class="prop-row"><span class="prop-key">BP_OudjaActivation</span><span class="prop-val">Pouvoir ultime</span></div>
+      <div class="prop-row"><span class="prop-key">BP_ParticleGold</span><span class="prop-val">Niagara particules</span></div>
+    </div>
+
+    <div class="section-title">Assets à prévoir</div>
+    <div class="tag-list">
+      <span class="tag">MetaHuman base</span>
+      <span class="tag">Groom Hair</span>
+      <span class="tag">Cloth Mesh</span>
+      <span class="tag">Bijoux (FBX)</span>
+      <span class="tag">Texture Skin 4K</span>
+      <span class="tag">Normal Map</span>
+      <span class="tag">Niagara System</span>
+      <span class="tag">PostProcess Vol.</span>
+    </div>
+
+    <button class="export-btn" onclick="exportJSON()">Exporter en JSON (UE5 DataAsset) ↗</button>
+  </div>
+
+  <!-- LORE -->
+  <div id="panel-lore" class="panel">
+    <div class="section-title">Origine mythique</div>
+    <div class="card" style="font-size:13px;line-height:1.7;color:var(--color-text-secondary)">
+      N'Aset est une entité hors du temps, née dans la lumière du Soleil de Rê. Prêtresse de l'ordre OFM — Ordre du Feu Mystique — elle traverse les âges pour protéger les savoirs sacrés de l'Égypte antique, dissimulés dans les temples oubliés du futur.
+    </div>
+
+    <div class="section-title">Mission</div>
+    <div class="card">
+      <div class="prop-row"><span class="prop-key">Objectif principal</span><span class="prop-val">Protéger les tablettes sacrées</span></div>
+      <div class="prop-row"><span class="prop-key">Ennemi</span><span class="prop-val">Les voleurs d'âmes (Sébau)</span></div>
+      <div class="prop-row"><span class="prop-key">Allié</span><span class="prop-val">Les gardiens Maasaï</span></div>
+      <div class="prop-row"><span class="prop-key">Lieu principal</span><span class="prop-val">Temple du Futur Doré</span></div>
+    </div>
+
+    <div class="section-title">Symboles sacrés</div>
+    <div class="card">
+      <div class="prop-row"><span class="prop-key">𓋹 Ankh</span><span class="prop-val">Vie éternelle, portail</span></div>
+      <div class="prop-row"><span class="prop-key">𓂀 Oudjat</span><span class="prop-val">Perception divine, bouclier</span></div>
+      <div class="prop-row"><span class="prop-key">𓅃 Faucon</span><span class="prop-val">Vitesse, messager de Rê</span></div>
+      <div class="prop-row"><span class="prop-key">𓆣 Scarabée</span><span class="prop-val">Renaissance, transformation</span></div>
+    </div>
+
+    <div class="section-title">Références visuelles</div>
+    <div class="tag-list">
+      <span class="tag">Assassin's Creed Origins</span>
+      <span class="tag">Black Panther</span>
+      <span class="tag">Agatha All Along</span>
+      <span class="tag">Visions of Mana</span>
+      <span class="tag">Eternals (Phastos)</span>
+    </div>
+  </div>
+</div>
+
+<script>
+function showTab(id) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  event.target.classList.add('active');
+  document.getElementById('panel-' + id).classList.add('active');
+}
+
+function exportJSON() {
+  const data = {
+    character: {
+      name: "N'Aset OFM",
+      title: "Divine Maasaï",
+      archetype: "Prêtresse Égyptienne Futuriste",
+      universe: "OFM",
+      version: "1.0"
+    },
+    visual: {
+      skin: { base_color: "#6B3D2E", sss_color: "#8B4E35", roughness: 0.5, metallic: 0.0 },
+      eyes: { shape: "amande", color: "#1A0D00", makeup: "Khôl égyptien" },
+      hair: { styles: ["Afro long", "Carré droit égyptien"], color: "#0D0A08", ornaments: "Perles dorées Ankh", shader: "Groom + Hair Strand" },
+      palette: { gold: "#C9963A", white_ivory: "#FAFAF0", skin: "#6B3D2E", hair: "#0D0A08", accent: "#1C1A3A" }
+    },
+    equipment: {
+      clothing: { type: "Drapé sacré", material: "Lin égyptien", color: "Blanc/Or", shader: "Cloth sim + Translucent" },
+      jewelry: { necklace: "Usekh égyptien large", bracers: ["Manchette or gravée gauche", "Manchette or gravée droite"], symbols: ["Ankh", "Oeil Oudjat"], material: "Or + Lapis-lazuli", metallic: 0.97, roughness: 0.1 }
+    },
+    ue5_setup: {
+      base: "MetaHuman Creator",
+      rigging: "UE5 Control Rig + IK Retargeter",
+      hair: "Groom Asset + Chaos Physics",
+      cloth: "Chaos Cloth Simulation",
+      vfx: ["Niagara particules dorées", "Aura emissive", "Oudjat glow", "Bloom or"],
+      blueprints: ["BP_NasetCharacter", "BP_AuraEffect", "BP_OudjaActivation", "BP_ParticleGold"]
+    },
+    lore: {
+      origin: "Lumière de Rê — Ordre du Feu Mystique",
+      mission: "Protéger les tablettes sacrées",
+      enemy: "Sébau (voleurs d'âmes)",
+      ally: "Gardiens Maasaï",
+      sacred_symbols: { Ankh: "Vie éternelle", Oudjat: "Perception divine", Faucon: "Vitesse / Rê", Scarabée: "Renaissance" }
+    }
+  };
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'NasetOFM_CharacterData.json'; a.click();
+  URL.revokeObjectURL(url);
+}
+</script>

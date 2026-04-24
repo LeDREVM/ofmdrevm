@@ -1,0 +1,395 @@
+
+<style>
+*{box-sizing:border-box}
+.wrap{font-family:var(--font-sans);color:var(--color-text-primary);padding:1rem 0}
+.tabs{display:flex;gap:2px;border-bottom:0.5px solid var(--color-border-tertiary);margin-bottom:1.2rem;overflow-x:auto}
+.tab{padding:8px 14px;font-size:12px;cursor:pointer;border:none;background:none;color:var(--color-text-secondary);border-bottom:2px solid transparent;margin-bottom:-0.5px;white-space:nowrap}
+.tab.on{color:var(--color-text-primary);border-bottom-color:var(--color-text-primary);font-weight:500}
+.panel{display:none}.panel.on{display:block}
+.sec{font-size:10px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--color-text-tertiary);margin:1.1rem 0 .5rem}
+.card{background:var(--color-background-secondary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:.8rem 1rem;margin-bottom:.5rem}
+.row{display:flex;justify-content:space-between;align-items:center;padding:4px 0;font-size:13px;border-bottom:0.5px solid var(--color-border-tertiary)}
+.row:last-child{border-bottom:none}
+.k{color:var(--color-text-secondary);flex:0 0 180px;font-size:12px}
+.v{color:var(--color-text-primary);font-weight:500;text-align:right;font-size:13px}
+.code-block{background:var(--color-background-secondary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);padding:.75rem 1rem;font-family:var(--font-mono);font-size:12px;color:var(--color-text-primary);margin-bottom:.6rem;line-height:1.6;white-space:pre-wrap;word-break:break-word}
+.accent{border-left:3px solid #C9963A;border-radius:0 var(--border-radius-md) var(--border-radius-md) 0;padding:.65rem .9rem;background:var(--color-background-secondary);font-size:13px;margin-bottom:.5rem;line-height:1.6}
+.accent strong{display:block;font-size:11px;color:var(--color-text-tertiary);margin-bottom:2px;font-weight:500}
+.swatch{display:inline-block;width:13px;height:13px;border-radius:3px;margin-right:5px;vertical-align:middle;border:0.5px solid var(--color-border-secondary)}
+.step{display:flex;gap:10px;align-items:flex-start;margin-bottom:.7rem;font-size:13px}
+.stepn{width:22px;height:22px;border-radius:50%;background:#C9963A;color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:500;flex-shrink:0;margin-top:1px}
+.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-bottom:.6rem}
+.mcard{background:var(--color-background-secondary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);padding:.7rem}
+.mcard .lbl{font-size:11px;color:var(--color-text-tertiary);margin-bottom:4px}
+.mcard .val{font-size:14px;font-weight:500}
+.tag{display:inline-block;font-size:11px;padding:2px 9px;border-radius:999px;background:var(--color-background-secondary);border:0.5px solid var(--color-border-secondary);color:var(--color-text-secondary);margin:2px}
+.warn{background:var(--color-background-warning);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);padding:.6rem .9rem;font-size:12px;color:var(--color-text-warning);margin-bottom:.5rem}
+.ok{background:var(--color-background-success);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);padding:.6rem .9rem;font-size:12px;color:var(--color-text-success);margin-bottom:.5rem}
+.copybtn{float:right;font-size:11px;padding:2px 8px;border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);background:none;color:var(--color-text-secondary);cursor:pointer;margin-bottom:4px}
+.copybtn:hover{background:var(--color-background-secondary)}
+</style>
+
+<div class="wrap">
+<div class="tabs">
+  <button class="tab on" onclick="sw('mh')">MetaHuman</button>
+  <button class="tab" onclick="sw('bl')">Blender FBX</button>
+  <button class="tab" onclick="sw('ni')">Niagara VFX</button>
+  <button class="tab" onclick="sw('mi')">Materials</button>
+  <button class="tab" onclick="sw('bp')">Blueprints</button>
+</div>
+
+<!-- ===== METAHUMAN ===== -->
+<div id="p-mh" class="panel on">
+
+  <div class="sec">Étape 1 — MetaHuman Creator (navigateur)</div>
+  <div class="step"><div class="stepn">1</div><div>Aller sur <strong>metahuman.unrealengine.com</strong> · Créer un nouveau personnage · Choisir preset <em>Female, Adult</em></div></div>
+  <div class="step"><div class="stepn">2</div><div>Onglet <strong>Face</strong> · ajuster la forme du visage → paramètres ci-dessous</div></div>
+  <div class="step"><div class="stepn">3</div><div>Onglet <strong>Skin</strong> · appliquer toutes les valeurs du tableau skin</div></div>
+  <div class="step"><div class="stepn">4</div><div>Onglet <strong>Body</strong> · silhouette élancée</div></div>
+  <div class="step"><div class="stepn">5</div><div>Exporter via <strong>Quixel Bridge</strong> directement dans UE5</div></div>
+
+  <div class="sec">Morphologie du visage</div>
+  <div class="card">
+    <div class="row"><span class="k">Face shape</span><span class="v">Oval — 0.65</span></div>
+    <div class="row"><span class="k">Cheekbone width</span><span class="v">0.55</span></div>
+    <div class="row"><span class="k">Cheekbone height</span><span class="v">0.70</span></div>
+    <div class="row"><span class="k">Jaw width</span><span class="v">0.42</span></div>
+    <div class="row"><span class="k">Jaw definition</span><span class="v">0.60</span></div>
+    <div class="row"><span class="k">Chin projection</span><span class="v">0.45</span></div>
+    <div class="row"><span class="k">Nose bridge height</span><span class="v">0.50</span></div>
+    <div class="row"><span class="k">Nose width</span><span class="v">0.60</span></div>
+    <div class="row"><span class="k">Lip fullness</span><span class="v">0.65</span></div>
+    <div class="row"><span class="k">Lip width</span><span class="v">0.55</span></div>
+  </div>
+
+  <div class="sec">Yeux</div>
+  <div class="card">
+    <div class="row"><span class="k">Eye shape</span><span class="v">Almond — preset 3</span></div>
+    <div class="row"><span class="k">Eye size</span><span class="v">0.58</span></div>
+    <div class="row"><span class="k">Eye depth</span><span class="v">0.50</span></div>
+    <div class="row"><span class="k">Eye tilt</span><span class="v">-0.08 (légèrement relevé)</span></div>
+    <div class="row"><span class="k">Iris color R</span><span class="v">0.08</span></div>
+    <div class="row"><span class="k">Iris color G</span><span class="v">0.05</span></div>
+    <div class="row"><span class="k">Iris color B</span><span class="v">0.01</span></div>
+    <div class="row"><span class="k">Iris scale</span><span class="v">1.10 (grand iris)</span></div>
+    <div class="row"><span class="k">Sclera brightness</span><span class="v">0.92</span></div>
+  </div>
+
+  <div class="sec">Skin — valeurs Material Instance</div>
+  <div class="grid2">
+    <div class="mcard"><div class="lbl">Skin Color (Base)</div><div class="val"><span class="swatch" style="background:#6B3D2E"></span>0.42 / 0.24 / 0.18</div></div>
+    <div class="mcard"><div class="lbl">Subsurface Color</div><div class="val"><span class="swatch" style="background:#8B4E35"></span>0.54 / 0.31 / 0.21</div></div>
+    <div class="mcard"><div class="lbl">Roughness</div><div class="val">0.50</div></div>
+    <div class="mcard"><div class="lbl">Metallic</div><div class="val">0.00</div></div>
+    <div class="mcard"><div class="lbl">SSS Strength</div><div class="val">0.75</div></div>
+    <div class="mcard"><div class="lbl">SSS Radius</div><div class="val">1.20 cm</div></div>
+    <div class="mcard"><div class="lbl">Specular</div><div class="val">0.35</div></div>
+    <div class="mcard"><div class="lbl">Pore scale</div><div class="val">1.0 (normal)</div></div>
+  </div>
+
+  <div class="sec">Cheveux — Groom Asset</div>
+  <div class="card">
+    <div class="row"><span class="k">Hair type</span><span class="v">Long Afro / Bob égyptien</span></div>
+    <div class="row"><span class="k">Strand count</span><span class="v">180 000 – 250 000</span></div>
+    <div class="row"><span class="k">Hair color R/G/B</span><span class="v">0.05 / 0.03 / 0.02</span></div>
+    <div class="row"><span class="k">Melanin</span><span class="v">1.0 (noir profond)</span></div>
+    <div class="row"><span class="k">Roughness</span><span class="v">0.60</span></div>
+    <div class="row"><span class="k">Scatter</span><span class="v">0.55</span></div>
+    <div class="row"><span class="k">Physics sim</span><span class="v">Chaos Physics — activé</span></div>
+    <div class="row"><span class="k">Wind influence</span><span class="v">0.35</span></div>
+  </div>
+
+  <div class="sec">Corps</div>
+  <div class="card">
+    <div class="row"><span class="k">Body preset</span><span class="v">Female Slim</span></div>
+    <div class="row"><span class="k">Height</span><span class="v">177 cm</span></div>
+    <div class="row"><span class="k">Proportions</span><span class="v">Élancées (Ectomorph)</span></div>
+    <div class="row"><span class="k">Muscle definition</span><span class="v">0.30 (fine)</span></div>
+  </div>
+
+  <div class="ok">Exporter depuis Quixel Bridge : Project → UE5 → LOD0+LOD1+LOD2 · Inclure Groom Asset · Inclure Control Rig</div>
+</div>
+
+<!-- ===== BLENDER ===== -->
+<div id="p-bl" class="panel">
+
+  <div class="sec">Setup Blender 4.x</div>
+  <div class="step"><div class="stepn">1</div><div>Activer addon <strong>FBX Export</strong> natif + <strong>Node Wrangler</strong></div></div>
+  <div class="step"><div class="stepn">2</div><div>Unités : <strong>Metric, Scale = 0.01</strong> (convention UE5)</div></div>
+  <div class="step"><div class="stepn">3</div><div>Axis Forward : <strong>-Z</strong> · Axis Up : <strong>Y</strong> (standard UE5)</div></div>
+
+  <div class="sec">Collier Usekh — modélisation</div>
+  <div class="card">
+    <div class="row"><span class="k">Géométrie base</span><span class="v">Torus semi-circulaire aplati</span></div>
+    <div class="row"><span class="k">Major radius</span><span class="v">12 cm (col)</span></div>
+    <div class="row"><span class="k">Minor radius</span><span class="v">2.5 cm (épaisseur)</span></div>
+    <div class="row"><span class="k">Rangs de perles</span><span class="v">5–7 rangées concentriques</span></div>
+    <div class="row"><span class="k">Perle type</span><span class="v">UV Sphere — subdivisions 8</span></div>
+    <div class="row"><span class="k">Poly count cible</span><span class="v">8 000 – 12 000 tris</span></div>
+    <div class="row"><span class="k">UVs</span><span class="v">Smart UV Project · margin 0.02</span></div>
+  </div>
+
+  <div class="sec">Manchettes dorées</div>
+  <div class="card">
+    <div class="row"><span class="k">Géométrie base</span><span class="v">Cylinder — 24 segments</span></div>
+    <div class="row"><span class="k">Width</span><span class="v">5 cm · Height 4 cm</span></div>
+    <div class="row"><span class="k">Gravures</span><span class="v">Boolean subtract hiéroglyphes</span></div>
+    <div class="row"><span class="k">Bevel</span><span class="v">0.02 cm · 2 segments</span></div>
+    <div class="row"><span class="k">Poly count cible</span><span class="v">3 000 – 5 000 tris</span></div>
+  </div>
+
+  <div class="sec">Paramètres export FBX</div>
+  <button class="copybtn" onclick="copyCode('fbx-params')">Copier</button>
+  <div id="fbx-params" class="code-block">Scale: 1.0 (units already metric)
+Apply Unit: ON
+Apply Transform: ON
+Forward: -Z Forward
+Up: Y Up
+Mesh: Triangulate Faces: ON
+       Apply Modifiers: ON
+Armature: (vide si pas de rig)
+Bake Anim: OFF (bijoux statiques)
+Path Mode: Copy
+Embed Textures: OFF
+    (textures séparées en PNG 4K)</div>
+
+  <div class="sec">Nommage des assets (convention UE5)</div>
+  <div class="card">
+    <div class="row"><span class="k">Collier</span><span class="v">SM_NasetUsekh_Necklace</span></div>
+    <div class="row"><span class="k">Manchette G</span><span class="v">SM_NasetBracer_Left</span></div>
+    <div class="row"><span class="k">Manchette D</span><span class="v">SM_NasetBracer_Right</span></div>
+    <div class="row"><span class="k">Perle cheveux</span><span class="v">SM_NasetHairBead</span></div>
+    <div class="row"><span class="k">Texture Base</span><span class="v">T_NasetUsekh_BC (BaseColor)</span></div>
+    <div class="row"><span class="k">Texture Normal</span><span class="v">T_NasetUsekh_N</span></div>
+    <div class="row"><span class="k">Texture ORM</span><span class="v">T_NasetUsekh_ORM (R=Occ G=Rough B=Metal)</span></div>
+  </div>
+
+  <div class="sec">Import UE5 — paramètres</div>
+  <div class="card">
+    <div class="row"><span class="k">Import Content Type</span><span class="v">Geometry only</span></div>
+    <div class="row"><span class="k">Auto Generate Collision</span><span class="v">ON</span></div>
+    <div class="row"><span class="k">Generate Lightmap UVs</span><span class="v">ON (channel 1)</span></div>
+    <div class="row"><span class="k">Recompute Normals</span><span class="v">OFF (garder Blender)</span></div>
+    <div class="row"><span class="k">LODs</span><span class="v">Auto LOD · LOD0=100% LOD2=30%</span></div>
+  </div>
+
+  <div class="warn">Vérifier Scale = 1.0 dans UE5 après import. Si le mesh est 100x trop grand : changer unités Blender en Centimeters avant d'exporter.</div>
+</div>
+
+<!-- ===== NIAGARA ===== -->
+<div id="p-ni" class="panel">
+
+  <div class="sec">Architecture du système Niagara</div>
+  <div class="step"><div class="stepn">1</div><div>Content Browser → <strong>Niagara System</strong> → New System from template → <em>Empty</em></div></div>
+  <div class="step"><div class="stepn">2</div><div>Ajouter 3 emitters : <strong>GoldParticles</strong> + <strong>AuraRing</strong> + <strong>OudjaGlow</strong></div></div>
+  <div class="step"><div class="stepn">3</div><div>Attacher le NS à un <strong>Socket</strong> du skeletal mesh via Blueprint</div></div>
+
+  <div class="sec">Emitter 1 — GoldParticles (ambiant)</div>
+  <div class="card">
+    <div class="row"><span class="k">Sim target</span><span class="v">CPU (compatible mobile)</span></div>
+    <div class="row"><span class="k">Spawn Rate</span><span class="v">25 particles/sec</span></div>
+    <div class="row"><span class="k">Lifetime</span><span class="v">Random Range 2.0 – 4.0 s</span></div>
+    <div class="row"><span class="k">Shape</span><span class="v">Sphere radius 40 cm</span></div>
+    <div class="row"><span class="k">Initial velocity</span><span class="v">Random (–5, –5, 0) → (5, 5, 15) cm/s</span></div>
+    <div class="row"><span class="k">Drag</span><span class="v">1.5</span></div>
+    <div class="row"><span class="k">Gravity</span><span class="v">–5 cm/s² (lévitation)</span></div>
+    <div class="row"><span class="k">Sprite size</span><span class="v">Random 0.3 – 1.2 cm</span></div>
+    <div class="row"><span class="k">Color</span><span class="v">HDR Gold : R=2.0 G=1.2 B=0.1</span></div>
+    <div class="row"><span class="k">Alpha over life</span><span class="v">Curve : 0→1 (10%) 1 (50%) →0 (100%)</span></div>
+    <div class="row"><span class="k">Rotation speed</span><span class="v">Random –90 → 90 deg/s</span></div>
+  </div>
+
+  <div class="sec">Emitter 2 — AuraRing (anneau autour du corps)</div>
+  <div class="card">
+    <div class="row"><span class="k">Spawn type</span><span class="v">Burst · Count 120 · Loop</span></div>
+    <div class="row"><span class="k">Loop duration</span><span class="v">3.0 s</span></div>
+    <div class="row"><span class="k">Shape</span><span class="v">Ring · Radius 55 cm · Height 0</span></div>
+    <div class="row"><span class="k">Direction</span><span class="v">Outward + Up (radial + Z+15cm/s)</span></div>
+    <div class="row"><span class="k">Lifetime</span><span class="v">2.5 – 3.0 s</span></div>
+    <div class="row"><span class="k">Sprite size</span><span class="v">Random 0.5 – 2.0 cm</span></div>
+    <div class="row"><span class="k">Color start</span><span class="v">HDR Gold R=3.0 G=1.8 B=0.2</span></div>
+    <div class="row"><span class="k">Color end</span><span class="v">R=1.5 G=0.8 B=0.05 A=0</span></div>
+    <div class="row"><span class="k">Material</span><span class="v">M_Particle_Gold_Additive</span></div>
+  </div>
+
+  <div class="sec">Emitter 3 — OudjaGlow (oeil Oudjat)</div>
+  <div class="card">
+    <div class="row"><span class="k">Spawn type</span><span class="v">Rate 80/sec (activé sur trigger)</span></div>
+    <div class="row"><span class="k">Shape</span><span class="v">Point (centré sur socket Oudjat)</span></div>
+    <div class="row"><span class="k">Velocity</span><span class="v">Radial 0–30 cm/s</span></div>
+    <div class="row"><span class="k">Lifetime</span><span class="v">0.5 – 1.0 s</span></div>
+    <div class="row"><span class="k">Sprite size</span><span class="v">0.2 – 0.8 cm</span></div>
+    <div class="row"><span class="k">Color</span><span class="v">HDR White-Gold R=4.0 G=3.2 B=1.5</span></div>
+    <div class="row"><span class="k">Bloom intensity</span><span class="v">Géré par Post Process Volume</span></div>
+    <div class="row"><span class="k">Active par défaut</span><span class="v">OFF → ON via Blueprint event</span></div>
+  </div>
+
+  <div class="sec">Material particules — M_Particle_Gold_Additive</div>
+  <button class="copybtn" onclick="copyCode('mat-particle')">Copier</button>
+  <div id="mat-particle" class="code-block">Blend Mode: Additive
+Shading Model: Unlit
+Two Sided: ON
+
+Nodes :
+  TextureSample (T_Particle_Soft_Circle)
+    → multiply par VertexColor.A
+    → multiply par float (Brightness = 2.5)
+  → Emissive Color output
+
+SubUV Animation: 4x4 grid (si spritesheet)
+Use GPU Sprites: ON si GPU Niagara</div>
+
+  <div class="sec">Post Process Volume — Bloom pour VFX</div>
+  <div class="card">
+    <div class="row"><span class="k">Bloom method</span><span class="v">Convolution</span></div>
+    <div class="row"><span class="k">Bloom intensity</span><span class="v">0.85</span></div>
+    <div class="row"><span class="k">Bloom threshold</span><span class="v">1.0 (HDR uniquement)</span></div>
+    <div class="row"><span class="k">Lens flare intensity</span><span class="v">0.20 (subtil)</span></div>
+    <div class="row"><span class="k">Lens flare tint</span><span class="v">R=1.0 G=0.8 B=0.3</span></div>
+    <div class="row"><span class="k">Exposure compensation</span><span class="v">+0.5 EV (scène sacrée)</span></div>
+  </div>
+
+  <div class="ok">Attacher NS_NasetAura au socket "spine_03" du MetaHuman Skeleton pour que le VFX suive le personnage.</div>
+</div>
+
+<!-- ===== MATERIALS ===== -->
+<div id="p-mi" class="panel">
+
+  <div class="sec">Material Instance — MI_NasetSkin</div>
+  <div class="accent"><strong>Parent Material</strong>M_MetaHuman_Skin_Master (fourni avec MetaHuman)</div>
+  <div class="card">
+    <div class="row"><span class="k">Skin Color</span><span class="v"><span class="swatch" style="background:#6B3D2E"></span>(0.42, 0.24, 0.18, 1.0)</span></div>
+    <div class="row"><span class="k">Subsurface Color</span><span class="v"><span class="swatch" style="background:#8B4E35"></span>(0.54, 0.31, 0.21, 1.0)</span></div>
+    <div class="row"><span class="k">Roughness scalar</span><span class="v">0.50</span></div>
+    <div class="row"><span class="k">Specular scalar</span><span class="v">0.35</span></div>
+    <div class="row"><span class="k">SSS Strength</span><span class="v">0.75</span></div>
+    <div class="row"><span class="k">SSS Radius</span><span class="v">1.2</span></div>
+    <div class="row"><span class="k">Pore Roughness blend</span><span class="v">0.60</span></div>
+    <div class="row"><span class="k">Makeup mask (khôl)</span><span class="v">T_NasetFace_Makeup (eyes)</span></div>
+    <div class="row"><span class="k">Makeup color</span><span class="v">(0.02, 0.02, 0.04, 1.0) — noir bleuté</span></div>
+    <div class="row"><span class="k">Lip color override</span><span class="v"><span class="swatch" style="background:#7B2D2D"></span>(0.48, 0.18, 0.18, 1.0)</span></div>
+  </div>
+
+  <div class="sec">Material Instance — MI_NasetGold (bijoux)</div>
+  <div class="card">
+    <div class="row"><span class="k">Base Color</span><span class="v"><span class="swatch" style="background:#C9963A"></span>(0.79, 0.59, 0.23, 1.0)</span></div>
+    <div class="row"><span class="k">Metallic</span><span class="v">0.97</span></div>
+    <div class="row"><span class="k">Roughness</span><span class="v">0.10</span></div>
+    <div class="row"><span class="k">Specular</span><span class="v">0.80</span></div>
+    <div class="row"><span class="k">Emissive (particules actives)</span><span class="v">(0.79, 0.59, 0.23) × 0.4</span></div>
+    <div class="row"><span class="k">Normal map strength</span><span class="v">1.2 (gravures accentuées)</span></div>
+    <div class="row"><span class="k">AO strength</span><span class="v">0.80</span></div>
+  </div>
+
+  <div class="sec">Material Instance — MI_NasetCloth (drapé)</div>
+  <div class="card">
+    <div class="row"><span class="k">Base Color</span><span class="v"><span class="swatch" style="background:#FAFAF0"></span>(0.98, 0.98, 0.94, 1.0)</span></div>
+    <div class="row"><span class="k">Metallic</span><span class="v">0.00</span></div>
+    <div class="row"><span class="k">Roughness</span><span class="v">0.75</span></div>
+    <div class="row"><span class="k">Blend Mode</span><span class="v">Translucent</span></div>
+    <div class="row"><span class="k">Opacity</span><span class="v">0.88 (semi-transparent)</span></div>
+    <div class="row"><span class="k">Two Sided</span><span class="v">ON (drapé visible 2 côtés)</span></div>
+    <div class="row"><span class="k">Shading model</span><span class="v">Cloth (UE5)</span></div>
+    <div class="row"><span class="k">Fuzz color</span><span class="v">(1.0, 1.0, 0.92) — duvet blanc</span></div>
+    <div class="row"><span class="k">Border emissive</span><span class="v"><span class="swatch" style="background:#C9963A"></span>(0.79, 0.59, 0.23) × 1.2</span></div>
+  </div>
+
+  <div class="sec">Material — Oeil Oudjat (emissive)</div>
+  <div class="card">
+    <div class="row"><span class="k">Blend mode</span><span class="v">Opaque</span></div>
+    <div class="row"><span class="k">Base color</span><span class="v">(0.02, 0.01, 0.0)</span></div>
+    <div class="row"><span class="k">Emissive color</span><span class="v">(2.5, 1.8, 0.3) — pulsant</span></div>
+    <div class="row"><span class="k">Emissive curve</span><span class="v">SineWave · Fréquence 1.2 Hz</span></div>
+    <div class="row"><span class="k">Node graph</span><span class="v">Sine(Time × 1.2) → remap 0.5–1.5 → × EmissiveColor</span></div>
+  </div>
+</div>
+
+<!-- ===== BLUEPRINTS ===== -->
+<div id="p-bp" class="panel">
+
+  <div class="sec">BP_NasetCharacter — classe principale</div>
+  <div class="accent"><strong>Parent Class</strong>BP_MetaHuman_Female → hérite Groom, Skeleton, AnimBP</div>
+
+  <div class="sec">Variables à déclarer</div>
+  <div class="card">
+    <div class="row"><span class="k">bAuraActive</span><span class="v">Bool — défaut False</span></div>
+    <div class="row"><span class="k">bOudjaActivated</span><span class="v">Bool — défaut False</span></div>
+    <div class="row"><span class="k">AuraIntensity</span><span class="v">Float 0.0–1.0 — défaut 0.3</span></div>
+    <div class="row"><span class="k">NiagaraComp</span><span class="v">UNiagaraComponent ref</span></div>
+    <div class="row"><span class="k">GoldMat</span><span class="v">UMaterialInstanceDynamic ref</span></div>
+  </div>
+
+  <div class="sec">Event Graph — Begin Play</div>
+  <button class="copybtn" onclick="copyCode('bp-begin')">Copier</button>
+  <div id="bp-begin" class="code-block">BeginPlay
+  → Create Dynamic Material Instance (MI_NasetGold)
+    → Set GoldMat
+  → Get Niagara Component (NS_NasetAura)
+    → Set NiagaraComp
+  → Set Niagara Variable (bool "AuraActive" = FALSE)
+  → Set Relative Scale 3D (NiagaraComp, 1,1,1)</div>
+
+  <div class="sec">Event — ActivateAura (appel externe)</div>
+  <button class="copybtn" onclick="copyCode('bp-aura')">Copier</button>
+  <div id="bp-aura" class="code-block">Custom Event: ActivateAura
+  → Set bAuraActive = TRUE
+  → Niagara Component → Activate (reset=true)
+  → Set Niagara Variable Float "SpawnRate" = 25.0
+  → Timeline (AuraFadeIn 0→1 over 1.0s)
+     → Update: Set Niagara Float "AuraIntensity" = value
+  → Play Montage (AM_NasetAura_Idle)</div>
+
+  <div class="sec">Event — ActivateOudjat (pouvoir ultime)</div>
+  <button class="copybtn" onclick="copyCode('bp-oudjat')">Copier</button>
+  <div id="bp-oudjat" class="code-block">Custom Event: ActivateOudjat
+  → Branch (bAuraActive == TRUE)
+  → TRUE:
+      Set bOudjaActivated = TRUE
+      Set Niagara Variable Bool "OudjaActive" = TRUE
+      Set Scalar Param on GoldMat "EmissiveIntensity" = 3.0
+      Spawn Emitter (NS_OudjaBeam) at socket "Oudjat_Socket"
+      Play Sound (SFX_NasetOudjat) at location
+      Delay 5.0s
+      → Set "OudjaActive" = FALSE
+      → Set EmissiveIntensity = 0.4
+  → FALSE: Print "Aura not active"</div>
+
+  <div class="sec">Sockets à créer sur le Skeleton</div>
+  <div class="card">
+    <div class="row"><span class="k">Socket Niagara principal</span><span class="v">spine_03</span></div>
+    <div class="row"><span class="k">Socket Oudjat (collier)</span><span class="v">Oudjat_Socket (neck_01)</span></div>
+    <div class="row"><span class="k">Socket main droite</span><span class="v">hand_r → FX_HandR</span></div>
+    <div class="row"><span class="k">Socket main gauche</span><span class="v">hand_l → FX_HandL</span></div>
+    <div class="row"><span class="k">Socket pieds</span><span class="v">foot_l/r → FX_GroundL/R</span></div>
+  </div>
+
+  <div class="sec">Animation Blueprint — états</div>
+  <div class="card">
+    <div class="row"><span class="k">Idle</span><span class="v">Anim_NasetIdle_Sacred</span></div>
+    <div class="row"><span class="k">Walk</span><span class="v">Anim_NasetWalk_Sovereign</span></div>
+    <div class="row"><span class="k">Aura ON</span><span class="v">Anim_NasetAura_Idle (additive)</span></div>
+    <div class="row"><span class="k">Oudjat Cast</span><span class="v">Anim_NasetOudjat_Cast (full body)</span></div>
+    <div class="row"><span class="k">IK Retargeter</span><span class="v">RTG_NasetToMetaHuman</span></div>
+  </div>
+
+  <div class="ok">Nommer le dossier projet : Content/Characters/Naset/ · Sous-dossiers : Meshes / Materials / Textures / VFX / Animations / Blueprints</div>
+</div>
+</div>
+
+<script>
+function sw(id){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('on'));
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('on'));
+  event.target.classList.add('on');
+  document.getElementById('p-'+id).classList.add('on');
+}
+function copyCode(id){
+  const el=document.getElementById(id);
+  if(!el)return;
+  navigator.clipboard.writeText(el.textContent).then(()=>{
+    const b=event.target;
+    b.textContent='Copié';
+    setTimeout(()=>b.textContent='Copier',1500);
+  });
+}
+</script>
