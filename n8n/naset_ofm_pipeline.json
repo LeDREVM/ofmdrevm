@@ -1,13 +1,14 @@
 {
   "name": "NasetOFM_AI_Pipeline_v1",
+  "versionId": "c0ffee00-0fad-4e00-b00b-0a1b2c3d4e5f",
   "nodes": [
     {
-      "id": "a1b2c3d4-0001-4000-8000-000000000001",
+      "id": "a1000001-0000-4000-8000-000000000001",
       "name": "OFM_Webhook_Trigger",
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2,
       "position": [240, 300],
-      "webhookId": "naset-ofm-pipeline",
+      "webhookId": "c1a2b3d4-e5f6-7890-aaaa-bbbbccccdddd",
       "parameters": {
         "httpMethod": "POST",
         "path": "naset-pipeline",
@@ -16,29 +17,30 @@
       }
     },
     {
-      "id": "a1b2c3d4-0002-4000-8000-000000000002",
+      "id": "a1000002-0000-4000-8000-000000000002",
       "name": "OFM_AI_Agent",
       "type": "@n8n/n8n-nodes-langchain.agent",
       "typeVersion": 1.7,
       "position": [520, 300],
       "parameters": {
         "promptType": "define",
-        "text": "=Action : {{ $json.body.action || 'full_pipeline' }}\nCible : {{ $json.body.target || 'all' }}\nScène : {{ $json.body.scene || 'S1' }}\nDemande : {{ $json.body.prompt }}",
+        "text": "={{ $json.body.action ? 'Action: ' + $json.body.action + '\\nCible: ' + ($json.body.target || 'all') + '\\nScene: ' + ($json.body.scene || 'S1') + '\\nDemande: ' + $json.body.prompt : $json.body.prompt }}",
+        "hasOutputParser": false,
         "options": {
-          "systemMessage": "Tu es l'IA de production du projet **N'Aset OFM — Divine Maasaï**, Ordre du Feu Mystique (OFM).\n\n## PERSONNAGE\n- Nom : N'Aset OFM | Titre : Divine Maasaï | Niveau : Divin\n- Taille : 1.75–1.80m | Silhouette : élancée, athlétique, souveraine\n- Peau base : #6B3D2E | SSS : #8B4E35 | Roughness : 0.45–0.55\n- Yeux : Amande · #1A0D00 · Khôl égyptien\n- Lèvres : #7B2D2D Bordeaux profond\n- Cheveux : Afro long OU Carré droit égyptien · #0D0A08\n\n## PALETTE OFFICIELLE\n- Or sacré #C9963A — bijoux, émission, signature\n- Or clair #E8BC6A — highlights, particules\n- Blanc ivoire #FAFAF0 — drapé sacré\n- Peau base #6B3D2E — albedo skin\n- Cheveux #0D0A08 — hair shader\n- Accent sombre #1C1A3A — khôl, ombres\n- Rouge Shúkà #C0392B — drapé Maasaï\n\n## POUVOIRS\n- Magie solaire dorée (primaire)\n- Lecture des âmes (secondaire)\n- Aura de protection (passif)\n- Invocation Œil Oudjat 𓂀 (ultime)\n\n## STRUCTURE COURT MÉTRAGE\n- S1 : frames 1→240 (0–10s) — silhouette de dos, vent\n- S2 : frames 241→960 (10–40s) — travelling avant 50mm\n- S3 : frames 961→1440 (40–60s) — regard fixe 85mm\n- S4 : frames 1441→1920 (60–80s) — slow motion\n- S5 : frames 1921→2280 (80–95s) — éveil, émission dorée\n\n## CONVENTION DE NOMMAGE\n- Blender : Naset_[Partie]_v[N]\n- Textures : NAset_[Map]_4K\n- Scripts Python : naset_[fonction].py\n- UE5 Blueprint : BP_Naset[Fonction]\n- Render : Naset_S[scene]_F[frame]\n- Export : NasetOFM_[asset]_v[N]\n\n## RÈGLES DE PRODUCTION\n- Blender 5.0 · Cycles GPU UNIQUEMENT (jamais EEVEE pour le rendu final)\n- Render 4K · 24fps · Filmic · Medium High Contrast\n- UE5 5.x · Niagara pour particules · MetaHuman base\n- Meshy AI : mode 'refine' pour qualité finale, 'preview' pour test rapide\n- Premiere Pro : ExtendScript (.jsx) pour automatisation\n- Effets subtils — sacré + minimalisme\n- Scripts COMPLETS, JAMAIS de pseudo-code tronqué\n\n## TES OUTILS DISPONIBLES\n1. `meshy_generate_3d` — Soumet une génération 3D via Meshy AI\n2. `meshy_check_status` — Vérifie le statut d'un job Meshy\n3. `generate_blender_script` — Génère un script Python complet pour Blender 5.0\n4. `generate_ue5_script` — Génère un script Python complet pour Unreal Engine 5\n5. `generate_premiere_script` — Génère un script ExtendScript pour Premiere Pro\n\nRéponds TOUJOURS en français. Génère des scripts COMPLETS et fonctionnels.",
+          "systemMessage": "Tu es l'IA de production du projet N'Aset OFM - Divine Maasai, Ordre du Feu Mystique (OFM).\n\nPERSONNAGE:\n- Nom: N'Aset OFM | Titre: Divine Maasai | Niveau: Divin\n- Taille: 1.75-1.80m | Silhouette: elancee, athletique, souveraine\n- Peau base: #6B3D2E | SSS: #8B4E35 | Roughness: 0.45-0.55\n- Yeux: Amande, #1A0D00, Khol egyptien\n- Levres: #7B2D2D Bordeaux profond\n- Cheveux: Afro long OU Carre droit egyptien, #0D0A08\n\nPALETTE OFFICIELLE:\n- Or sacre #C9963A - bijoux, emission, signature\n- Or clair #E8BC6A - highlights, particules\n- Blanc ivoire #FAFAF0 - drape sacre\n- Peau base #6B3D2E - albedo skin\n- Cheveux #0D0A08 - hair shader\n- Accent sombre #1C1A3A - khol, ombres\n- Rouge Shuka #C0392B - drape Maasai\n\nSTRUCTURE COURT METRAGE:\n- S1: frames 1-240 (0-10s) - silhouette de dos, vent\n- S2: frames 241-960 (10-40s) - travelling avant 50mm\n- S3: frames 961-1440 (40-60s) - regard fixe 85mm\n- S4: frames 1441-1920 (60-80s) - slow motion\n- S5: frames 1921-2280 (80-95s) - eveil, emission doree\n\nCONVENTION DE NOMMAGE:\n- Blender: Naset_[Partie]_v[N]\n- Textures: NAset_[Map]_4K\n- Scripts Python: naset_[fonction].py\n- UE5 Blueprint: BP_Naset[Fonction]\n- Render: Naset_S[scene]_F[frame]\n- Export: NasetOFM_[asset]_v[N]\n\nREGLES DE PRODUCTION:\n- Blender 5.0, Cycles GPU UNIQUEMENT (jamais EEVEE pour le rendu final)\n- Render 4K, 24fps, Filmic, Medium High Contrast\n- UE5 5.x, Niagara pour particules, MetaHuman base\n- Meshy AI: mode refine pour qualite finale, preview pour test rapide\n- Premiere Pro: ExtendScript (.jsx) pour automatisation\n- Effets subtils, sacre et minimalisme\n- Scripts COMPLETS, JAMAIS de pseudo-code tronque\n\nOUTILS DISPONIBLES:\n1. meshy_generate_3d - Soumet une generation 3D via Meshy AI\n2. meshy_check_status - Verifie le statut d'un job Meshy\n3. generate_blender_script - Genere un script Python pour Blender 5.0\n4. generate_ue5_script - Genere un script Python pour UE5\n5. generate_premiere_script - Genere un ExtendScript pour Premiere Pro\n\nReponds TOUJOURS en francais. Genere des scripts COMPLETS et fonctionnels.",
           "maxIterations": 10,
           "returnIntermediateSteps": false
         }
       }
     },
     {
-      "id": "a1b2c3d4-0003-4000-8000-000000000003",
+      "id": "a1000003-0000-4000-8000-000000000003",
       "name": "Claude_Opus_Model",
       "type": "@n8n/n8n-nodes-langchain.lmChatAnthropic",
-      "typeVersion": 1.3,
+      "typeVersion": 1.2,
       "position": [520, 560],
       "parameters": {
-        "model": "claude-opus-4-8-20250514",
+        "model": "claude-opus-4-5",
         "options": {
           "maxTokens": 8096,
           "temperature": 0.7
@@ -46,120 +48,138 @@
       },
       "credentials": {
         "anthropicApi": {
-          "id": "REMPLACER_PAR_ID_CREDENTIAL",
+          "id": "",
           "name": "Anthropic API - OFM"
         }
       }
     },
     {
-      "id": "a1b2c3d4-0004-4000-8000-000000000004",
+      "id": "a1000004-0000-4000-8000-000000000004",
       "name": "Meshy_Generate_3D",
       "type": "@n8n/n8n-nodes-langchain.toolHttpRequest",
-      "typeVersion": 1.1,
+      "typeVersion": 1,
       "position": [240, 560],
       "parameters": {
         "name": "meshy_generate_3d",
-        "description": "Génère un modèle 3D via Meshy AI depuis un prompt texte. Retourne un task_id pour suivre le job. Utilise mode 'preview' pour test rapide, 'refine' pour qualité finale.",
+        "description": "Genere un modele 3D via Meshy AI depuis un prompt texte. Retourne un task_id. Mode: preview (rapide) ou refine (qualite finale).",
         "method": "POST",
         "url": "https://api.meshy.ai/v2/text-to-3d",
-        "sendHeaders": true,
-        "headerParameters": {
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "keypair",
+        "bodyParameters": {
           "values": [
             {
-              "name": "Authorization",
-              "value": "=Bearer {{ $vars.MESHY_API_KEY }}"
+              "name": "mode",
+              "value": "={{ $fromAI('mode', 'Generation mode: preview or refine', 'preview') }}"
             },
             {
-              "name": "Content-Type",
-              "value": "application/json"
+              "name": "prompt",
+              "value": "={{ $fromAI('prompt', 'English description of the 3D model to generate') }}"
+            },
+            {
+              "name": "art_style",
+              "value": "={{ $fromAI('art_style', 'Art style: realistic, cartoon, low-poly, sculpture, pbr', 'realistic') }}"
+            },
+            {
+              "name": "negative_prompt",
+              "value": "low quality, low resolution, ugly, deformed, bad anatomy, blurry"
+            },
+            {
+              "name": "ai_model",
+              "value": "meshy-4"
+            },
+            {
+              "name": "topology",
+              "value": "quad"
+            },
+            {
+              "name": "target_polycount",
+              "value": "={{ $fromAI('polycount', 'Target polygon count, e.g. 30000 for character', '30000') }}"
             }
           ]
         },
-        "sendBody": true,
-        "specifyBody": "json",
-        "jsonBody": "={{ JSON.stringify({\n  \"mode\": $fromAI('mode', 'Mode de génération: preview (rapide) ou refine (qualité)', 'preview'),\n  \"prompt\": $fromAI('prompt', 'Prompt de description du modèle 3D en anglais pour Meshy AI'),\n  \"art_style\": $fromAI('art_style', 'Style artistique: realistic, cartoon, low-poly, sculpture, pbr', 'realistic'),\n  \"negative_prompt\": \"low quality, low resolution, ugly, deformed, bad anatomy, blurry\",\n  \"ai_model\": \"meshy-4\",\n  \"topology\": \"quad\",\n  \"target_polycount\": $fromAI('polycount', 'Nombre cible de polygones (ex: 30000 pour personnage)', 30000)\n}) }}"
-      }
-    },
-    {
-      "id": "a1b2c3d4-0005-4000-8000-000000000005",
-      "name": "Meshy_Check_Status",
-      "type": "@n8n/n8n-nodes-langchain.toolHttpRequest",
-      "typeVersion": 1.1,
-      "position": [240, 700],
-      "parameters": {
-        "name": "meshy_check_status",
-        "description": "Vérifie le statut d'un job Meshy AI. Retourne le statut (PENDING/IN_PROGRESS/SUCCEEDED/FAILED), la progression en %, et l'URL du modèle si terminé.",
-        "method": "GET",
-        "url": "=https://api.meshy.ai/v2/text-to-3d/{{ $fromAI('task_id', 'ID du job Meshy retourné par meshy_generate_3d') }}",
-        "sendHeaders": true,
-        "headerParameters": {
-          "values": [
-            {
-              "name": "Authorization",
-              "value": "=Bearer {{ $vars.MESHY_API_KEY }}"
-            }
-          ]
+        "options": {}
+      },
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "",
+          "name": "Meshy API Key"
         }
       }
     },
     {
-      "id": "a1b2c3d4-0006-4000-8000-000000000006",
+      "id": "a1000005-0000-4000-8000-000000000005",
+      "name": "Meshy_Check_Status",
+      "type": "@n8n/n8n-nodes-langchain.toolHttpRequest",
+      "typeVersion": 1,
+      "position": [240, 700],
+      "parameters": {
+        "name": "meshy_check_status",
+        "description": "Verifie le statut d'un job Meshy AI. Retourne: PENDING, IN_PROGRESS, SUCCEEDED ou FAILED avec la progression en % et l'URL du modele si termine.",
+        "method": "GET",
+        "url": "={{ 'https://api.meshy.ai/v2/text-to-3d/' + $fromAI('task_id', 'The Meshy task_id returned by meshy_generate_3d') }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "options": {}
+      },
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "",
+          "name": "Meshy API Key"
+        }
+      }
+    },
+    {
+      "id": "a1000006-0000-4000-8000-000000000006",
       "name": "Generate_Blender_Script",
       "type": "@n8n/n8n-nodes-langchain.toolCode",
       "typeVersion": 1,
       "position": [800, 400],
       "parameters": {
         "name": "generate_blender_script",
-        "description": "Génère un script Python complet et fonctionnel pour Blender 5.0 (Cycles GPU) adapté au projet N'Aset OFM. Utilise les conventions de nommage du projet.",
+        "description": "Fournit le contexte et les parametres pour generer un script Python complet pour Blender 5.0 (Cycles GPU) - projet N'Aset OFM.",
         "language": "javaScript",
-        "jsCode": "// Paramètres reçus de l'IA\nconst action = $fromAI('action', 'Action Blender: setup_scene, add_lighting, render_scene, setup_cloth, setup_hair_groom, setup_skin_shader, animate_camera, setup_particles, export_fbx');\nconst scene = $fromAI('scene', 'Scène du court métrage: S1, S2, S3, S4 ou S5', 'S1');\nconst detail = $fromAI('detail', 'Détails spécifiques à inclure dans le script');\n\n// Templates de base par action\nconst templates = {\n  setup_scene: `\"\"\"\nnaset_setup_scene_${scene}.py — N'Aset OFM Setup Scène ${scene}\nAuteur : Négus Dja / OFM Studio\nBlender : 5.0 | Engine : Cycles GPU | 4K · 24fps\n\"\"\"\nimport bpy\nimport mathutils\n\n# ═══ CONFIG ═══\nSCENE_FRAMES = {'S1': (1,240), 'S2': (241,960), 'S3': (961,1440), 'S4': (1441,1920), 'S5': (1921,2280)}\nFPS = 24\nRES_X, RES_Y = 3840, 2160\n\ndef setup_render():\n    scene = bpy.context.scene\n    scene.render.engine = 'CYCLES'\n    scene.render.resolution_x = RES_X\n    scene.render.resolution_y = RES_Y\n    scene.render.fps = FPS\n    scene.render.film_transparent = False\n    \n    # Cycles GPU\n    scene.cycles.device = 'GPU'\n    scene.cycles.samples = 512\n    scene.cycles.use_denoising = True\n    scene.cycles.denoiser = 'OPENIMAGEDENOISE'\n    \n    # Filmic\n    scene.view_settings.view_transform = 'Filmic'\n    scene.view_settings.look = 'Medium High Contrast'\n    \n    # Frames scène ${scene}\n    start, end = SCENE_FRAMES['${scene}']\n    scene.frame_start = start\n    scene.frame_end = end\n    print(f'[OFM] Scene ${scene} : frames {start} → {end}')\n\nsetup_render()\nprint('[OFM] ✓ Setup Scène ${scene} terminé')`,\n\n  setup_skin_shader: `\"\"\"\nnaset_skin_shader.py — Shader Peau N'Aset OFM\nAuteur : Négus Dja / OFM Studio · Blender 5.0\n\"\"\"\nimport bpy\n\n# Palette OFM\nSKIN_ALBEDO   = (0.420, 0.239, 0.180, 1.0)  # #6B3D2E\nSKIN_SSS      = (0.545, 0.306, 0.208, 1.0)  # #8B4E35\nOR_SACRE      = (0.788, 0.588, 0.227, 1.0)  # #C9963A\n\ndef create_skin_material(name='MAT_Naset_Skin'):\n    mat = bpy.data.materials.get(name) or bpy.data.materials.new(name)\n    mat.use_nodes = True\n    nodes = mat.node_tree.nodes\n    links = mat.node_tree.links\n    nodes.clear()\n    \n    out     = nodes.new('ShaderNodeOutputMaterial')\n    bsdf    = nodes.new('ShaderNodeBsdfPrincipled')\n    out.location  = (400, 0)\n    bsdf.location = (0, 0)\n    \n    # Albedo peau\n    bsdf.inputs['Base Color'].default_value = SKIN_ALBEDO\n    # SSS\n    bsdf.inputs['Subsurface Weight'].default_value  = 0.15\n    bsdf.inputs['Subsurface Radius'].default_value  = (0.545, 0.306, 0.208)\n    bsdf.inputs['Subsurface Scale'].default_value   = 0.05\n    # Roughness peau\n    bsdf.inputs['Roughness'].default_value          = 0.50\n    bsdf.inputs['Specular IOR Level'].default_value = 0.35\n    \n    links.new(bsdf.outputs['BSDF'], out.inputs['Surface'])\n    print(f'[OFM] ✓ Matériau {name} créé')\n    return mat\n\ncreate_skin_material()\nprint('[OFM] ✓ Shader peau N\\'Aset terminé')`,\n\n  setup_lighting: `\"\"\"\nnaset_lighting_${scene}.py — Éclairage Sacré N'Aset OFM\nAuteur : Négus Dja / OFM Studio · Blender 5.0\n\"\"\"\nimport bpy\nimport mathutils\n\nOR_SACRE_EMISSION = (0.788, 0.588, 0.227)  # #C9963A\n\ndef clear_lights():\n    for obj in bpy.data.objects:\n        if obj.type == 'LIGHT':\n            bpy.data.objects.remove(obj)\n\ndef add_sun(name, energy=3.0, angle_z=45, angle_x=-30):\n    bpy.ops.object.light_add(type='SUN', location=(0,0,10))\n    sun = bpy.context.active_object\n    sun.name = name\n    sun.data.energy = energy\n    sun.data.angle = 0.017  # lumière rasante\n    sun.rotation_euler = mathutils.Euler(\n        (math.radians(angle_x), 0, math.radians(angle_z)), 'XYZ'\n    )\n    return sun\n\ndef add_golden_area(location=(2, -2, 3), energy=50):\n    bpy.ops.object.light_add(type='AREA', location=location)\n    fill = bpy.context.active_object\n    fill.name = 'Light_Or_Sacre'\n    fill.data.energy = energy\n    fill.data.color = OR_SACRE_EMISSION\n    fill.data.size = 2.0\n    return fill\n\nimport math\nclear_lights()\nadd_sun('Sun_Principal', energy=2.5, angle_z=45, angle_x=-25)\nadd_golden_area(location=(2, -1.5, 2.5), energy=80)\nprint('[OFM] ✓ Éclairage Scène ${scene} configuré')`\n};\n\nconst script = templates[action] || templates.setup_scene;\n\nreturn {\n  action,\n  scene,\n  detail,\n  script,\n  filename: `naset_${action}_${scene}.py`,\n  instructions: `Copie ce script dans l'éditeur Scripting de Blender 5.0 et exécute avec ▶ Run Script`\n};"
+        "jsCode": "const action = $fromAI('action', 'Blender action: setup_scene | skin_shader | lighting | hair_groom | cloth_sim | animate_camera | particles | render | export_fbx', 'setup_scene');\nconst scene = $fromAI('scene', 'Court metrage scene: S1 | S2 | S3 | S4 | S5', 'S1');\nconst details = $fromAI('details', 'Additional specific requirements for the script', '');\n\nconst sceneFrames = {\n  S1: { start: 1,    end: 240  },\n  S2: { start: 241,  end: 960  },\n  S3: { start: 961,  end: 1440 },\n  S4: { start: 1441, end: 1920 },\n  S5: { start: 1921, end: 2280 }\n};\n\nconst frames = sceneFrames[scene] || sceneFrames.S1;\n\nreturn {\n  tool: 'blender_5.0',\n  action: action,\n  scene: scene,\n  frameStart: frames.start,\n  frameEnd: frames.end,\n  details: details,\n  render: {\n    engine: 'CYCLES',\n    device: 'GPU',\n    resolutionX: 3840,\n    resolutionY: 2160,\n    fps: 24,\n    samples: 512,\n    denoiser: 'OPENIMAGEDENOISE',\n    colorManagement: 'Filmic',\n    look: 'Medium High Contrast'\n  },\n  palette: {\n    skinAlbedo: '(0.420, 0.239, 0.180, 1.0)',\n    skinSSS: '(0.545, 0.306, 0.208, 1.0)',\n    goldSacre: '(0.788, 0.588, 0.227, 1.0)',\n    hair: '(0.051, 0.039, 0.031, 1.0)',\n    ivory: '(0.980, 0.980, 0.941, 1.0)',\n    shuka: '(0.753, 0.224, 0.169, 1.0)'\n  },\n  objectNames: {\n    rig: 'Naset_Rig',\n    body: 'Naset_Body_v3',\n    drape: 'Drape_Shuka',\n    camera: 'Camera_Principale',\n    cameraTarget: 'Camera_Target',\n    particles: 'Particules_Or'\n  },\n  instruction: 'Generate a complete Python script for Blender 5.0, action: ' + action + ', scene: ' + scene + '. Include all imports, functions, and execution. File: naset_' + action + '_' + scene + '.py'\n};"
       }
     },
     {
-      "id": "a1b2c3d4-0007-4000-8000-000000000007",
+      "id": "a1000007-0000-4000-8000-000000000007",
       "name": "Generate_UE5_Script",
       "type": "@n8n/n8n-nodes-langchain.toolCode",
       "typeVersion": 1,
       "position": [800, 560],
       "parameters": {
         "name": "generate_ue5_script",
-        "description": "Génère un script Python complet pour Unreal Engine 5.x (unreal module) adapté au projet N'Aset OFM. Pour MetaHuman, Niagara VFX, ou automatisation d'assets.",
+        "description": "Fournit le contexte pour generer un script Python complet pour Unreal Engine 5.x - MetaHuman, Niagara VFX, Sequencer - projet N'Aset OFM.",
         "language": "javaScript",
-        "jsCode": "const action = $fromAI('action', 'Action UE5: setup_metahuman, create_niagara_vfx, import_fbx, setup_sequencer, create_blueprint_aura, setup_material_instance, batch_render');\nconst detail = $fromAI('detail', 'Détails spécifiques pour le script UE5');\n\nconst templates = {\n  setup_metahuman: `\"\"\"\nnaset_metahuman_setup.py — MetaHuman N'Aset OFM\nAuteur : Négus Dja / OFM Studio\nEngine : Unreal Engine 5.x\n\"\"\"\nimport unreal\n\n# Config\nASSET_PATH  = '/Game/Characters/Naset'\nASSET_NAME  = 'MH_NasetOFM_v2'\nOR_SACRE    = unreal.LinearColor(0.788, 0.588, 0.227, 1.0)\n\[email protected]_progress_dialog('Configuration MetaHuman N\\'Aset')\ndef setup_naset_metahuman(dialog):\n    dialog.set_progress_text('Import MetaHuman...')\n    al = unreal.EditorAssetLibrary()\n    \n    # Vérif asset\n    full_path = f'{ASSET_PATH}/{ASSET_NAME}'\n    if not al.does_asset_exist(full_path):\n        unreal.log_warning(f'[OFM] Asset manquant: {full_path}')\n        return\n    \n    asset = al.load_asset(full_path)\n    dialog.set_progress_text('Configuration couleur peau...')\n    \n    # Material instance peau\n    mi = unreal.MaterialEditingLibrary\n    mi.set_material_instance_vector_parameter_value(\n        asset, 'SkinBaseColor',\n        unreal.LinearColor(0.420, 0.239, 0.180, 1.0)  # #6B3D2E\n    )\n    mi.set_material_instance_scalar_parameter_value(asset, 'SkinRoughness', 0.50)\n    mi.set_material_instance_scalar_parameter_value(asset, 'SSSWeight', 0.15)\n    \n    unreal.log('[OFM] ✓ MetaHuman N\\'Aset configuré')\n    dialog.set_progress_text('Terminé.')\n\nsetup_naset_metahuman()`,\n\n  create_niagara_vfx: `\"\"\"\nnaset_niagara_vfx.py — Particules Or Sacré N'Aset OFM\nAuteur : Négus Dja / OFM Studio · UE5\n\"\"\"\nimport unreal\n\nVFX_PATH   = '/Game/VFX/Naset'\nOR_SACRE   = unreal.LinearColor(0.788, 0.588, 0.227, 1.0)\n\ndef create_golden_particles():\n    factory = unreal.NiagaraSystemFactory()\n    asset_tools = unreal.AssetToolsHelpers.get_asset_tools()\n    \n    niagara_sys = asset_tools.create_asset(\n        'NS_NasetOrSacre', VFX_PATH,\n        unreal.NiagaraSystem, factory\n    )\n    \n    # Paramètres particules\n    nim = unreal.NiagaraSystemEditorUtilities\n    nim.set_parameter_value(niagara_sys, 'SpawnRate',     50.0)\n    nim.set_parameter_value(niagara_sys, 'LifetimeMin',  1.5)\n    nim.set_parameter_value(niagara_sys, 'LifetimeMax',  3.0)\n    nim.set_parameter_value(niagara_sys, 'SizeMin',      2.0)\n    nim.set_parameter_value(niagara_sys, 'SizeMax',      8.0)\n    nim.set_parameter_value(niagara_sys, 'EmissiveColor', OR_SACRE)\n    nim.set_parameter_value(niagara_sys, 'EmissiveIntensity', 5.0)\n    \n    unreal.EditorAssetLibrary.save_asset(f'{VFX_PATH}/NS_NasetOrSacre')\n    unreal.log('[OFM] ✓ Niagara VFX Or Sacré créé')\n    return niagara_sys\n\ncreate_golden_particles()`\n};\n\nconst script = templates[action] || templates.setup_metahuman;\n\nreturn {\n  action,\n  detail,\n  script,\n  filename: `naset_ue5_${action}.py`,\n  instructions: `Dans UE5 : Window > Python Script → colle et exécute ce script`\n};"
+        "jsCode": "const action = $fromAI('action', 'UE5 action: setup_metahuman | create_niagara_vfx | import_fbx | setup_sequencer | create_blueprint_aura | setup_material | batch_render', 'setup_metahuman');\nconst details = $fromAI('details', 'Additional specific requirements', '');\n\nreturn {\n  tool: 'unreal_engine_5',\n  action: action,\n  details: details,\n  paths: {\n    character: '/Game/Characters/Naset',\n    vfx: '/Game/VFX/Naset',\n    materials: '/Game/Materials/Naset',\n    animations: '/Game/Animations/Naset',\n    sequences: '/Game/Cinematics/Naset'\n  },\n  assetNames: {\n    metahuman: 'MH_NasetOFM_v2',\n    auraVFX: 'NS_NasetOrSacre',\n    oudjatVFX: 'NS_NasetOudjat',\n    auraBlueprint: 'BP_NasetAura',\n    materialInstance: 'MI_NasetSkin'\n  },\n  colors: {\n    goldSacre: 'unreal.LinearColor(0.788, 0.588, 0.227, 1.0)',\n    skinBase: 'unreal.LinearColor(0.420, 0.239, 0.180, 1.0)',\n    sssColor: 'unreal.LinearColor(0.545, 0.306, 0.208, 1.0)'\n  },\n  materialParams: {\n    skinRoughness: 0.50,\n    sssWeight: 0.15,\n    sssScale: 0.05,\n    specularIOR: 0.35\n  },\n  instruction: 'Generate a complete Python script using the unreal module for UE5, action: ' + action + '. Include imports, decorated functions, and execution. File: naset_ue5_' + action + '.py'\n};"
       }
     },
     {
-      "id": "a1b2c3d4-0008-4000-8000-000000000008",
+      "id": "a1000008-0000-4000-8000-000000000008",
       "name": "Generate_Premiere_Script",
       "type": "@n8n/n8n-nodes-langchain.toolCode",
       "typeVersion": 1,
       "position": [800, 720],
       "parameters": {
         "name": "generate_premiere_script",
-        "description": "Génère un script ExtendScript (.jsx) pour Premiere Pro pour automatiser le montage, l'import de séquences, les corrections couleur ou l'export du court métrage N'Aset OFM.",
+        "description": "Fournit le contexte pour generer un script ExtendScript (.jsx) pour Premiere Pro - import renders, timeline, color grade, export - court metrage N'Aset OFM.",
         "language": "javaScript",
-        "jsCode": "const action = $fromAI('action', 'Action Premiere: import_sequence, create_timeline, color_grade, add_titles, export_sequence, sync_audio, create_multicam');\nconst detail = $fromAI('detail', 'Détails spécifiques pour le script Premiere Pro');\n\nconst templates = {\n  import_sequence: `// naset_premiere_import.jsx — Import Séquences N'Aset OFM\n// Négus Dja / OFM Studio — Premiere Pro ExtendScript\n\n#include \"json2.js\"\n\nvar PROJECT_NAME = \"NasetOFM_CourtMetrage_v1\";\nvar SEQUENCE_SETTINGS = {\n  width:     3840,\n  height:    2160,\n  frameRate: 24,\n  name:      \"Naset_Sequence_4K_24fps\"\n};\n\nfunction importRenderSequences(folderPath) {\n  var project = app.project;\n  \n  // Créer bin Renders\n  var rendersBin = project.rootItem.createBin(\"Naset_Renders\");\n  \n  // Importer les renders Blender\n  var importFiles = new Array();\n  var folder = new Folder(folderPath);\n  \n  if (!folder.exists) {\n    alert(\"[OFM] Dossier introuvable : \" + folderPath);\n    return;\n  }\n  \n  var files = folder.getFiles(\"Naset_S*.png\");\n  for (var i = 0; i < files.length; i++) {\n    importFiles.push(files[i].fsName);\n  }\n  \n  if (importFiles.length === 0) {\n    alert(\"[OFM] Aucun render trouvé dans \" + folderPath);\n    return;\n  }\n  \n  // Import en tant que séquence image\n  project.importFiles(importFiles, true, rendersBin, true);\n  $.writeln(\"[OFM] ✓ \" + importFiles.length + \" frames importées\");\n  return rendersBin;\n}\n\nfunction createMainSequence() {\n  var project = app.project;\n  \n  // Créer séquence principale\n  project.createNewSequence(SEQUENCE_SETTINGS.name, \"desktop-4K\");\n  \n  var seq = project.activeSequence;\n  if (!seq) {\n    alert(\"[OFM] Impossible de créer la séquence\");\n    return;\n  }\n  \n  $.writeln(\"[OFM] ✓ Séquence \" + SEQUENCE_SETTINGS.name + \" créée\");\n  return seq;\n}\n\n// Exécution\nvar seq = createMainSequence();\nif (seq) {\n  // Importer depuis le dossier renders Blender\n  // MODIFIE CE CHEMIN selon ton système\n  importRenderSequences(\"/chemin/vers/renders/Naset/\");\n  alert(\"[OFM] ✓ Import terminé !\");\n}`,\n\n  color_grade: `// naset_premiere_colorgrade.jsx — Color Grade N'Aset OFM\n// Palette : Or Sacré + Peau Chaude + Ombres Profondes\n// Négus Dja / OFM Studio\n\nfunction applyNasetLookLUT(clipItem) {\n  // Applique le Lumetri Color avec les valeurs OFM\n  var effect = clipItem.components.addComponent(\"Lumetri Color\");\n  if (!effect) return;\n  \n  var p = effect.properties;\n  \n  // Correction de base\n  p[\"Exposure\"].setValue(0.1);\n  p[\"Contrast\"].setValue(15);\n  p[\"Highlights\"].setValue(-20);\n  p[\"Shadows\"].setValue(10);\n  p[\"Whites\"].setValue(5);\n  p[\"Blacks\"].setValue(-10);\n  \n  // Couleurs créatives (teinte Or Sacré)\n  p[\"Color Temperature\"].setValue(200);  // plus chaud\n  p[\"Tint\"].setValue(-5);\n  p[\"Saturation\"].setValue(110);\n  p[\"Vibrance\"].setValue(15);\n  \n  $.writeln(\"[OFM] ✓ Lumetri appliqué sur \" + clipItem.name);\n}\n\nfunction applyToAllClips() {\n  var seq = app.project.activeSequence;\n  if (!seq) { alert(\"Ouvre une séquence d'abord.\"); return; }\n  \n  var track = seq.videoTracks[0];\n  for (var i = 0; i < track.clips.numItems; i++) {\n    applyNasetLookLUT(track.clips[i]);\n  }\n  \n  alert(\"[OFM] ✓ Color grade N'Aset appliqué sur \" + track.clips.numItems + \" clips !\");\n}\n\napplyToAllClips();`,\n\n  export_sequence: `// naset_premiere_export.jsx — Export Court Métrage N'Aset OFM\n// Format : ProRes 4444 · 4K · 24fps\n// Négus Dja / OFM Studio\n\nfunction exportNasetSequence() {\n  var project   = app.project;\n  var sequence  = project.activeSequence;\n  \n  if (!sequence) {\n    alert(\"[OFM] Aucune séquence active.\");\n    return;\n  }\n  \n  var exporter = app.encoder;\n  \n  // Chemin export — MODIFIE SELON TON SYSTÈME\n  var outputPath = \"/chemin/vers/export/NasetOFM_CourtMetrage_v1.mov\";\n  \n  // Préset ProRes 4444 (GUID Premiere Pro)\n  var presetPath = \"/Applications/Adobe Premiere Pro/presets/NasetOFM_ProRes4444.epr\";\n  \n  // Ajouter à la file d'encodage\n  exporter.encodeSequence(\n    sequence,\n    outputPath,\n    presetPath,\n    app.encoder.ENCODE_WORKAREA,  // ou ENCODE_ENTIRE\n    true  // removeOnCompletion\n  );\n  \n  exporter.startBatch();\n  $.writeln(\"[OFM] ✓ Export lancé vers \" + outputPath);\n  alert(\"[OFM] Export NasetOFM en cours...\\nVérifie Adobe Media Encoder.\");\n}\n\nexportNasetSequence();`\n};\n\nconst script = templates[action] || templates.import_sequence;\n\nreturn {\n  action,\n  detail,\n  script,\n  filename: `naset_premiere_${action}.jsx`,\n  instructions: `Dans Premiere Pro : File > Scripts > Run Script → sélectionne ce fichier .jsx`\n};"
+        "jsCode": "const action = $fromAI('action', 'Premiere action: import_renders | create_timeline | color_grade | add_titles | export_master | sync_audio', 'import_renders');\nconst scene = $fromAI('scene', 'Scene to process: S1 | S2 | S3 | S4 | S5 | all', 'all');\nconst details = $fromAI('details', 'Additional requirements', '');\n\nconst sceneData = {\n  S1: { start: 1,    end: 240,  desc: 'silhouette de dos, vent' },\n  S2: { start: 241,  end: 960,  desc: 'travelling avant 50mm' },\n  S3: { start: 961,  end: 1440, desc: 'regard fixe 85mm' },\n  S4: { start: 1441, end: 1920, desc: 'slow motion' },\n  S5: { start: 1921, end: 2280, desc: 'eveil, emission doree' }\n};\n\nreturn {\n  tool: 'premiere_pro',\n  action: action,\n  scene: scene,\n  details: details,\n  project: {\n    name: 'NasetOFM_CourtMetrage_v1',\n    sequenceName: 'Naset_Master_4K_24fps',\n    width: 3840,\n    height: 2160,\n    frameRate: 24,\n    totalFrames: 2280,\n    totalDuration: '95s'\n  },\n  scenes: sceneData,\n  colorGrade: {\n    temperature: 180,\n    tint: -3,\n    saturation: 108,\n    vibrance: 12,\n    exposure: 0.1,\n    contrast: 12,\n    highlights: -15,\n    shadows: 8\n  },\n  filePattern: 'Naset_S[N]_F[NNNN].png',\n  instruction: 'Generate a complete Premiere Pro ExtendScript (.jsx) for action: ' + action + ', scene: ' + scene + '. Use Adobe ExtendScript API (app.project, ProjectItem, etc). File: naset_premiere_' + action + '.jsx'\n};"
       }
     },
     {
-      "id": "a1b2c3d4-0009-4000-8000-000000000009",
+      "id": "a1000009-0000-4000-8000-000000000009",
       "name": "OFM_Respond",
       "type": "n8n-nodes-base.respondToWebhook",
-      "typeVersion": 1.1,
+      "typeVersion": 1,
       "position": [800, 300],
       "parameters": {
         "respondWith": "json",
-        "responseBody": "={{ JSON.stringify({\n  success: true,\n  project: 'NasetOFM_AI_Pipeline_v1',\n  timestamp: new Date().toISOString(),\n  result: $json.output\n}, null, 2) }}",
-        "options": {
-          "responseHeaders": {
-            "entries": [
-              {
-                "name": "Content-Type",
-                "value": "application/json"
-              }
-            ]
-          }
-        }
+        "responseBody": "={{ JSON.stringify({ success: true, project: 'NasetOFM_AI_Pipeline_v1', result: $json.output }) }}",
+        "options": {}
       }
     }
   ],
@@ -256,17 +276,9 @@
   "active": false,
   "settings": {
     "executionOrder": "v1",
-    "saveManualExecutions": true,
-    "callerPolicy": "workflowsFromSameOwner",
-    "errorWorkflow": ""
+    "saveManualExecutions": true
   },
   "meta": {
-    "templateCredsSetupCompleted": false,
-    "instanceId": "naset-ofm-studio"
-  },
-  "tags": [
-    { "name": "OFM" },
-    { "name": "NasetOFM" },
-    { "name": "AI Pipeline" }
-  ]
+    "instanceId": ""
+  }
 }
