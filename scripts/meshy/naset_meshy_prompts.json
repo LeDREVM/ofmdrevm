@@ -1,0 +1,126 @@
+{
+  "_meta": {
+    "project": "N'Aset OFM — Divine Maasaï",
+    "auteur": "Négus Dja / OFM Studio",
+    "usage": "Prompts Meshy AI pour génération 3D via n8n workflow ou API directe",
+    "api_endpoint": "https://api.meshy.ai/v2/text-to-3d",
+    "model": "meshy-4"
+  },
+
+  "prompts": {
+
+    "naset_body_full": {
+      "name": "Corps Complet N'Aset OFM",
+      "mode": "refine",
+      "prompt": "Tall elegant African Egyptian woman warrior priestess, 1.78m height, athletic sovereign silhouette, dark brown skin with warm golden undertones, almond-shaped eyes with Egyptian kohl, high cheekbones, regal posture. Wearing white ivory draped fabric with golden sacred collar (Usekh necklace), red Maasai Shuka drape, golden sacred jewelry with #C9963A gold color. Egyptian futuristic aesthetic. Standing neutral pose, T-pose preferred for rigging. Ultra detailed, realistic, 4K texture quality.",
+      "art_style": "realistic",
+      "negative_prompt": "low quality, blurry, deformed, bad anatomy, extra limbs, missing limbs, ugly face, cartoon, anime, western style",
+      "topology": "quad",
+      "target_polycount": 50000,
+      "ai_model": "meshy-4"
+    },
+
+    "naset_head": {
+      "name": "Tête et Visage N'Aset",
+      "mode": "refine",
+      "prompt": "African Egyptian woman face, perfect anatomy, dark brown skin #6B3D2E warm tone, SSS subsurface scattering, almond eyes with dark iris #1A0D00 and Egyptian black kohl liner, high cheekbones, straight nose with slightly wider base, full lips with deep bordeaux #7B2D2D color, long afro natural hair or straight Egyptian bob cut, deep black hair #0D0A08. Regal neutral expression, eyes slightly downcast sovereign gaze. Ultra realistic, 4K PBR textures, sculpt quality.",
+      "art_style": "realistic",
+      "negative_prompt": "western features, european nose, light skin, cartoon, stylized, deformed ears, bad topology",
+      "topology": "quad",
+      "target_polycount": 30000,
+      "ai_model": "meshy-4"
+    },
+
+    "naset_usekh_collar": {
+      "name": "Collier Usekh Sacré",
+      "mode": "refine",
+      "prompt": "Ancient Egyptian Usekh pectoral collar necklace, Maasai inspired colorful beads (red, orange, yellow, white, black), golden #C9963A sacred gold metal base, semicircular wide collar design, Egyptian hieroglyphic motifs, Ankh and Eye of Horus symbols, handcrafted artisan quality, multiple rows of beads, sacred jewelry for royalty and divine priestess. Isolated 3D asset, no background. Ultra detailed metallic and bead materials, 4K PBR.",
+      "art_style": "realistic",
+      "negative_prompt": "plastic looking, cheap, modern jewelry style, oversimplified, low detail",
+      "topology": "quad",
+      "target_polycount": 15000,
+      "ai_model": "meshy-4"
+    },
+
+    "naset_shuka_drape": {
+      "name": "Drapé Shúkà Maasaï",
+      "mode": "preview",
+      "prompt": "Maasai Shuka fabric drape, deep red #C0392B color with subtle pattern, flowing sacred robe wrapping around body, one shoulder exposed, fabric flowing in wind motion, African textile weave pattern, dignified ceremonial drape. Semi-draped costume piece, fabric simulation quality. White ivory #FAFAF0 inner layer visible.",
+      "art_style": "realistic",
+      "negative_prompt": "modern fabric, polyester look, cheap material, torn, dirty",
+      "topology": "quad",
+      "target_polycount": 8000,
+      "ai_model": "meshy-4"
+    },
+
+    "naset_ankh_staff": {
+      "name": "Sceptre Ankh Sacré",
+      "mode": "refine",
+      "prompt": "Sacred Egyptian Ankh staff, tall ceremonial staff 2 meters, golden #C9963A sacred gold material, large Ankh cross at top with glowing golden emission energy, Egyptian hieroglyphic engravings along shaft, sacred Eye of Horus motif, divine ceremonial weapon of a high priestess. The golden parts emit a subtle warm golden light. Isolated 3D prop.",
+      "art_style": "realistic",
+      "negative_prompt": "rusty, old damaged, plastic, toy quality",
+      "topology": "quad",
+      "target_polycount": 10000,
+      "ai_model": "meshy-4"
+    },
+
+    "naset_temple_environment": {
+      "name": "Temple du Futur Doré — Décor",
+      "mode": "preview",
+      "prompt": "Futuristic Egyptian temple environment, golden sacred architecture #C9963A, massive stone columns with hieroglyphic carvings, sacred flame torches with golden light, African savanna visible through massive archways, sunrise warm golden light, mystical fog at ground level, ancient meets futuristic sci-fi aesthetic, sacred golden geometry patterns on walls, Ankh symbols carved in stone. Establishing wide shot environment. 3D scene asset.",
+      "art_style": "realistic",
+      "negative_prompt": "modern architecture, grey boring walls, low detail, cartoonish",
+      "topology": "quad",
+      "target_polycount": 80000,
+      "ai_model": "meshy-4"
+    },
+
+    "naset_oudjat_eye": {
+      "name": "Œil Oudjat 𓂀 — VFX Asset",
+      "mode": "refine",
+      "prompt": "Eye of Horus Oudjat sacred symbol, 3D floating magical artifact, golden glowing #C9963A energy, sacred Egyptian divine eye with luminous iris, surrounded by golden particle energy, divine protection shield aura, floating in air mystical levitation. Emission glow material, magical sacred artifact. Isolated prop for VFX use.",
+      "art_style": "realistic",
+      "negative_prompt": "flat 2D, sticker looking, cartoon",
+      "topology": "quad",
+      "target_polycount": 5000,
+      "ai_model": "meshy-4"
+    }
+
+  },
+
+  "workflow_examples": {
+    "n8n_request_body": {
+      "description": "Corps de requête POST pour le webhook n8n",
+      "generate_blender_script": {
+        "action": "generate_blender_script",
+        "target": "blender",
+        "scene": "S1",
+        "prompt": "Génère le script de setup de la scène S1 avec éclairage et rendu Cycles GPU"
+      },
+      "generate_meshy_model": {
+        "action": "generate_meshy",
+        "target": "meshy",
+        "scene": "S1",
+        "prompt": "Génère le modèle 3D du corps complet de N'Aset OFM en pose T pour le rigging"
+      },
+      "generate_ue5_script": {
+        "action": "generate_ue5_script",
+        "target": "ue5",
+        "scene": "S2",
+        "prompt": "Génère le script Python pour importer le FBX de N'Aset et créer les particules Niagara"
+      },
+      "generate_premiere_script": {
+        "action": "generate_premiere_script",
+        "target": "premiere",
+        "scene": "all",
+        "prompt": "Génère le script ExtendScript pour importer les renders Blender et assembler la timeline"
+      },
+      "full_pipeline": {
+        "action": "full_pipeline",
+        "target": "all",
+        "scene": "S1",
+        "prompt": "Lance le pipeline complet pour la scène S1 : modèle Meshy + script Blender + script UE5 + montage Premiere"
+      }
+    }
+  }
+}
