@@ -1,0 +1,138 @@
+N8N_HOST=http://localhost:5678
+N8N_API_KEY=votre_clé_api_n8n   # à générer dans n8n > Settings > API
+WEBHOOK_ID=zdzdzdzdzzdz
+WEBHOOK_PATH=naad-pipeline
+
+# =====================
+# N'Aset OFM Pipeline
+# =====================
+
+# === Environnement et OS ===
+.env
+.env.local
+.env.*.local
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# === VS Code ===
+.vscode/
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/extensions.json
+*.code-workspace
+
+# === Python ===
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.mypy_cache/
+.ruff_cache/
+
+# === Node / n8n ===
+node_modules/
+.n8n/
+.n8n.db
+.n8n.sqlite
+n8n_data/
+*.n8n
+!*.n8n.json   # conserver les export JSON du workflow
+
+# === Credentials & API keys ===
+credentials.json
+*_cred.json
+*.key
+*.pem
+.secrets/
+
+# === Scripts générés (Blender, UE5, Premiere) ===
+generated_scripts/
+!generated_scripts/.gitkeep
+scripts/*.py
+scripts/*.jsx
+!scripts/import_workflow.py
+!scripts/run_production.py
+blender_scripts/*.py
+!blender_scripts/.gitkeep
+ue5_scripts/*.py
+!ue5_scripts/.gitkeep
+premiere_scripts/*.jsx
+!premiere_scripts/.gitkeep
+
+# === Renders, exports, assets ===
+renders/
+exports/
+output/
+*.png
+*.exr
+*.tif
+*.tga
+*.fbx
+*.glb
+*.gltf
+*.obj
+*.stl
+*.abc
+*.usd
+*.usda
+*.usdc
+*.mp4
+*.mov
+*.wav
+*.mp3
+*.blend
+*.blend1
+*.blend2
+*.blo
+
+# === Meshy AI downloads ===
+meshy_downloads/
+*.glb.meshy
+
+# === Logs ===
+*.log
+logs/
+n8n_*.log
+execution_logs/
+
+# === Cache divers ===
+*.cache
+*.bak
+*.tmp
+~$*
+*~
+*.swp
+*.swo
+
+# === Docker ===
+docker-compose.override.yml
+n8n_data/
+!n8n_data/.gitkeep
+
+# === Archives ===
+*.zip
+*.tar.gz
+*.7z
+
+# === IDEs autres (JetBrains, etc.) ===
+.idea/
+*.iml
+*.iws
+.project
+.classpath
+.settings/
+
+# === Documentation générée ===
+docs/_build/
+site/

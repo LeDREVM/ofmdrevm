@@ -1,0 +1,44 @@
+# =============================================
+# N'ASET OFM - PIPELINE REQUIREMENTS
+# Environnement Python 3.10+
+# =============================================
+
+# --- Utilitaires de base ---
+python-dotenv>=1.0.0               # Gestion du fichier .env
+requests>=2.31.0                   # Appels HTTP aux webhooks et API n8n
+typing-extensions>=4.8.0           # Support type hints
+
+# --- Traitement des données ---
+json5>=0.9.14                      # Lecture/écriture JSON compatible
+pyyaml>=6.0                        # Pour les exports alternatifs
+jsonschema>=4.20.0                 # Validation des workflows n8n
+
+# --- Logging et monitoring ---
+loguru>=0.7.2                      # Logs structurés
+python-json-logger>=2.0.7          # Format JSON pour les logs
+
+# --- Intégration Blender (scripting externe) ---
+# Pas de package spécifique – les scripts sont exécutés dans Blender.
+# Outil recommandé : blender-scripting-utils (optionnel)
+# blender-bpy>=3.6.0 (ne fonctionne pas hors de Blender – uniquement pour type hints)
+
+# --- Intégration Unreal Engine 5 ---
+# Les scripts Python pour UE5 utilisent le module `unreal` intégré.
+# Aucun package externe requis.
+
+# --- Intégration Premiere Pro ---
+# Les scripts sont en ExtendScript (.jsx) – pas de dépendance Python.
+
+# --- Tests et validation ---
+pytest>=7.4.0                      # Tests unitaires
+pytest-mock>=3.12.0                # Mock pour les appels API
+pytest-timeout>=2.2.0              # Timeout pour les tests longs
+
+# --- Optionnel : client Meshy AI ---
+# Pas de SDK officiel – simple requêtes HTTP.
+
+# --- Outils de développement (hors production) ---
+black>=23.12.0                     # Formateur de code
+ruff>=0.1.9                        # Linter rapide
+mypy>=1.8.0                        # Vérification de types
+pre-commit>=3.5.0                  # Hooks Git

@@ -1,0 +1,1 @@
+https://n8n-xhrr.srv1725615.hstgr.cloud/webhook/naset-pipeline

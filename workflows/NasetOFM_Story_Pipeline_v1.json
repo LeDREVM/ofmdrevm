@@ -1,0 +1,121 @@
+{
+  "name": "NasetOFM_Story_Pipeline_v1",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "story-pipeline",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "webhook-story",
+      "name": "Story_Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [0, 0],
+      "webhookId": "story-1234-5678"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.body.story || $json.body.prompt }}",
+        "options": {
+          "systemMessage": "Tu es l'IA narrative du projet N'Aset OFM. Tu reçois une histoire ou un synopsis. Tu dois :\n1. Extraire les éléments clés : personnage(s), lieu(x), action dramatique, émotions.\n2. Découper l'histoire selon les 5 séquences du court-métrage (S1 à S5) :\n   - S1 (0-10s) : plan large, silhouette, vent, attente.\n   - S2 (10-40s) : travelling avant, approche, lumière dorée.\n   - S3 (40-60s) : plan rapproché 85mm, yeux, présence.\n   - S4 (60-80s) : slow motion, fermeture des yeux, début de l'éveil.\n   - S5 (80-95s) : éveil sacré, émission dorée, fin.\n3. Pour chaque séquence, décris ce qui se passe visuellement (camera, lumière, mouvement, effets).\n4. À partir de ces descriptions, génère les appels d'outils correspondants :\n   - blender_script pour l'animation de caméra / drapé / particules.\n   - ue5_script pour les VFX Niagara / MetaHuman.\n   - premiere_script pour le montage.\n   - meshy_generate_3d si besoin d'assets 3D supplémentaires.\n\nUtilise les conventions de nommage, la palette officielle et les règles de production.\nRéponds toujours en français.\nGénère des scripts COMPLETS et fonctionnels.",
+          "maxIterations": 12,
+          "returnIntermediateSteps": false
+        }
+      },
+      "id": "story-agent",
+      "name": "Story_AI_Agent",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.7,
+      "position": [280, 0]
+    },
+    {
+      "parameters": {
+        "model": "claude-opus-4-5",
+        "options": { "temperature": 0.8 }
+      },
+      "id": "claude-story",
+      "name": "Claude_Story",
+      "type": "@n8n/n8n-nodes-langchain.lmChatAnthropic",
+      "typeVersion": 1.2,
+      "position": [280, 280]
+    },
+    {
+      "parameters": {
+        "name": "story_to_script",
+        "description": "Transforme une description narrative de séquence en script Blender 5.0 complet.",
+        "jsCode": "const storyContext = $fromAI('story_context', 'Description narrative de la séquence');\nconst sequence = $fromAI('sequence', 'S1|S2|S3|S4|S5', 'S1');\nconst cameraAction = $fromAI('camera_action', 'dolly|static|closeup|slowmo|reveal', 'static');\nconst emotion = $fromAI('emotion', 'attente|approche|contemplation|fermeture|eveil', 'attente');\n\nconst sceneFrames = { S1: {start:1, end:240}, S2: {start:241, end:960}, S3: {start:961, end:1440}, S4: {start:1441, end:1920}, S5: {start:1921, end:2280} };\nconst frames = sceneFrames[sequence] || sceneFrames.S1;\n\nreturn {\n  tool: 'blender_story',\n  sequence: sequence,\n  frames: frames,\n  camera: cameraAction,\n  emotion: emotion,\n  narrative: storyContext,\n  render: { engine:'CYCLES', device:'GPU', resolutionX:3840, resolutionY:2160, fps:24, samples:512 },\n  palette: {\n    skinAlbedo: '(0.420,0.239,0.180)',\n    goldSacre: '(0.788,0.588,0.227)',\n    shuka: '(0.753,0.224,0.169)'\n  },\n  instruction: `Génère un script Python pour Blender 5.0 basé sur l'histoire suivante : ${storyContext}. Séquence ${sequence}, action caméra ${cameraAction}, émotion ${emotion}. Inclure les imports, la configuration de la scène, l'animation caméra, et éventuellement des particules d'or.`\n};"
+      },
+      "id": "story-blender",
+      "name": "Story2Blender",
+      "type": "@n8n/n8n-nodes-langchain.toolCode",
+      "typeVersion": 1,
+      "position": [560, 140]
+    },
+    {
+      "parameters": {
+        "name": "story_to_ue5",
+        "description": "Génère un script UE5 pour Niagara, MetaHuman et séquencer à partir d'une description narrative.",
+        "jsCode": "const narrative = $fromAI('story_context', 'Description narrative pour UE5');\nconst vfxType = $fromAI('vfx_type', 'particles_or|aura_shader|oudjat_beam|cloth_wind', 'particles_or');\nconst metahumanEmotion = $fromAI('metahuman_emotion', 'neutral|intense|mystical|awakening', 'neutral');\n\nreturn {\n  tool: 'unreal_story',\n  narrative: narrative,\n  vfx: vfxType,\n  emotion: metahumanEmotion,\n  paths: { character: '/Game/Characters/Naset', vfx: '/Game/VFX/Naset' },\n  assetNames: { metahuman: 'MH_NasetOFM_v2', auraVFX: 'NS_NasetOrSacre', oudjatVFX: 'NS_NasetOudjat' },\n  instruction: `Crée un script Python pour Unreal Engine 5 qui met en scène l'histoire : ${narrative}. Applique l'effet VFX ${vfxType} et l'expression ${metahumanEmotion} sur le MetaHuman. Utilise le sequencer pour les plans.`\n};"
+      },
+      "id": "story-ue5",
+      "name": "Story2UE5",
+      "type": "@n8n/n8n-nodes-langchain.toolCode",
+      "typeVersion": 1,
+      "position": [560, 280]
+    },
+    {
+      "parameters": {
+        "name": "story_to_premiere",
+        "description": "Génère un ExtendScript Premiere Pro pour assembler les séquences selon le rythme narratif.",
+        "jsCode": "const storyArc = $fromAI('story_arc', 'arc narratif complet');\nconst transitions = $fromAI('transitions', 'dissolve|crossfade|hard_cut', 'dissolve');\nconst colorMood = $fromAI('color_mood', 'golden_hour|dawn|mystical', 'golden_hour');\n\nreturn {\n  tool: 'premiere_story',\n  story: storyArc,\n  transition: transitions,\n  colorGrade: {\n    temperature: 180,\n    tint: -3,\n    saturation: 108,\n    exposure: 0.1,\n    contrast: 12\n  },\n  instruction: `Génère un script .jsx pour Premiere Pro qui monte le court-métrage selon l'histoire : ${storyArc}. Utilise des transitions ${transitions} et un étalonnage ${colorMood}.`\n};"
+      },
+      "id": "story-premiere",
+      "name": "Story2Premiere",
+      "type": "@n8n/n8n-nodes-langchain.toolCode",
+      "typeVersion": 1,
+      "position": [560, 420]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.meshy.ai/v2/text-to-3d",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth"
+      },
+      "id": "meshy-story",
+      "name": "Meshy_Story_Gen",
+      "type": "@n8n/n8n-nodes-langchain.toolHttpRequest",
+      "typeVersion": 1,
+      "position": [0, 420],
+      "credentials": { "httpHeaderAuth": { "id": "IMXEUpt1hcwctsbu", "name": "n8nbotmeshy" } }
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify({ success: true, project: 'NasetOFM_Story_Pipeline', story_processed: $json.output, generated_scripts: $json.scripts }) }}",
+        "options": {}
+      },
+      "id": "story-respond",
+      "name": "Story_Respond",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [800, 0]
+    }
+  ],
+  "connections": {
+    "Story_Webhook": { "main": [[{ "node": "Story_AI_Agent", "type": "main", "index": 0 }]] },
+    "Story_AI_Agent": { "main": [[{ "node": "Story_Respond", "type": "main", "index": 0 }]] },
+    "Claude_Story": { "ai_languageModel": [[{ "node": "Story_AI_Agent", "type": "ai_languageModel", "index": 0 }]] },
+    "Story2Blender": { "ai_tool": [[{ "node": "Story_AI_Agent", "type": "ai_tool", "index": 0 }]] },
+    "Story2UE5": { "ai_tool": [[{ "node": "Story_AI_Agent", "type": "ai_tool", "index": 0 }]] },
+    "Story2Premiere": { "ai_tool": [[{ "node": "Story_AI_Agent", "type": "ai_tool", "index": 0 }]] },
+    "Meshy_Story_Gen": { "ai_tool": [[{ "node": "Story_AI_Agent", "type": "ai_tool", "index": 0 }]] }
+  },
+  "active": false,
+  "settings": { "executionOrder": "v1" },
+  "id": "story-pipeline-2026",
+  "tags": ["ofm", "narrative", "production"]
+}
