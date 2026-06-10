@@ -261,8 +261,8 @@
       <h2>Script Blender généré</h2>
       <div class="btns">
         <button id="gen">Générer le script</button>
-        <button class="ghost" id="copy">Copier</button>
-        <button class="ghost" id="dl">Télécharger .py</button>
+        <button class="ghost" id="copy" style="display:none">Copier</button>
+        <button class="ghost" id="dl" style="display:none">Télécharger .py</button>
         <button class="ghost" id="reset">Réinitialiser</button>
       </div>
       <textarea id="out" spellcheck="false" aria-label="Script Blender généré">Clique « Générer le script » pour produire le code Python avec tes réglages.</textarea>
@@ -418,7 +418,11 @@ print("[NASET] Rendu : Cycles GPU ${p.resx}x${p.resy} Filmic ${p.look}")
 `;
 }
 
-document.getElementById('gen').onclick=()=>{document.getElementById('out').value=genScript();};
+document.getElementById('gen').onclick=()=>{
+  document.getElementById('out').value=genScript();
+  document.getElementById('copy').style.display='';
+  document.getElementById('dl').style.display='';
+};
 document.getElementById('copy').onclick=()=>{
   const t=document.getElementById('out'); t.select();
   navigator.clipboard.writeText(t.value).then(()=>{const b=document.getElementById('copy');b.textContent='Copié ✓';setTimeout(()=>b.textContent='Copier',1500);});
@@ -511,7 +515,7 @@ for side in ['.L', '.R']:
             arm.bones[bone_name].use_deform = ${fingers ? 'True' : 'False'}
 bpy.ops.object.mode_set(mode='OBJECT')
 
-print(f"[NASET] Metarig Rigify · {h}m · spine:{spine} · doigts:${fingers}")
+print(f"[NASET] Metarig Rigify · {h}m · spine:{spine} · doigts:${fingers ? 'True' : 'False'}")
 print("[NASET] Étapes suivantes :")
 print("  1. Sélectionne le metarig")
 print("  2. Propriétés → Rig Properties → Generate Rig")
@@ -523,9 +527,12 @@ function genSimple(h, spine, fingers, s){
   const spineZ = [];
   const base = 0.52, top = 1.05;
   for(let i=0;i<=spine;i++) spineZ.push((base + (top-base)*i/spine).toFixed(3));
-  const spineCode = spineZ.map((z,i)=>i<spineZ.length-1?
-    `add_bone('spine_${String(i).padStart(2,'0')}', (0,0,${z}*sc), (0,0,${spineZ[i+1]}*sc), 'chest_base')`:''
-  ).filter(Boolean).join('\n');
+  const spineCode = spineZ.map((z,i)=>{
+    if(i>=spineZ.length-1) return '';
+    const par = i===0 ? 'pelvis' : 'spine_'+String(i-1).padStart(2,'0');
+    const conn = i>0 ? 'True' : 'False';
+    return `add_bone('spine_${String(i).padStart(2,'0')}', (0,0,${z}*sc), (0,0,${spineZ[i+1]}*sc), '${par}', ${conn})`;
+  }).filter(Boolean).join('\n');
 
 return `"""
 N'Aset OFM — Armature simple · Alt+P pour lancer.
@@ -585,7 +592,7 @@ for side, sx in (('L',-1), ('R',1)):
     add_bone(f'toe_{side}',    (sx*0.09,-0.14,0.02*sc),(sx*0.09,-0.22,0.01*sc), f'foot_{side}', True)
 
 bpy.ops.object.mode_set(mode='OBJECT')
-print(f"[NASET] Armature simple · {h}m · spine:{spine} · doigts:${fingers}")
+print(f"[NASET] Armature simple · {h}m · spine:{spine} · doigts:${fingers ? 'True' : 'False'}")
 print("[NASET] → Parent le mesh : Ctrl+P → Armature Deform + Auto Weights")
 `;
 }
