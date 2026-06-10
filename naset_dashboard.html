@@ -4,6 +4,16 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>N'Aset OFM — Paramétrage du modèle</title>
+
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"
+  }
+}
+</script>
+
 <style>
   :root{
     --bg:#14121f; --panel:#1c1a2e; --panel-2:#232038;
@@ -39,11 +49,30 @@
   .row select{flex:1; background:var(--panel-2); color:var(--ivory); border:1px solid var(--line); border-radius:8px; padding:7px 10px; font-size:13.5px}
   .hex{flex:0 0 80px; font-variant-numeric:tabular-nums; color:var(--muted); font-size:12.5px; text-transform:uppercase}
 
-  /* Aperçu */
+  /* Viewer 3D */
   .preview-wrap{position:sticky; top:24px}
-  .swatches{display:grid; grid-template-columns:repeat(4,1fr); gap:8px; margin-top:6px}
-  .sw{height:54px; border-radius:10px; border:1px solid var(--line); display:flex; align-items:flex-end; padding:6px; font-size:10.5px; color:#fff; text-shadow:0 1px 2px rgba(0,0,0,.6)}
-  figure{margin:0; display:flex; justify-content:center; padding:8px 0 14px}
+  #viewer3d-wrap{
+    position:relative; width:100%; height:420px;
+    border-radius:12px; overflow:hidden;
+    background:radial-gradient(ellipse at 50% 80%, #1c1232 0%, #0a0818 70%);
+    border:1px solid var(--line);
+  }
+  #viewer3d{display:block; width:100%; height:100%}
+  #viewer-badge{
+    position:absolute; bottom:12px; left:50%; transform:translateX(-50%);
+    background:rgba(20,18,31,0.75); color:var(--muted); font-size:11px;
+    padding:4px 12px; border-radius:20px; pointer-events:none;
+    border:1px solid var(--line); white-space:nowrap;
+  }
+  #viewer-glb-hint{
+    position:absolute; top:12px; right:12px;
+    background:rgba(20,18,31,0.75); color:var(--muted); font-size:11px;
+    padding:4px 10px; border-radius:8px; pointer-events:none;
+    border:1px solid var(--line);
+  }
+
+  .swatches{display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-top:6px}
+  .sw{height:44px; border-radius:8px; border:1px solid var(--line); display:flex; align-items:flex-end; padding:5px 8px; font-size:10.5px; color:#fff; text-shadow:0 1px 2px rgba(0,0,0,.7)}
 
   .btns{display:flex; gap:10px; flex-wrap:wrap; margin-top:4px}
   button{
@@ -55,12 +84,21 @@
   button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--gold-light); outline-offset:2px}
 
   textarea{
-    width:100%; min-height:230px; margin-top:12px; resize:vertical;
+    width:100%; min-height:200px; margin-top:12px; resize:vertical;
     background:#100e18; color:#d8d3ec; border:1px solid var(--line); border-radius:10px;
     padding:14px; font-family:"Cascadia Code",Consolas,monospace; font-size:12.5px; line-height:1.55;
   }
   .hint{color:var(--muted); font-size:12.5px; margin-top:10px}
   code{background:var(--panel-2); padding:1px 6px; border-radius:5px; color:var(--gold-light)}
+  .nav-link{
+    margin-left:auto; display:flex; align-items:center; gap:7px;
+    color:var(--muted); text-decoration:none; font-size:13px;
+    padding:7px 14px; border-radius:9px; border:1px solid var(--line);
+    background:var(--panel-2); transition:color .15s, border-color .15s;
+    white-space:nowrap;
+  }
+  .nav-link:hover{color:var(--gold-light); border-color:var(--gold); outline:none}
+  .nav-link:focus-visible{outline:2px solid var(--gold-light); outline-offset:2px}
 </style>
 </head>
 <body>
@@ -68,6 +106,17 @@
   <span class="glyph">𓂀</span>
   <h1>N'Aset OFM — Paramétrage du modèle</h1>
   <span class="sub">Règle les matériaux &amp; le rendu, puis génère le script Blender</span>
+  <a href="dashboard.html" class="nav-link" title="Tableau de bord productivité">
+    <svg width="18" height="18" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect x="4" y="2" width="24" height="28" rx="4" stroke="currentColor" stroke-width="2"/>
+      <rect x="8" y="0" width="16" height="5" rx="2.5" fill="currentColor"/>
+      <path d="M9 13l3 3 5-5" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+      <rect x="20" y="12" width="5" height="2" rx="1" fill="currentColor"/>
+      <rect x="9" y="20" width="10" height="2" rx="1" fill="currentColor"/>
+      <rect x="9" y="25" width="7" height="2" rx="1" fill="currentColor"/>
+    </svg>
+    Tasks
+  </a>
 </header>
 
 <div class="layout">
@@ -144,32 +193,20 @@
     </div>
   </section>
 
-  <!-- ════ APERÇU ════ -->
+  <!-- ════ APERÇU 3D ════ -->
   <section class="preview-wrap">
-    <div class="card">
-      <h2>Aperçu</h2>
-      <figure aria-label="Silhouette de N'Aset avec les couleurs choisies">
-        <svg width="200" height="300" viewBox="0 0 200 300" role="img">
-          <!-- drapé -->
-          <path id="p-drape" d="M55 150 Q100 135 145 150 L160 290 L40 290 Z" fill="#FAFAF0" stroke="#322e4a"/>
-          <!-- shuka (écharpe diagonale) -->
-          <path id="p-shuka" d="M62 158 L150 200 L143 222 L58 180 Z" fill="#C0392B" opacity="0.92"/>
-          <!-- cou -->
-          <rect x="90" y="118" width="20" height="26" fill="#6B3D2E" id="p-neck"/>
-          <!-- usekh / collier or -->
-          <path id="p-or" d="M68 140 Q100 168 132 140 L128 152 Q100 176 72 152 Z" fill="#C9963A"/>
-          <!-- cheveux -->
-          <path id="p-cheveux" d="M62 70 Q62 28 100 28 Q138 28 138 70 L138 120 Q120 108 100 108 Q80 108 62 120 Z" fill="#0D0A08"/>
-          <!-- visage -->
-          <ellipse id="p-peau" cx="100" cy="80" rx="33" ry="40" fill="#6B3D2E"/>
-          <!-- yeux -->
-          <ellipse id="p-yeux-l" cx="88" cy="78" rx="6" ry="3.5" fill="#1A0D00"/>
-          <ellipse id="p-yeux-r" cx="112" cy="78" rx="6" ry="3.5" fill="#1A0D00"/>
-          <!-- oeil oudjat -->
-          <text x="100" y="200" font-size="22" text-anchor="middle" fill="#e8bc6a" opacity="0.85">𓂀</text>
-        </svg>
-      </figure>
-      <div class="swatches" id="swatches"></div>
+    <div class="card" style="padding:0; overflow:hidden;">
+      <div style="padding:14px 18px 10px; border-bottom:1px solid var(--line);">
+        <h2 style="margin:0;">Aperçu 3D · temps réel</h2>
+      </div>
+      <div id="viewer3d-wrap">
+        <canvas id="viewer3d"></canvas>
+        <div id="viewer-badge">Clic + glisser pour tourner · molette pour zoomer</div>
+        <div id="viewer-glb-hint">placeholder</div>
+      </div>
+      <div style="padding:12px 16px 14px;">
+        <div class="swatches" id="swatches"></div>
+      </div>
     </div>
 
     <div class="card">
@@ -181,22 +218,21 @@
         <button class="ghost" id="reset">Réinitialiser</button>
       </div>
       <textarea id="out" spellcheck="false" aria-label="Script Blender généré">Clique « Générer le script » pour produire le code Python avec tes réglages.</textarea>
-      <p class="hint">Dans Blender : <code>Scripting</code> → coller dans l'éditeur de texte → <code>Alt+P</code>. Sélectionne d'abord un mesh pour que les matériaux s'appliquent.</p>
+      <p class="hint">Dans Blender : <code>Scripting</code> → coller → <code>Alt+P</code>. Place le vrai modèle GLB dans <code>assets/naset_model.glb</code> pour remplacer le placeholder.</p>
     </div>
   </section>
 </div>
 
+<!-- ── Sliders / swatches / script Blender ── -->
 <script>
-// ── Liaison live des sliders/pickers ───────────────────────────────────────
 function bind(id, suffix, fn){
   const el=document.getElementById(id), out=document.getElementById(id+suffix);
-  const upd=()=>{ if(out) out.textContent = fn?fn(el.value):el.value; render(); };
+  const upd=()=>{ if(out) out.textContent = fn?fn(el.value):el.value; renderSwatches(); };
   el.addEventListener('input',upd); upd();
 }
-// hex labels pour les color pickers
 document.querySelectorAll('input[type=color]').forEach(c=>{
   const lbl=document.getElementById(c.id+'-hex');
-  const upd=()=>{ if(lbl) lbl.textContent=c.value.toUpperCase(); render(); };
+  const upd=()=>{ if(lbl) lbl.textContent=c.value.toUpperCase(); renderSwatches(); };
   c.addEventListener('input',upd);
 });
 
@@ -205,32 +241,21 @@ const f2=v=>Number(v).toFixed(2);
  'yeux-rough','cheveux-rough','drape-rough','drape-sheen','shuka-rough']
  .forEach(id=>bind(id,'-v',f2));
 bind('r-samples','-v',v=>v);
-['r-res','r-fps','r-look'].forEach(id=>document.getElementById(id).addEventListener('change',()=>{}));
 
-// ── Aperçu live (SVG + swatches) ───────────────────────────────────────────
 function val(id){return document.getElementById(id).value}
-function render(){
-  document.getElementById('p-peau').setAttribute('fill',val('peau-col'));
-  document.getElementById('p-neck').setAttribute('fill',val('peau-col'));
-  document.getElementById('p-or').setAttribute('fill',val('or-col'));
-  document.getElementById('p-yeux-l').setAttribute('fill',val('yeux-col'));
-  document.getElementById('p-yeux-r').setAttribute('fill',val('yeux-col'));
-  document.getElementById('p-cheveux').setAttribute('fill',val('cheveux-col'));
-  document.getElementById('p-drape').setAttribute('fill',val('drape-col'));
-  document.getElementById('p-shuka').setAttribute('fill',val('shuka-col'));
-  // dots de section
+
+function renderSwatches(){
   const map={'dot-peau':'peau-col','dot-or':'or-col','dot-yeux':'yeux-col','dot-cheveux':'cheveux-col','dot-drape':'drape-col','dot-shuka':'shuka-col'};
   for(const d in map) document.getElementById(d).style.background=val(map[d]);
-  // swatches
   const sw=[['Peau','peau-col'],['Or','or-col'],['Yeux','yeux-col'],['Cheveux','cheveux-col'],['Drapé','drape-col'],['Shúkà','shuka-col']];
   document.getElementById('swatches').innerHTML =
     sw.map(([n,id])=>`<div class="sw" style="background:${val(id)}">${n}</div>`).join('');
 }
+renderSwatches();
 
-// ── Génération du script Blender ───────────────────────────────────────────
 function genScript(){
   const res=val('r-res').split('x');
-  const params={
+  const p={
     peau:[val('peau-col'),f2(val('peau-sssw')),f2(val('peau-ssss')),f2(val('peau-rough'))],
     or:[val('or-col'),f2(val('or-metal')),f2(val('or-rough')),f2(val('or-emit'))],
     yeux:[val('yeux-col'),f2(val('yeux-rough'))],
@@ -239,15 +264,13 @@ function genScript(){
     shuka:[val('shuka-col'),f2(val('shuka-rough'))],
     resx:res[0],resy:res[1],samples:val('r-samples'),fps:val('r-fps'),look:val('r-look'),
   };
-  // bornes de variation procédurale (roughness non-uniforme)
   const cl=v=>Math.max(0,Math.min(1,+v));
-  params.peauRlo=f2(cl(+params.peau[3]-0.08)); params.peauRhi=f2(cl(+params.peau[3]+0.08));
-  params.orRlo=f2(cl(+params.or[2]-0.05));     params.orRhi=f2(cl(+params.or[2]+0.08));
-  params.shukaRlo=f2(cl(+params.shuka[1]-0.06)); params.shukaRhi=f2(cl(+params.shuka[1]+0.06));
+  p.peauRlo=f2(cl(+p.peau[3]-0.08)); p.peauRhi=f2(cl(+p.peau[3]+0.08));
+  p.orRlo=f2(cl(+p.or[2]-0.05));     p.orRhi=f2(cl(+p.or[2]+0.08));
+  p.shukaRlo=f2(cl(+p.shuka[1]-0.06)); p.shukaRhi=f2(cl(+p.shuka[1]+0.06));
   return `"""
 N'Aset OFM — script généré par le dashboard.
-Applique les matériaux aux mesh SÉLECTIONNÉS + configure le rendu.
-Blender 5.0 · lance avec Alt+P.
+Blender 5.0 · Alt+P pour lancer.
 """
 import bpy
 
@@ -261,7 +284,6 @@ def _set(n,k,v):
         try: n.inputs[k].default_value=v
         except: pass
 
-# ── Helpers nœuds procéduraux ──
 def _newmat(name):
     m=bpy.data.materials.get(name) or bpy.data.materials.new(name)
     m.use_nodes=True; nt=m.node_tree; nt.nodes.clear()
@@ -279,39 +301,39 @@ def _mul(c,k): return (c[0]*k,c[1]*k,c[2]*k,1.0)
 
 def build_peau():
     m,nt,o=_newmat('Mat_Peau_Naset'); b=nt.nodes.new('ShaderNodeBsdfPrincipled'); b.location=(200,0)
-    _set(b,'Subsurface Weight',${params.peau[1]}); _set(b,'Subsurface Scale',${params.peau[2]})
+    _set(b,'Subsurface Weight',${p.peau[1]}); _set(b,'Subsurface Scale',${p.peau[2]})
     _set(b,'Subsurface Radius',(1.2,0.6,0.3)); _set(b,'Specular IOR Level',0.45); _set(b,'IOR',1.4); _set(b,'Coat Weight',0.03)
-    base=hex_lin('${params.peau[0]}')
+    base=hex_lin('${p.peau[0]}')
     nc=_noise(nt,-700,250,12.0,6.0); mc=_mr(nt,-480,250,0.0,0.30); nt.links.new(nc.outputs['Fac'],mc.inputs['Value'])
     mix=nt.nodes.new('ShaderNodeMixRGB'); mix.location=(-250,250); mix.inputs['Color1'].default_value=base; mix.inputs['Color2'].default_value=_mul(base,0.78)
     nt.links.new(mc.outputs['Result'],mix.inputs['Fac']); nt.links.new(mix.outputs['Color'],b.inputs['Base Color'])
-    nr=_noise(nt,-700,-40,40.0); mrr=_mr(nt,-480,-40,${params.peauRlo},${params.peauRhi}); nt.links.new(nr.outputs['Fac'],mrr.inputs['Value']); nt.links.new(mrr.outputs['Result'],b.inputs['Roughness'])
+    nr=_noise(nt,-700,-40,40.0); mrr=_mr(nt,-480,-40,${p.peauRlo},${p.peauRhi}); nt.links.new(nr.outputs['Fac'],mrr.inputs['Value']); nt.links.new(mrr.outputs['Result'],b.inputs['Roughness'])
     npo=_noise(nt,-700,-320,250.0,2.0); bp=_bump(nt,npo,0.05,-250,-300); nt.links.new(bp.outputs['Normal'],b.inputs['Normal'])
     nt.links.new(b.outputs['BSDF'],o.inputs['Surface']); return m
 
 def build_or():
     m,nt,o=_newmat('Mat_Or_Emission'); b=nt.nodes.new('ShaderNodeBsdfPrincipled'); b.location=(200,0)
-    _set(b,'Base Color',hex_lin('${params.or[0]}')); _set(b,'Metallic',${params.or[1]}); _set(b,'Specular IOR Level',0.5)
-    _set(b,'Emission Color',hex_lin('${params.or[0]}')); _set(b,'Emission Strength',${params.or[3]})
-    nr=_noise(nt,-700,100,60.0,8.0); mrr=_mr(nt,-480,100,${params.orRlo},${params.orRhi}); nt.links.new(nr.outputs['Fac'],mrr.inputs['Value']); nt.links.new(mrr.outputs['Result'],b.inputs['Roughness'])
+    _set(b,'Base Color',hex_lin('${p.or[0]}')); _set(b,'Metallic',${p.or[1]}); _set(b,'Specular IOR Level',0.5)
+    _set(b,'Emission Color',hex_lin('${p.or[0]}')); _set(b,'Emission Strength',${p.or[3]})
+    nr=_noise(nt,-700,100,60.0,8.0); mrr=_mr(nt,-480,100,${p.orRlo},${p.orRhi}); nt.links.new(nr.outputs['Fac'],mrr.inputs['Value']); nt.links.new(mrr.outputs['Result'],b.inputs['Roughness'])
     ns=_noise(nt,-700,-220,300.0,2.0); bp=_bump(nt,ns,0.02,-250,-200); nt.links.new(bp.outputs['Normal'],b.inputs['Normal'])
     nt.links.new(b.outputs['BSDF'],o.inputs['Surface']); return m
 
 def build_yeux():
     m,nt,o=_newmat('Mat_Yeux_Iris'); b=nt.nodes.new('ShaderNodeBsdfPrincipled'); b.location=(200,0)
-    _set(b,'Base Color',hex_lin('${params.yeux[0]}')); _set(b,'Roughness',${params.yeux[1]}); _set(b,'IOR',1.45)
+    _set(b,'Base Color',hex_lin('${p.yeux[0]}')); _set(b,'Roughness',${p.yeux[1]}); _set(b,'IOR',1.45)
     _set(b,'Coat Weight',1.0); _set(b,'Coat Roughness',0.0)
     nt.links.new(b.outputs['BSDF'],o.inputs['Surface']); return m
 
 def build_cheveux():
     m,nt,o=_newmat('Mat_Cheveux_Naset'); h=nt.nodes.new('ShaderNodeBsdfHairPrincipled'); h.location=(200,0)
-    _set(h,'Color',hex_lin('${params.cheveux[0]}')); _set(h,'Roughness',${params.cheveux[1]}); _set(h,'Radial Roughness',0.40)
+    _set(h,'Color',hex_lin('${p.cheveux[0]}')); _set(h,'Roughness',${p.cheveux[1]}); _set(h,'Radial Roughness',0.40)
     nt.links.new(h.outputs['BSDF'],o.inputs['Surface']); return m
 
 def build_drape():
     m,nt,o=_newmat('Mat_Drape_Ivoire'); b=nt.nodes.new('ShaderNodeBsdfPrincipled'); b.location=(200,0)
-    _set(b,'Roughness',${params.drape[1]}); _set(b,'Sheen Weight',${params.drape[2]})
-    base=hex_lin('${params.drape[0]}')
+    _set(b,'Roughness',${p.drape[1]}); _set(b,'Sheen Weight',${p.drape[2]})
+    base=hex_lin('${p.drape[0]}')
     nc=_noise(nt,-700,250,10.0,4.0); mc=_mr(nt,-480,250,0.0,0.10); nt.links.new(nc.outputs['Fac'],mc.inputs['Value'])
     mix=nt.nodes.new('ShaderNodeMixRGB'); mix.location=(-250,250); mix.inputs['Color1'].default_value=base; mix.inputs['Color2'].default_value=_mul(base,0.90)
     nt.links.new(mc.outputs['Result'],mix.inputs['Fac']); nt.links.new(mix.outputs['Color'],b.inputs['Base Color'])
@@ -320,35 +342,31 @@ def build_drape():
 
 def build_shuka():
     m,nt,o=_newmat('Mat_Shuka_Rouge'); b=nt.nodes.new('ShaderNodeBsdfPrincipled'); b.location=(200,0)
-    _set(b,'Base Color',hex_lin('${params.shuka[0]}')); _set(b,'Sheen Weight',0.15)
+    _set(b,'Base Color',hex_lin('${p.shuka[0]}')); _set(b,'Sheen Weight',0.15)
     w=_wave(nt,-700,-120,100.0,1.5); bp=_bump(nt,w,0.32,-250,-120); nt.links.new(bp.outputs['Normal'],b.inputs['Normal'])
-    nr=_noise(nt,-700,120,80.0,4.0); mrr=_mr(nt,-480,120,${params.shukaRlo},${params.shukaRhi}); nt.links.new(nr.outputs['Fac'],mrr.inputs['Value']); nt.links.new(mrr.outputs['Result'],b.inputs['Roughness'])
+    nr=_noise(nt,-700,120,80.0,4.0); mrr=_mr(nt,-480,120,${p.shukaRlo},${p.shukaRhi}); nt.links.new(nr.outputs['Fac'],mrr.inputs['Value']); nt.links.new(mrr.outputs['Result'],b.inputs['Roughness'])
     nt.links.new(b.outputs['BSDF'],o.inputs['Surface']); return m
 
-# Crée tous les matériaux (procéduraux)
 created={n:f() for n,f in {'Mat_Peau_Naset':build_peau,'Mat_Or_Emission':build_or,'Mat_Yeux_Iris':build_yeux,'Mat_Cheveux_Naset':build_cheveux,'Mat_Drape_Ivoire':build_drape,'Mat_Shuka_Rouge':build_shuka}.items()}
-
-# Applique Mat_Peau_Naset aux mesh sélectionnés (change le nom pour un autre matériau)
 sel=[o for o in bpy.context.selected_objects if o.type=='MESH']
 for o in sel:
     if o.data.materials: o.data.materials[0]=created['Mat_Peau_Naset']
     else: o.data.materials.append(created['Mat_Peau_Naset'])
 print(f"[NASET] {len(created)} matériaux créés, peau appliquée à {len(sel)} mesh")
 
-# ── Rendu ──
 sc=bpy.context.scene; r=sc.render
-r.engine='CYCLES'; r.resolution_x=${params.resx}; r.resolution_y=${params.resy}; r.fps=${params.fps}
+r.engine='CYCLES'; r.resolution_x=${p.resx}; r.resolution_y=${p.resy}; r.fps=${p.fps}
 try:
     p=bpy.context.preferences.addons['cycles'].preferences
     p.compute_device_type='OPTIX'; p.get_devices()
     for d in p.devices: d.use=True
 except Exception as e: print('GPU:',e)
-sc.cycles.device='GPU'; sc.cycles.samples=${params.samples}
+sc.cycles.device='GPU'; sc.cycles.samples=${p.samples}
 sc.cycles.use_denoising=True
 sc.view_settings.view_transform='Filmic'
-try: sc.view_settings.look='${params.look}'
+try: sc.view_settings.look='${p.look}'
 except TypeError: pass
-print("[NASET] Rendu : Cycles GPU ${params.resx}x${params.resy} Filmic ${params.look}")
+print("[NASET] Rendu : Cycles GPU ${p.resx}x${p.resy} Filmic ${p.look}")
 `;
 }
 
@@ -362,8 +380,255 @@ document.getElementById('dl').onclick=()=>{
   const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='naset_params.py'; a.click();
 };
 document.getElementById('reset').onclick=()=>location.reload();
-
-render();
 </script>
+
+<!-- ── Three.js viewer 3D ── -->
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+
+const wrap = document.getElementById('viewer3d-wrap');
+const canvas = document.getElementById('viewer3d');
+const badge = document.getElementById('viewer-badge');
+const glbHint = document.getElementById('viewer-glb-hint');
+
+// ── Renderer ──────────────────────────────────────────────
+const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: false });
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+renderer.setSize(wrap.clientWidth, wrap.clientHeight);
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.3;
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
+const scene = new THREE.Scene();
+scene.background = new THREE.Color('#0a0818');
+scene.fog = new THREE.FogExp2('#0a0818', 0.12);
+
+// ── Camera + Controls ─────────────────────────────────────
+const camera = new THREE.PerspectiveCamera(38, wrap.clientWidth / wrap.clientHeight, 0.01, 50);
+camera.position.set(0, 1.55, 2.8);
+const controls = new OrbitControls(camera, renderer.domElement);
+controls.target.set(0, 1.1, 0);
+controls.enableDamping = true;
+controls.dampingFactor = 0.07;
+controls.minDistance = 0.6;
+controls.maxDistance = 7;
+controls.maxPolarAngle = Math.PI * 0.85;
+controls.update();
+
+// ── Éclairage (3-point rig) ───────────────────────────────
+const ambient = new THREE.AmbientLight(0xfaf7ef, 0.5);
+scene.add(ambient);
+
+const key = new THREE.DirectionalLight(0xfff2d9, 2.8);
+key.position.set(1.5, 3.5, 2.5);
+key.castShadow = true;
+key.shadow.mapSize.set(1024, 1024);
+key.shadow.camera.near = 0.5;
+key.shadow.camera.far = 12;
+key.shadow.bias = -0.001;
+scene.add(key);
+
+const fill = new THREE.DirectionalLight(0xbccfff, 0.9);
+fill.position.set(-2.5, 2, -1);
+scene.add(fill);
+
+const rim = new THREE.PointLight(0xc9963a, 2.2, 5);
+rim.position.set(0, 2.8, -1.8);
+scene.add(rim);
+
+// Sol réfléchissant
+const floorMat = new THREE.MeshStandardMaterial({ color: '#0d0b1a', roughness: 0.85, metalness: 0.1 });
+const floor = new THREE.Mesh(new THREE.CircleGeometry(4, 48), floorMat);
+floor.rotation.x = -Math.PI / 2;
+floor.receiveShadow = true;
+scene.add(floor);
+
+// ── Matériaux PBR ─────────────────────────────────────────
+function hex(h){ return new THREE.Color(h); }
+
+const matPeau = new THREE.MeshStandardMaterial({
+  name:'Mat_Peau_Naset', color: hex('#6B3D2E'), roughness:0.50, metalness:0.0
+});
+const matOr = new THREE.MeshStandardMaterial({
+  name:'Mat_Or_Emission', color: hex('#C9963A'), roughness:0.10, metalness:0.95,
+  emissive: hex('#C9963A'), emissiveIntensity:0.20
+});
+const matYeux = new THREE.MeshStandardMaterial({
+  name:'Mat_Yeux_Iris', color: hex('#1A0D00'), roughness:0.05, metalness:0.0
+});
+const matCheveux = new THREE.MeshStandardMaterial({
+  name:'Mat_Cheveux_Naset', color: hex('#0D0A08'), roughness:0.60, metalness:0.0
+});
+const matDrape = new THREE.MeshPhysicalMaterial({
+  name:'Mat_Drape_Ivoire', color: hex('#FAFAF0'), roughness:0.60, metalness:0.0,
+  sheen:0.30, sheenColor: hex('#FAFAF0')
+});
+const matShuka = new THREE.MeshStandardMaterial({
+  name:'Mat_Shuka_Rouge', color: hex('#C0392B'), roughness:0.55, metalness:0.0
+});
+
+const MAT_MAP = {
+  'Mat_Peau_Naset':matPeau, 'Mat_Or_Emission':matOr, 'Mat_Yeux_Iris':matYeux,
+  'Mat_Cheveux_Naset':matCheveux, 'Mat_Drape_Ivoire':matDrape, 'Mat_Shuka_Rouge':matShuka
+};
+
+// ── Humanoid procédural (placeholder) ─────────────────────
+function buildPlaceholder() {
+  const g = new THREE.Group();
+
+  // Corps (drapé)
+  const body = new THREE.Mesh(new THREE.CylinderGeometry(0.20, 0.24, 1.05, 24), matDrape);
+  body.position.set(0, 0.62, 0); body.castShadow = true; g.add(body);
+
+  // Shúkà diagonal
+  const shukaGeo = new THREE.BoxGeometry(0.44, 0.52, 0.04);
+  const shuka = new THREE.Mesh(shukaGeo, matShuka);
+  shuka.position.set(0.06, 0.80, 0.21); shuka.rotation.z = -0.28; shuka.castShadow = true;
+  g.add(shuka);
+
+  // Épaule gauche
+  const sholL = new THREE.Mesh(new THREE.SphereGeometry(0.085, 16, 12), matDrape);
+  sholL.position.set(-0.24, 1.12, 0); g.add(sholL);
+  // Épaule droite
+  const sholR = new THREE.Mesh(new THREE.SphereGeometry(0.085, 16, 12), matDrape);
+  sholR.position.set(0.24, 1.12, 0); g.add(sholR);
+
+  // Bras gauche
+  const armL = new THREE.Mesh(new THREE.CylinderGeometry(0.048, 0.042, 0.62, 14), matPeau);
+  armL.position.set(-0.30, 0.86, 0); armL.rotation.z = 0.16; g.add(armL);
+  // Bras droit
+  const armR = new THREE.Mesh(new THREE.CylinderGeometry(0.048, 0.042, 0.62, 14), matPeau);
+  armR.position.set(0.30, 0.86, 0); armR.rotation.z = -0.16; g.add(armR);
+
+  // Cou
+  const neck = new THREE.Mesh(new THREE.CylinderGeometry(0.052, 0.068, 0.19, 14), matPeau);
+  neck.position.set(0, 1.21, 0); g.add(neck);
+
+  // Usekh (collier pectoral) — torus aplati
+  const usekh = new THREE.Mesh(new THREE.TorusGeometry(0.155, 0.038, 10, 28), matOr);
+  usekh.rotation.x = Math.PI / 2 - 0.22;
+  usekh.position.set(0, 1.14, 0.05); g.add(usekh);
+
+  // Tête
+  const head = new THREE.Mesh(new THREE.SphereGeometry(0.182, 28, 22), matPeau);
+  head.position.set(0, 1.49, 0); head.scale.set(1, 1.10, 0.93);
+  head.castShadow = true; g.add(head);
+
+  // Cheveux (calotte hémisphère)
+  const hairGeo = new THREE.SphereGeometry(0.194, 28, 18, 0, Math.PI * 2, 0, Math.PI * 0.53);
+  const hairCap = new THREE.Mesh(hairGeo, matCheveux);
+  hairCap.position.set(0, 1.52, -0.01); hairCap.scale.set(1, 1.10, 0.95); g.add(hairCap);
+
+  // Masse cheveux arrière (volume afro/long)
+  const hairVol = new THREE.Mesh(new THREE.SphereGeometry(0.17, 18, 14), matCheveux);
+  hairVol.position.set(0, 1.38, -0.16); hairVol.scale.set(0.95, 1.35, 0.82); g.add(hairVol);
+
+  // Œil gauche
+  const eyeL = new THREE.Mesh(new THREE.SphereGeometry(0.026, 14, 12), matYeux);
+  eyeL.position.set(-0.062, 1.497, 0.163); g.add(eyeL);
+  // Œil droit
+  const eyeR = new THREE.Mesh(new THREE.SphereGeometry(0.026, 14, 12), matYeux);
+  eyeR.position.set(0.062, 1.497, 0.163); g.add(eyeR);
+
+  // Bijou front (or)
+  const jewel = new THREE.Mesh(new THREE.OctahedronGeometry(0.018), matOr);
+  jewel.position.set(0, 1.60, 0.175); g.add(jewel);
+
+  return g;
+}
+
+// ── Chargement GLB ou placeholder ────────────────────────
+let model = null;
+let autoRotate = true;
+const loader = new GLTFLoader();
+
+function onModel(g) {
+  model = g;
+  scene.add(model);
+}
+
+loader.load(
+  'assets/naset_model.glb',
+  (gltf) => {
+    gltf.scene.traverse(node => {
+      if (!node.isMesh) return;
+      const m = MAT_MAP[node.material?.name];
+      if (m) node.material = m;
+      node.castShadow = true; node.receiveShadow = true;
+    });
+    onModel(gltf.scene);
+    glbHint.textContent = 'GLB chargé';
+    glbHint.style.color = '#c9963a';
+  },
+  undefined,
+  () => {
+    onModel(buildPlaceholder());
+    glbHint.textContent = 'placeholder · pose assets/naset_model.glb pour le vrai modèle';
+  }
+);
+
+// Désactiver auto-rotate quand l'utilisateur interagit
+controls.addEventListener('start', () => { autoRotate = false; });
+
+// ── Connexion sliders → matériaux ─────────────────────────
+function bindColor(id, mat, prop = 'color') {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.addEventListener('input', e => { mat[prop].setStyle(e.target.value); mat.needsUpdate = true; });
+}
+function bindFloat(id, mat, prop) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.addEventListener('input', e => { mat[prop] = parseFloat(e.target.value); });
+}
+
+bindColor('peau-col', matPeau); bindFloat('peau-rough', matPeau, 'roughness');
+// SSS approximé via emissiveIntensity
+document.getElementById('peau-sssw').addEventListener('input', e => {
+  matPeau.emissive = matPeau.color.clone().multiplyScalar(0.6);
+  matPeau.emissiveIntensity = parseFloat(e.target.value) * 0.12;
+  matPeau.needsUpdate = true;
+});
+
+bindColor('or-col', matOr); bindColor('or-col', matOr, 'emissive');
+bindFloat('or-metal', matOr, 'metalness'); bindFloat('or-rough', matOr, 'roughness');
+document.getElementById('or-emit').addEventListener('input', e => { matOr.emissiveIntensity = parseFloat(e.target.value); });
+
+bindColor('yeux-col', matYeux); bindFloat('yeux-rough', matYeux, 'roughness');
+bindColor('cheveux-col', matCheveux); bindFloat('cheveux-rough', matCheveux, 'roughness');
+
+bindColor('drape-col', matDrape); bindFloat('drape-rough', matDrape, 'roughness');
+document.getElementById('drape-sheen').addEventListener('input', e => {
+  matDrape.sheen = parseFloat(e.target.value);
+  matDrape.sheenColor = matDrape.color.clone();
+  matDrape.needsUpdate = true;
+});
+
+bindColor('shuka-col', matShuka); bindFloat('shuka-rough', matShuka, 'roughness');
+
+// ── Render loop ───────────────────────────────────────────
+const clock = new THREE.Clock();
+function animate() {
+  requestAnimationFrame(animate);
+  const dt = clock.getDelta();
+  controls.update();
+  if (model && autoRotate) model.rotation.y += dt * 0.25;
+  renderer.render(scene, camera);
+}
+animate();
+
+// ── Resize ────────────────────────────────────────────────
+new ResizeObserver(() => {
+  const w = wrap.clientWidth, h = wrap.clientHeight;
+  camera.aspect = w / h;
+  camera.updateProjectionMatrix();
+  renderer.setSize(w, h);
+}).observe(wrap);
+</script>
+
 </body>
 </html>
