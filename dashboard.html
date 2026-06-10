@@ -1269,6 +1269,9 @@
     const statusEl = document.getElementById('status');
     const filePathEl = document.getElementById('filePath');
 
+    // Mode hébergé (Netlify/HTTP) vs local (File System API)
+    const isHosted = ['http:', 'https:'].includes(window.location.protocol);
+
     function showStatus(msg) {
       statusEl.textContent = msg;
       statusEl.classList.add('visible');
@@ -2723,7 +2726,7 @@
       memoryContentContainer.innerHTML = `
         ${statsHtml}
         <div class="file-card">
-          <div class="file-card-header" onclick="this.nextElementSibling.classList.toggle('expanded'); this.querySelector('.toggle').textContent = this.nextElementSibling.classList.contains('expanded') ? '\u2212' : '+'">
+          <div class="file-card-header" onclick="this.nextElementSibling.classList.toggle('expanded'); this.querySelector('.toggle').textContent = this.nextElementSibling.classList.contains('expanded') ? '−' : '+'">
             <span class="file-card-title">CLAUDE.md</span>
             <span class="toggle" style="color: var(--text-muted);">&minus;</span>
           </div>
@@ -3093,6 +3096,86 @@
     window.openNewFileModal = openNewFileModal;
     window.openEditModal = openEditModal;
     window.filterMemoryDirectory = filterMemoryDirectory;
+
+    // ============================================================
+    // ===== MODE HÉBERGÉ (Netlify / HTTP) =====
+    // ============================================================
+
+    // Fichiers mémoire connus dans le dépôt
+    const HOSTED_MEMORY_FILES = [
+      { path: 'CLAUDE.md',                          type: 'claude' },
+      { path: 'memory/glossary.md',                 type: 'root' },
+      { path: 'memory/context/logiciels.md',        type: 'dir', dir: 'context' },
+      { path: 'memory/projects/naset-ofm.md',       type: 'dir', dir: 'projects' },
+    ];
+
+    async function autoLoadFromServer() {
+      // Masquer les boutons fichier/dossier inutiles en mode hébergé
+      openTaskBtn.style.display = 'none';
+      openMemoryBtn.style.display = 'none';
+      saveBtn.style.display = 'none';
+      document.getElementById('openBtnLarge').style.display = 'none';
+      document.getElementById('openMemoryBtnLarge').style.display = 'none';
+
+      // Charger TASKS.md
+      try {
+        const res = await fetch('TASKS.md');
+        if (res.ok) {
+          const content = await res.text();
+          const result = parseTaskMarkdown(content);
+          sections = result.sections;
+          tasks = result.tasks;
+          taskFileName = 'TASKS.md';
+          filePathEl.textContent = 'TASKS.md · lecture seule';
+          document.getElementById('boardEmptyState').style.display = 'none';
+          renderBoard();
+          showStatus('Tâches chargées');
+        }
+      } catch(e) { console.log('TASKS.md non trouvé', e); }
+
+      // Charger les fichiers mémoire
+      memoryData = { claudeMd: null, memoryFiles: [], memoryDirs: {} };
+
+      for (const mf of HOSTED_MEMORY_FILES) {
+        try {
+          const res = await fetch(mf.path);
+          if (!res.ok) continue;
+          const content = await res.text();
+          if (mf.type === 'claude') {
+            memoryData.claudeMd = { content, fileHandle: null };
+          } else if (mf.type === 'root') {
+            memoryData.memoryFiles.push({ name: mf.path.split('/').pop(), content, fileHandle: null });
+          } else if (mf.type === 'dir') {
+            if (!memoryData.memoryDirs[mf.dir]) memoryData.memoryDirs[mf.dir] = [];
+            memoryData.memoryDirs[mf.dir].push({
+              name: mf.path.split('/').pop(),
+              content,
+              fileHandle: null,
+              dirHandle: null,
+              parsed: parseMemoryMarkdown(content)
+            });
+          }
+        } catch(e) { console.log(mf.path + ' non trouvé', e); }
+      }
+
+      const hasMemory = memoryData.claudeMd || memoryData.memoryFiles.length || Object.keys(memoryData.memoryDirs).length;
+      if (hasMemory) {
+        renderMemory();
+        document.getElementById('memoryEmptyState').style.display = 'none';
+        document.getElementById('memoryMainContent').style.display = 'flex';
+      }
+    }
+
+    // Désactiver la sauvegarde modale en mode hébergé
+    if (isHosted) {
+      document.getElementById('modalSave').style.display = 'none';
+      document.getElementById('modalCancel').textContent = 'Fermer';
+    }
+
+    // Lancement automatique si hébergé
+    if (isHosted) {
+      autoLoadFromServer();
+    }
   </script>
 </body>
 </html>
