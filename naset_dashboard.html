@@ -99,6 +99,12 @@
   }
   .nav-link:hover{color:var(--gold-light); border-color:var(--gold); outline:none}
   .nav-link:focus-visible{outline:2px solid var(--gold-light); outline-offset:2px}
+  .pose-btns{display:flex; gap:6px; flex-wrap:wrap; margin:10px 0 6px}
+  .pose-btn{background:var(--panel-2); color:var(--muted); border:1px solid var(--line); border-radius:7px; padding:5px 11px; font-size:12.5px; cursor:pointer; min-height:32px; font-family:inherit}
+  .pose-btn:hover{color:var(--gold-light); border-color:var(--gold)}
+  .pose-btn.on{background:rgba(201,150,58,.18); color:var(--gold-light); border-color:var(--gold)}
+  #skel-toggle{position:absolute; top:12px; left:12px; background:rgba(20,18,31,.80); color:var(--muted); border:1px solid var(--line); border-radius:8px; padding:5px 12px; font-size:12px; cursor:pointer; font-family:inherit; z-index:10}
+  #skel-toggle.on{color:var(--gold-light); border-color:var(--gold)}
 </style>
 </head>
 <body>
@@ -191,6 +197,47 @@
         </select>
       </div>
     </div>
+
+    <!-- RIGGING -->
+    <div class="card">
+      <h2>🦴 Rigging</h2>
+      <div class="row">
+        <label for="rig-type">Type de rig</label>
+        <select id="rig-type">
+          <option value="rigify">Rigify (recommandé)</option>
+          <option value="simple">Armature simple</option>
+        </select>
+      </div>
+      <div class="row"><label for="rig-height">Hauteur (m)</label><input type="range" id="rig-height" min="1.60" max="1.90" step="0.01" value="1.77"><span class="val" id="rig-height-v">1.77</span></div>
+      <div class="row">
+        <label for="rig-spine">Segments colonne</label>
+        <select id="rig-spine">
+          <option value="3" selected>3 — standard</option>
+          <option value="4">4 — détaillé</option>
+          <option value="6">6 — cinéma</option>
+        </select>
+      </div>
+      <div class="row">
+        <label for="rig-fingers">Doigts</label>
+        <select id="rig-fingers">
+          <option value="no" selected>Non (temps réel)</option>
+          <option value="yes">Oui (cinéma)</option>
+        </select>
+      </div>
+      <div class="pose-btns" id="pose-btns">
+        <button class="pose-btn on" data-pose="t">T-pose</button>
+        <button class="pose-btn" data-pose="a">A-pose</button>
+        <button class="pose-btn" data-pose="rest">Repos</button>
+        <button class="pose-btn" data-pose="action">Action</button>
+      </div>
+      <div class="btns" style="margin-top:4px">
+        <button id="rig-gen">Générer rig Blender</button>
+        <button class="ghost" id="rig-copy" style="display:none">Copier</button>
+        <button class="ghost" id="rig-dl" style="display:none">Télécharger .py</button>
+      </div>
+      <textarea id="rig-out" spellcheck="false" style="display:none;margin-top:12px;min-height:180px" aria-label="Script rig Blender"></textarea>
+      <p class="hint" style="margin-top:10px">Après génération : <code>Scripting → Alt+P</code> dans Blender · Pour Rigify : active l'addon <code>Rigging → Rigify</code> dans les préférences.</p>
+    </div>
   </section>
 
   <!-- ════ APERÇU 3D ════ -->
@@ -201,6 +248,7 @@
       </div>
       <div id="viewer3d-wrap">
         <canvas id="viewer3d"></canvas>
+        <button id="skel-toggle" title="Afficher/masquer le squelette">🦴 Squelette</button>
         <div id="viewer-badge">Clic + glisser pour tourner · molette pour zoomer</div>
         <div id="viewer-glb-hint">placeholder</div>
       </div>
@@ -380,6 +428,187 @@ document.getElementById('dl').onclick=()=>{
   const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='naset_params.py'; a.click();
 };
 document.getElementById('reset').onclick=()=>location.reload();
+
+// ── Rigging ───────────────────────────────────────────────
+bind('rig-height','-v', v=>Number(v).toFixed(2));
+
+document.querySelectorAll('.pose-btn').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    document.querySelectorAll('.pose-btn').forEach(b=>b.classList.remove('on'));
+    btn.classList.add('on');
+    document.dispatchEvent(new CustomEvent('naset-pose', {detail: btn.dataset.pose}));
+  });
+});
+
+function genRig(){
+  const h=parseFloat(val('rig-height'));
+  const spine=parseInt(val('rig-spine'));
+  const fingers=val('rig-fingers')==='yes';
+  const type=val('rig-type');
+  const s=`${h/1.77}`;
+
+  if(type==='rigify') return genRigify(h, spine, fingers, s);
+  return genSimple(h, spine, fingers, s);
+}
+
+function genRigify(h, spine, fingers, s){
+return `"""
+N'Aset OFM — Rigging Rigify · généré par le dashboard.
+Prérequis : addon Rigify activé (Préférences → Add-ons → Rigging: Rigify).
+Alt+P pour lancer.
+"""
+import bpy
+from math import radians
+
+h = ${h}
+sc = ${s}
+
+# Supprimer l'ancien metarig si présent
+for o in [o for o in bpy.data.objects if 'Naset_Metarig' in o.name]:
+    bpy.data.objects.remove(o, do_unlink=True)
+
+# Créer le metarig Rigify (T-pose humanoid)
+bpy.ops.object.armature_human_metarig_add()
+rig = bpy.context.object
+rig.name = 'Naset_Metarig'
+rig.data.name = 'Naset_Metarig'
+
+# Mettre à l'échelle N'Aset (${h}m)
+rig.scale = (sc, sc, sc)
+bpy.ops.object.transform_apply(location=False, rotation=False, scale=True)
+
+# Ajustements proportions (mode édition)
+bpy.ops.object.mode_set(mode='EDIT')
+eb = rig.data.edit_bones
+
+def mv(name, h_co=None, t_co=None):
+    if name not in eb: return
+    if h_co: eb[name].head = h_co
+    if t_co: eb[name].tail = t_co
+
+# Ajustements silhouette N'Aset — élancée, athlétique
+# Allonger légèrement le cou
+if 'neck' in eb:
+    eb['neck'].tail.z += 0.02 * sc
+# Épaules plus larges (Maasaï athlétique)
+for side in ['.L', '.R']:
+    sign = -1 if side == '.L' else 1
+    if 'upper_arm' + side in eb:
+        eb['upper_arm' + side].head.x = sign * 0.20 * sc
+
+# Spine segments = ${spine}
+# (Rigify gère les segments via les paramètres de rig — configurable dans le panneau Rig Properties)
+
+bpy.ops.object.mode_set(mode='OBJECT')
+
+# Activer/désactiver les doigts
+bpy.ops.object.mode_set(mode='POSE')
+arm = rig.data
+for side in ['.L', '.R']:
+    for i in ['1', '2', '3', '4']:
+        bone_name = f'f_pinky.01{side}'
+        if bone_name in arm.bones:
+            arm.bones[bone_name].use_deform = ${fingers ? 'True' : 'False'}
+bpy.ops.object.mode_set(mode='OBJECT')
+
+print(f"[NASET] Metarig Rigify · {h}m · spine:{spine} · doigts:${fingers}")
+print("[NASET] Étapes suivantes :")
+print("  1. Sélectionne le metarig")
+print("  2. Propriétés → Rig Properties → Generate Rig")
+print("  3. Parent le mesh au rig généré (Armature Deform + Auto Weights)")
+`;
+}
+
+function genSimple(h, spine, fingers, s){
+  const spineZ = [];
+  const base = 0.52, top = 1.05;
+  for(let i=0;i<=spine;i++) spineZ.push((base + (top-base)*i/spine).toFixed(3));
+  const spineCode = spineZ.map((z,i)=>i<spineZ.length-1?
+    `add_bone('spine_${String(i).padStart(2,'0')}', (0,0,${z}*sc), (0,0,${spineZ[i+1]}*sc), 'chest_base')`:''
+  ).filter(Boolean).join('\n');
+
+return `"""
+N'Aset OFM — Armature simple · Alt+P pour lancer.
+"""
+import bpy
+from mathutils import Vector
+
+h = ${h}
+sc = ${s}
+
+for o in [o for o in bpy.data.objects if 'Naset_Rig' in o.name]:
+    bpy.data.objects.remove(o, do_unlink=True)
+
+arm = bpy.data.armatures.new('Naset_Armature')
+rig = bpy.data.objects.new('Naset_Rig', arm)
+bpy.context.collection.objects.link(rig)
+bpy.context.view_layer.objects.active = rig
+bpy.ops.object.mode_set(mode='EDIT')
+eb = arm.edit_bones
+
+def add_bone(name, head, tail, parent=None, connect=False):
+    b = eb.new(name)
+    b.head, b.tail = Vector(head), Vector(tail)
+    if parent and parent in eb:
+        b.parent = eb[parent]
+        b.use_connect = connect
+    return b
+
+# ── Colonne vertébrale ──
+add_bone('root',       (0,0,0*sc),          (0,0,0.08*sc))
+add_bone('pelvis',     (0,0,0.08*sc),       (0,0,0.52*sc), 'root')
+${spineCode}
+add_bone('chest',      (0,0,${spineZ[spineZ.length-1]}*sc), (0,0,1.05*sc), 'spine_${String(spine-1).padStart(2,'0')}', True)
+add_bone('neck',       (0,0,1.05*sc),       (0,0,1.22*sc), 'chest', True)
+add_bone('head',       (0,0,1.22*sc),       (0,0,1.52*sc), 'neck', True)
+
+# ── Épaules & bras ──
+for side, sx in (('L',-1), ('R',1)):
+    add_bone(f'shoulder_{side}', (sx*0.04,0,1.05*sc), (sx*0.22,0,1.05*sc), 'chest')
+    add_bone(f'upper_arm_{side}',(sx*0.22,0,1.05*sc),(sx*0.34,0,0.85*sc), f'shoulder_{side}', True)
+    add_bone(f'forearm_{side}',  (sx*0.34,0,0.85*sc),(sx*0.40,0,0.58*sc), f'upper_arm_{side}', True)
+    add_bone(f'hand_{side}',     (sx*0.40,0,0.58*sc),(sx*0.42,0,0.42*sc), f'forearm_{side}', True)
+    ${fingers ? `
+    # Doigts
+    for i,name in enumerate(['thumb','index','middle','ring','pinky']):
+        fx = sx*(0.38 + i*0.008)
+        add_bone(f'{name}_01_{side}',(fx,0,0.42*sc),(fx,0,0.35*sc),f'hand_{side}')
+        add_bone(f'{name}_02_{side}',(fx,0,0.35*sc),(fx,0,0.29*sc),f'{name}_01_{side}',True)
+        add_bone(f'{name}_03_{side}',(fx,0,0.29*sc),(fx,0,0.25*sc),f'{name}_02_{side}',True)
+    ` : '# Doigts désactivés'}
+
+# ── Jambes ──
+for side, sx in (('L',-1), ('R',1)):
+    add_bone(f'thigh_{side}',  (sx*0.10,0,0.52*sc),(sx*0.11,0,0.25*sc), 'pelvis')
+    add_bone(f'shin_{side}',   (sx*0.11,0,0.25*sc),(sx*0.09,0,0.04*sc), f'thigh_{side}', True)
+    add_bone(f'foot_{side}',   (sx*0.09,0,0.04*sc),(sx*0.09,-0.14,0.02*sc), f'shin_{side}', True)
+    add_bone(f'toe_{side}',    (sx*0.09,-0.14,0.02*sc),(sx*0.09,-0.22,0.01*sc), f'foot_{side}', True)
+
+bpy.ops.object.mode_set(mode='OBJECT')
+print(f"[NASET] Armature simple · {h}m · spine:{spine} · doigts:${fingers}")
+print("[NASET] → Parent le mesh : Ctrl+P → Armature Deform + Auto Weights")
+`;
+}
+
+document.getElementById('rig-gen').onclick=()=>{
+  const out=document.getElementById('rig-out');
+  out.value=genRig();
+  out.style.display='block';
+  document.getElementById('rig-copy').style.display='';
+  document.getElementById('rig-dl').style.display='';
+};
+document.getElementById('rig-copy').onclick=()=>{
+  const t=document.getElementById('rig-out'); t.select();
+  navigator.clipboard.writeText(t.value).then(()=>{
+    const b=document.getElementById('rig-copy'); b.textContent='Copié ✓';
+    setTimeout(()=>b.textContent='Copier',1500);
+  });
+};
+document.getElementById('rig-dl').onclick=()=>{
+  const blob=new Blob([genRig()],{type:'text/x-python'});
+  const a=document.createElement('a'); a.href=URL.createObjectURL(blob);
+  a.download='naset_rig.py'; a.click();
+};
 </script>
 
 <!-- ── Three.js viewer 3D ── -->
@@ -609,6 +838,115 @@ document.getElementById('drape-sheen').addEventListener('input', e => {
 });
 
 bindColor('shuka-col', matShuka); bindFloat('shuka-rough', matShuka, 'roughness');
+
+// ── Squelette visuel ─────────────────────────────────────
+const JOINTS = {
+  root:     [0, 0,    0],    pelvis:    [0, 0.15, 0],
+  spine1:   [0, 0.35, 0],   spine2:    [0, 0.55, 0],
+  spine3:   [0, 0.75, 0],   chest:     [0, 0.95, 0],
+  neck:     [0, 1.12, 0],   head:      [0, 1.32, 0],
+  crown:    [0, 1.65, 0],
+  // Clavicules
+  clavL:  [-0.04,1.08, 0],  sholL:  [-0.24,1.08, 0],
+  clavR:  [ 0.04,1.08, 0],  sholR:  [ 0.24,1.08, 0],
+  // Bras gauche
+  elbL:   [-0.30,0.86, 0],  wristL: [-0.35,0.60, 0],  handL: [-0.37,0.46, 0],
+  // Bras droit
+  elbR:   [ 0.30,0.86, 0],  wristR: [ 0.35,0.60, 0],  handR: [ 0.37,0.46, 0],
+  // Hanches
+  hipL:   [-0.10,0.13, 0],  hipR:   [ 0.10,0.13, 0],
+  // Jambes (sous la robe — tirets)
+  kneeL:  [-0.11,-0.36,0],  ankleL: [-0.09,-0.78,0],  toeL: [-0.13,-0.86,0],
+  kneeR:  [ 0.11,-0.36,0],  ankleR: [ 0.09,-0.78,0],  toeR: [ 0.13,-0.86,0],
+};
+
+const SEGS_UPPER = [
+  ['root','pelvis'],['pelvis','spine1'],['spine1','spine2'],['spine2','spine3'],
+  ['spine3','chest'],['chest','neck'],['neck','head'],['head','crown'],
+  ['pelvis','hipL'],['pelvis','hipR'],
+  ['chest','clavL'],['clavL','sholL'],['sholL','elbL'],['elbL','wristL'],['wristL','handL'],
+  ['chest','clavR'],['clavR','sholR'],['sholR','elbR'],['elbR','wristR'],['wristR','handR'],
+];
+const SEGS_LEGS = [
+  ['hipL','kneeL'],['kneeL','ankleL'],['ankleL','toeL'],
+  ['hipR','kneeR'],['kneeR','ankleR'],['ankleR','toeR'],
+];
+
+const JOINT_KEYS_UPPER = [...new Set(SEGS_UPPER.flat())];
+const JOINT_KEYS_LEGS  = [...new Set(SEGS_LEGS.flat())];
+
+function makeLines(segs, color, dashed) {
+  const verts = [];
+  for (const [a,b] of segs) {
+    const ja = JOINTS[a], jb = JOINTS[b];
+    verts.push(...ja, ...jb);
+  }
+  const geo = new THREE.BufferGeometry();
+  geo.setAttribute('position', new THREE.Float32BufferAttribute(verts, 3));
+  const mat = dashed
+    ? new THREE.LineDashedMaterial({ color, dashSize: 0.04, gapSize: 0.03, linewidth: 1 })
+    : new THREE.LineBasicMaterial({ color });
+  const lines = new THREE.LineSegments(geo, mat);
+  if (dashed) lines.computeLineDistances();
+  return lines;
+}
+
+function makeJointSpheres(keys, color) {
+  const g = new THREE.Group();
+  const m = new THREE.MeshBasicMaterial({ color });
+  for (const k of keys) {
+    const sp = new THREE.Mesh(new THREE.SphereGeometry(0.018, 8, 6), m);
+    const p = JOINTS[k]; sp.position.set(p[0], p[1], p[2]);
+    g.add(sp);
+  }
+  return g;
+}
+
+let skelGroup = null;
+let showSkel = false;
+
+function addSkeleton() {
+  skelGroup = new THREE.Group();
+  skelGroup.add(makeLines(SEGS_UPPER, 0xc9963a, false));
+  skelGroup.add(makeLines(SEGS_LEGS,  0xc9963a, true));
+  skelGroup.add(makeJointSpheres(JOINT_KEYS_UPPER, 0xe8bc6a));
+  skelGroup.add(makeJointSpheres(JOINT_KEYS_LEGS,  0x7a5c2a));
+  scene.add(skelGroup);
+}
+function removeSkeleton() {
+  if (skelGroup) { scene.remove(skelGroup); skelGroup = null; }
+}
+
+const skelBtn = document.getElementById('skel-toggle');
+skelBtn.addEventListener('click', () => {
+  showSkel = !showSkel;
+  skelBtn.classList.toggle('on', showSkel);
+  showSkel ? addSkeleton() : removeSkeleton();
+});
+
+// ── Poses prédéfinies ────────────────────────────────────
+const POSES = {
+  t:      { armLz: 0,    armRz: 0,    spineTilt: 0,  headTilt: 0  },
+  a:      { armLz: 0.40, armRz:-0.40, spineTilt: 0,  headTilt: 0  },
+  rest:   { armLz: 0.18, armRz:-0.18, spineTilt: 0.04, headTilt: 0.06 },
+  action: { armLz: 0.55, armRz:-0.15, spineTilt:-0.08, headTilt:-0.1 },
+};
+
+document.addEventListener('naset-pose', e => {
+  const p = POSES[e.detail];
+  if (!p || !model) return;
+  // Sur le placeholder, on fait tourner les enfants par index
+  // Corps[0]=body, [1]=shuka, [2]=sholL, [3]=sholR, [4]=armL, [5]=armR
+  const c = model.children;
+  if (c[4]) c[4].rotation.z =  p.armLz;
+  if (c[5]) c[5].rotation.z =  p.armRz;
+  if (c[0]) c[0].rotation.z =  p.spineTilt;
+  // Head = children index 12 (head mesh)
+  const headMesh = c.find ? c.find(m=>m.geometry instanceof THREE.SphereGeometry && m.position.y > 1.4) : null;
+  if (headMesh) headMesh.rotation.z = p.headTilt;
+  // Sync squelette si visible
+  if (showSkel) { removeSkeleton(); addSkeleton(); }
+});
 
 // ── Render loop ───────────────────────────────────────────
 const clock = new THREE.Clock();
