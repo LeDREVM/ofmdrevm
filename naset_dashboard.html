@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>N'Aset OFM — Paramétrage du modèle</title>
+<style>
+  :root{
+    --bg:#14121f; --panel:#1c1a2e; --panel-2:#232038;
+    --gold:#c9963a; --gold-light:#e8bc6a; --ivory:#faf7ef;
+    --muted:#a9a4c0; --line:#322e4a; --red:#c0392b;
+    --radius:14px; --gap:18px;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; background:var(--bg); color:var(--ivory);
+    font-family:"Segoe UI",system-ui,-apple-system,sans-serif;
+    line-height:1.5; letter-spacing:.1px;
+  }
+  header{
+    padding:28px 32px 22px; border-bottom:1px solid var(--line);
+    display:flex; align-items:baseline; gap:16px; flex-wrap:wrap;
+  }
+  header h1{margin:0; font-size:26px; font-weight:650; color:var(--gold-light)}
+  header .sub{color:var(--muted); font-size:14px}
+  .glyph{font-size:24px; color:var(--gold)}
+  .layout{display:grid; grid-template-columns:minmax(0,1.3fr) minmax(0,1fr); gap:var(--gap); padding:24px 32px; align-items:start}
+  @media(max-width:920px){.layout{grid-template-columns:1fr}}
+
+  .card{background:var(--panel); border:1px solid var(--line); border-radius:var(--radius); padding:18px 20px; margin-bottom:var(--gap)}
+  .card h2{margin:0 0 14px; font-size:16px; font-weight:600; color:var(--gold-light); display:flex; align-items:center; gap:8px}
+  .card h2 .dot{width:12px;height:12px;border-radius:3px;display:inline-block;border:1px solid var(--line)}
+
+  .row{display:flex; align-items:center; gap:12px; margin:11px 0}
+  .row label{flex:0 0 150px; font-size:13.5px; color:var(--ivory)}
+  .row input[type=range]{flex:1; accent-color:var(--gold); height:4px}
+  .row .val{flex:0 0 52px; text-align:right; font-variant-numeric:tabular-nums; color:var(--gold-light); font-size:13px}
+  .row input[type=color]{flex:0 0 46px; height:32px; border:1px solid var(--line); border-radius:8px; background:none; cursor:pointer; padding:2px}
+  .row select{flex:1; background:var(--panel-2); color:var(--ivory); border:1px solid var(--line); border-radius:8px; padding:7px 10px; font-size:13.5px}
+  .hex{flex:0 0 80px; font-variant-numeric:tabular-nums; color:var(--muted); font-size:12.5px; text-transform:uppercase}
+
+  /* Aperçu */
+  .preview-wrap{position:sticky; top:24px}
+  .swatches{display:grid; grid-template-columns:repeat(4,1fr); gap:8px; margin-top:6px}
+  .sw{height:54px; border-radius:10px; border:1px solid var(--line); display:flex; align-items:flex-end; padding:6px; font-size:10.5px; color:#fff; text-shadow:0 1px 2px rgba(0,0,0,.6)}
+  figure{margin:0; display:flex; justify-content:center; padding:8px 0 14px}
+
+  .btns{display:flex; gap:10px; flex-wrap:wrap; margin-top:4px}
+  button{
+    background:var(--gold); color:#231a08; border:none; border-radius:10px;
+    padding:11px 16px; font-size:14px; font-weight:600; cursor:pointer; min-height:44px;
+  }
+  button.ghost{background:var(--panel-2); color:var(--ivory); border:1px solid var(--line)}
+  button:hover{filter:brightness(1.08)}
+  button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--gold-light); outline-offset:2px}
+
+  textarea{
+    width:100%; min-height:230px; margin-top:12px; resize:vertical;
+    background:#100e18; color:#d8d3ec; border:1px solid var(--line); border-radius:10px;
+    padding:14px; font-family:"Cascadia Code",Consolas,monospace; font-size:12.5px; line-height:1.55;
+  }
+  .hint{color:var(--muted); font-size:12.5px; margin-top:10px}
+  code{background:var(--panel-2); padding:1px 6px; border-radius:5px; color:var(--gold-light)}
+</style>
+</head>
+<body>
+<header>
+  <span class="glyph">𓂀</span>
+  <h1>N'Aset OFM — Paramétrage du modèle</h1>
+  <span class="sub">Règle les matériaux &amp; le rendu, puis génère le script Blender</span>
+</header>
+
+<div class="layout">
+  <!-- ════ CONTRÔLES ════ -->
+  <section>
+    <!-- PEAU -->
+    <div class="card">
+      <h2><span class="dot" id="dot-peau"></span> Peau (SSS)</h2>
+      <div class="row"><label for="peau-col">Couleur de base</label><input type="color" id="peau-col" value="#6B3D2E"><span class="hex" id="peau-col-hex">#6B3D2E</span></div>
+      <div class="row"><label for="peau-sssw">Subsurface Weight</label><input type="range" id="peau-sssw" min="0" max="1" step="0.01" value="0.30"><span class="val" id="peau-sssw-v">0.30</span></div>
+      <div class="row"><label for="peau-ssss">Subsurface Scale</label><input type="range" id="peau-ssss" min="0" max="0.2" step="0.005" value="0.05"><span class="val" id="peau-ssss-v">0.05</span></div>
+      <div class="row"><label for="peau-rough">Roughness</label><input type="range" id="peau-rough" min="0" max="1" step="0.01" value="0.50"><span class="val" id="peau-rough-v">0.50</span></div>
+    </div>
+
+    <!-- OR -->
+    <div class="card">
+      <h2><span class="dot" id="dot-or"></span> Or sacré</h2>
+      <div class="row"><label for="or-col">Couleur</label><input type="color" id="or-col" value="#C9963A"><span class="hex" id="or-col-hex">#C9963A</span></div>
+      <div class="row"><label for="or-metal">Metallic</label><input type="range" id="or-metal" min="0" max="1" step="0.01" value="0.95"><span class="val" id="or-metal-v">0.95</span></div>
+      <div class="row"><label for="or-rough">Roughness</label><input type="range" id="or-rough" min="0" max="1" step="0.01" value="0.10"><span class="val" id="or-rough-v">0.10</span></div>
+      <div class="row"><label for="or-emit">Emission Strength</label><input type="range" id="or-emit" min="0" max="2" step="0.05" value="0.20"><span class="val" id="or-emit-v">0.20</span></div>
+    </div>
+
+    <!-- YEUX -->
+    <div class="card">
+      <h2><span class="dot" id="dot-yeux"></span> Yeux (iris)</h2>
+      <div class="row"><label for="yeux-col">Couleur</label><input type="color" id="yeux-col" value="#1A0D00"><span class="hex" id="yeux-col-hex">#1A0D00</span></div>
+      <div class="row"><label for="yeux-rough">Roughness</label><input type="range" id="yeux-rough" min="0" max="1" step="0.01" value="0.05"><span class="val" id="yeux-rough-v">0.05</span></div>
+    </div>
+
+    <!-- CHEVEUX -->
+    <div class="card">
+      <h2><span class="dot" id="dot-cheveux"></span> Cheveux</h2>
+      <div class="row"><label for="cheveux-col">Couleur</label><input type="color" id="cheveux-col" value="#0D0A08"><span class="hex" id="cheveux-col-hex">#0D0A08</span></div>
+      <div class="row"><label for="cheveux-rough">Roughness</label><input type="range" id="cheveux-rough" min="0" max="1" step="0.01" value="0.60"><span class="val" id="cheveux-rough-v">0.60</span></div>
+    </div>
+
+    <!-- DRAPÉ -->
+    <div class="card">
+      <h2><span class="dot" id="dot-drape"></span> Drapé ivoire</h2>
+      <div class="row"><label for="drape-col">Couleur</label><input type="color" id="drape-col" value="#FAFAF0"><span class="hex" id="drape-col-hex">#FAFAF0</span></div>
+      <div class="row"><label for="drape-rough">Roughness</label><input type="range" id="drape-rough" min="0" max="1" step="0.01" value="0.60"><span class="val" id="drape-rough-v">0.60</span></div>
+      <div class="row"><label for="drape-sheen">Sheen Weight</label><input type="range" id="drape-sheen" min="0" max="1" step="0.01" value="0.30"><span class="val" id="drape-sheen-v">0.30</span></div>
+    </div>
+
+    <!-- SHÚKÀ -->
+    <div class="card">
+      <h2><span class="dot" id="dot-shuka"></span> Shúkà rouge</h2>
+      <div class="row"><label for="shuka-col">Couleur</label><input type="color" id="shuka-col" value="#C0392B"><span class="hex" id="shuka-col-hex">#C0392B</span></div>
+      <div class="row"><label for="shuka-rough">Roughness</label><input type="range" id="shuka-rough" min="0" max="1" step="0.01" value="0.55"><span class="val" id="shuka-rough-v">0.55</span></div>
+    </div>
+
+    <!-- RENDU -->
+    <div class="card">
+      <h2>⚙️ Rendu</h2>
+      <div class="row"><label for="r-res">Résolution</label>
+        <select id="r-res">
+          <option value="1920x1080">1080p — 1920×1080</option>
+          <option value="3840x2160" selected>4K — 3840×2160</option>
+          <option value="7680x4320">8K — 7680×4320</option>
+        </select>
+      </div>
+      <div class="row"><label for="r-samples">Samples</label><input type="range" id="r-samples" min="64" max="1024" step="32" value="256"><span class="val" id="r-samples-v">256</span></div>
+      <div class="row"><label for="r-fps">FPS</label>
+        <select id="r-fps"><option>24</option><option>25</option><option>30</option><option>60</option></select>
+      </div>
+      <div class="row"><label for="r-look">Look (Filmic)</label>
+        <select id="r-look">
+          <option>Very High Contrast</option><option>High Contrast</option>
+          <option selected>Medium High Contrast</option><option>Medium Contrast</option>
+          <option>Medium Low Contrast</option><option>Low Contrast</option>
+        </select>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════ APERÇU ════ -->
+  <section class="preview-wrap">
+    <div class="card">
+      <h2>Aperçu</h2>
+      <figure aria-label="Silhouette de N'Aset avec les couleurs choisies">
+        <svg width="200" height="300" viewBox="0 0 200 300" role="img">
+          <!-- drapé -->
+          <path id="p-drape" d="M55 150 Q100 135 145 150 L160 290 L40 290 Z" fill="#FAFAF0" stroke="#322e4a"/>
+          <!-- shuka (écharpe diagonale) -->
+          <path id="p-shuka" d="M62 158 L150 200 L143 222 L58 180 Z" fill="#C0392B" opacity="0.92"/>
+          <!-- cou -->
+          <rect x="90" y="118" width="20" height="26" fill="#6B3D2E" id="p-neck"/>
+          <!-- usekh / collier or -->
+          <path id="p-or" d="M68 140 Q100 168 132 140 L128 152 Q100 176 72 152 Z" fill="#C9963A"/>
+          <!-- cheveux -->
+          <path id="p-cheveux" d="M62 70 Q62 28 100 28 Q138 28 138 70 L138 120 Q120 108 100 108 Q80 108 62 120 Z" fill="#0D0A08"/>
+          <!-- visage -->
+          <ellipse id="p-peau" cx="100" cy="80" rx="33" ry="40" fill="#6B3D2E"/>
+          <!-- yeux -->
+          <ellipse id="p-yeux-l" cx="88" cy="78" rx="6" ry="3.5" fill="#1A0D00"/>
+          <ellipse id="p-yeux-r" cx="112" cy="78" rx="6" ry="3.5" fill="#1A0D00"/>
+          <!-- oeil oudjat -->
+          <text x="100" y="200" font-size="22" text-anchor="middle" fill="#e8bc6a" opacity="0.85">𓂀</text>
+        </svg>
+      </figure>
+      <div class="swatches" id="swatches"></div>
+    </div>
+
+    <div class="card">
+      <h2>Script Blender généré</h2>
+      <div class="btns">
+        <button id="gen">Générer le script</button>
+        <button class="ghost" id="copy">Copier</button>
+        <button class="ghost" id="dl">Télécharger .py</button>
+        <button class="ghost" id="reset">Réinitialiser</button>
+      </div>
+      <textarea id="out" spellcheck="false" aria-label="Script Blender généré">Clique « Générer le script » pour produire le code Python avec tes réglages.</textarea>
+      <p class="hint">Dans Blender : <code>Scripting</code> → coller dans l'éditeur de texte → <code>Alt+P</code>. Sélectionne d'abord un mesh pour que les matériaux s'appliquent.</p>
+    </div>
+  </section>
+</div>
+
+<script>
+// ── Liaison live des sliders/pickers ───────────────────────────────────────
+function bind(id, suffix, fn){
+  const el=document.getElementById(id), out=document.getElementById(id+suffix);
+  const upd=()=>{ if(out) out.textContent = fn?fn(el.value):el.value; render(); };
+  el.addEventListener('input',upd); upd();
+}
+// hex labels pour les color pickers
+document.querySelectorAll('input[type=color]').forEach(c=>{
+  const lbl=document.getElementById(c.id+'-hex');
+  const upd=()=>{ if(lbl) lbl.textContent=c.value.toUpperCase(); render(); };
+  c.addEventListener('input',upd);
+});
+
+const f2=v=>Number(v).toFixed(2);
+['peau-sssw','peau-ssss','peau-rough','or-metal','or-rough','or-emit',
+ 'yeux-rough','cheveux-rough','drape-rough','drape-sheen','shuka-rough']
+ .forEach(id=>bind(id,'-v',f2));
+bind('r-samples','-v',v=>v);
+['r-res','r-fps','r-look'].forEach(id=>document.getElementById(id).addEventListener('change',()=>{}));
+
+// ── Aperçu live (SVG + swatches) ───────────────────────────────────────────
+function val(id){return document.getElementById(id).value}
+function render(){
+  document.getElementById('p-peau').setAttribute('fill',val('peau-col'));
+  document.getElementById('p-neck').setAttribute('fill',val('peau-col'));
+  document.getElementById('p-or').setAttribute('fill',val('or-col'));
+  document.getElementById('p-yeux-l').setAttribute('fill',val('yeux-col'));
+  document.getElementById('p-yeux-r').setAttribute('fill',val('yeux-col'));
+  document.getElementById('p-cheveux').setAttribute('fill',val('cheveux-col'));
+  document.getElementById('p-drape').setAttribute('fill',val('drape-col'));
+  document.getElementById('p-shuka').setAttribute('fill',val('shuka-col'));
+  // dots de section
+  const map={'dot-peau':'peau-col','dot-or':'or-col','dot-yeux':'yeux-col','dot-cheveux':'cheveux-col','dot-drape':'drape-col','dot-shuka':'shuka-col'};
+  for(const d in map) document.getElementById(d).style.background=val(map[d]);
+  // swatches
+  const sw=[['Peau','peau-col'],['Or','or-col'],['Yeux','yeux-col'],['Cheveux','cheveux-col'],['Drapé','drape-col'],['Shúkà','shuka-col']];
+  document.getElementById('swatches').innerHTML =
+    sw.map(([n,id])=>`<div class="sw" style="background:${val(id)}">${n}</div>`).join('');
+}
+
+// ── Génération du script Blender ───────────────────────────────────────────
+function genScript(){
+  const res=val('r-res').split('x');
+  const params={
+    peau:[val('peau-col'),f2(val('peau-sssw')),f2(val('peau-ssss')),f2(val('peau-rough'))],
+    or:[val('or-col'),f2(val('or-metal')),f2(val('or-rough')),f2(val('or-emit'))],
+    yeux:[val('yeux-col'),f2(val('yeux-rough'))],
+    cheveux:[val('cheveux-col'),f2(val('cheveux-rough'))],
+    drape:[val('drape-col'),f2(val('drape-rough')),f2(val('drape-sheen'))],
+    shuka:[val('shuka-col'),f2(val('shuka-rough'))],
+    resx:res[0],resy:res[1],samples:val('r-samples'),fps:val('r-fps'),look:val('r-look'),
+  };
+  // bornes de variation procédurale (roughness non-uniforme)
+  const cl=v=>Math.max(0,Math.min(1,+v));
+  params.peauRlo=f2(cl(+params.peau[3]-0.08)); params.peauRhi=f2(cl(+params.peau[3]+0.08));
+  params.orRlo=f2(cl(+params.or[2]-0.05));     params.orRhi=f2(cl(+params.or[2]+0.08));
+  params.shukaRlo=f2(cl(+params.shuka[1]-0.06)); params.shukaRhi=f2(cl(+params.shuka[1]+0.06));
+  return `"""
+N'Aset OFM — script généré par le dashboard.
+Applique les matériaux aux mesh SÉLECTIONNÉS + configure le rendu.
+Blender 5.0 · lance avec Alt+P.
+"""
+import bpy
+
+def hex_lin(h):
+    h=h.lstrip('#'); r,g,b=(int(h[i:i+2],16)/255 for i in (0,2,4))
+    f=lambda c: c/12.92 if c<=0.04045 else ((c+0.055)/1.055)**2.4
+    return (f(r),f(g),f(b),1.0)
+
+def _set(n,k,v):
+    if k in n.inputs:
+        try: n.inputs[k].default_value=v
+        except: pass
+
+# ── Helpers nœuds procéduraux ──
+def _newmat(name):
+    m=bpy.data.materials.get(name) or bpy.data.materials.new(name)
+    m.use_nodes=True; nt=m.node_tree; nt.nodes.clear()
+    out=nt.nodes.new('ShaderNodeOutputMaterial'); out.location=(500,0); return m,nt,out
+def _noise(nt,x,y,sc,d=4.0):
+    n=nt.nodes.new('ShaderNodeTexNoise'); n.location=(x,y); _set(n,'Scale',sc); _set(n,'Detail',d); return n
+def _wave(nt,x,y,sc,dist=1.5):
+    n=nt.nodes.new('ShaderNodeTexWave'); n.location=(x,y); _set(n,'Scale',sc); _set(n,'Distortion',dist); return n
+def _mr(nt,x,y,lo,hi):
+    n=nt.nodes.new('ShaderNodeMapRange'); n.location=(x,y); _set(n,'To Min',lo); _set(n,'To Max',hi); return n
+def _bump(nt,src,st,x,y):
+    b=nt.nodes.new('ShaderNodeBump'); b.location=(x,y); _set(b,'Strength',st)
+    nt.links.new(src.outputs['Fac'],b.inputs['Height']); return b
+def _mul(c,k): return (c[0]*k,c[1]*k,c[2]*k,1.0)
+
+def build_peau():
+    m,nt,o=_newmat('Mat_Peau_Naset'); b=nt.nodes.new('ShaderNodeBsdfPrincipled'); b.location=(200,0)
+    _set(b,'Subsurface Weight',${params.peau[1]}); _set(b,'Subsurface Scale',${params.peau[2]})
+    _set(b,'Subsurface Radius',(1.2,0.6,0.3)); _set(b,'Specular IOR Level',0.45); _set(b,'IOR',1.4); _set(b,'Coat Weight',0.03)
+    base=hex_lin('${params.peau[0]}')
+    nc=_noise(nt,-700,250,12.0,6.0); mc=_mr(nt,-480,250,0.0,0.30); nt.links.new(nc.outputs['Fac'],mc.inputs['Value'])
+    mix=nt.nodes.new('ShaderNodeMixRGB'); mix.location=(-250,250); mix.inputs['Color1'].default_value=base; mix.inputs['Color2'].default_value=_mul(base,0.78)
+    nt.links.new(mc.outputs['Result'],mix.inputs['Fac']); nt.links.new(mix.outputs['Color'],b.inputs['Base Color'])
+    nr=_noise(nt,-700,-40,40.0); mrr=_mr(nt,-480,-40,${params.peauRlo},${params.peauRhi}); nt.links.new(nr.outputs['Fac'],mrr.inputs['Value']); nt.links.new(mrr.outputs['Result'],b.inputs['Roughness'])
+    npo=_noise(nt,-700,-320,250.0,2.0); bp=_bump(nt,npo,0.05,-250,-300); nt.links.new(bp.outputs['Normal'],b.inputs['Normal'])
+    nt.links.new(b.outputs['BSDF'],o.inputs['Surface']); return m
+
+def build_or():
+    m,nt,o=_newmat('Mat_Or_Emission'); b=nt.nodes.new('ShaderNodeBsdfPrincipled'); b.location=(200,0)
+    _set(b,'Base Color',hex_lin('${params.or[0]}')); _set(b,'Metallic',${params.or[1]}); _set(b,'Specular IOR Level',0.5)
+    _set(b,'Emission Color',hex_lin('${params.or[0]}')); _set(b,'Emission Strength',${params.or[3]})
+    nr=_noise(nt,-700,100,60.0,8.0); mrr=_mr(nt,-480,100,${params.orRlo},${params.orRhi}); nt.links.new(nr.outputs['Fac'],mrr.inputs['Value']); nt.links.new(mrr.outputs['Result'],b.inputs['Roughness'])
+    ns=_noise(nt,-700,-220,300.0,2.0); bp=_bump(nt,ns,0.02,-250,-200); nt.links.new(bp.outputs['Normal'],b.inputs['Normal'])
+    nt.links.new(b.outputs['BSDF'],o.inputs['Surface']); return m
+
+def build_yeux():
+    m,nt,o=_newmat('Mat_Yeux_Iris'); b=nt.nodes.new('ShaderNodeBsdfPrincipled'); b.location=(200,0)
+    _set(b,'Base Color',hex_lin('${params.yeux[0]}')); _set(b,'Roughness',${params.yeux[1]}); _set(b,'IOR',1.45)
+    _set(b,'Coat Weight',1.0); _set(b,'Coat Roughness',0.0)
+    nt.links.new(b.outputs['BSDF'],o.inputs['Surface']); return m
+
+def build_cheveux():
+    m,nt,o=_newmat('Mat_Cheveux_Naset'); h=nt.nodes.new('ShaderNodeBsdfHairPrincipled'); h.location=(200,0)
+    _set(h,'Color',hex_lin('${params.cheveux[0]}')); _set(h,'Roughness',${params.cheveux[1]}); _set(h,'Radial Roughness',0.40)
+    nt.links.new(h.outputs['BSDF'],o.inputs['Surface']); return m
+
+def build_drape():
+    m,nt,o=_newmat('Mat_Drape_Ivoire'); b=nt.nodes.new('ShaderNodeBsdfPrincipled'); b.location=(200,0)
+    _set(b,'Roughness',${params.drape[1]}); _set(b,'Sheen Weight',${params.drape[2]})
+    base=hex_lin('${params.drape[0]}')
+    nc=_noise(nt,-700,250,10.0,4.0); mc=_mr(nt,-480,250,0.0,0.10); nt.links.new(nc.outputs['Fac'],mc.inputs['Value'])
+    mix=nt.nodes.new('ShaderNodeMixRGB'); mix.location=(-250,250); mix.inputs['Color1'].default_value=base; mix.inputs['Color2'].default_value=_mul(base,0.90)
+    nt.links.new(mc.outputs['Result'],mix.inputs['Fac']); nt.links.new(mix.outputs['Color'],b.inputs['Base Color'])
+    w=_wave(nt,-700,-120,120.0,1.0); bp=_bump(nt,w,0.25,-250,-120); nt.links.new(bp.outputs['Normal'],b.inputs['Normal'])
+    nt.links.new(b.outputs['BSDF'],o.inputs['Surface']); return m
+
+def build_shuka():
+    m,nt,o=_newmat('Mat_Shuka_Rouge'); b=nt.nodes.new('ShaderNodeBsdfPrincipled'); b.location=(200,0)
+    _set(b,'Base Color',hex_lin('${params.shuka[0]}')); _set(b,'Sheen Weight',0.15)
+    w=_wave(nt,-700,-120,100.0,1.5); bp=_bump(nt,w,0.32,-250,-120); nt.links.new(bp.outputs['Normal'],b.inputs['Normal'])
+    nr=_noise(nt,-700,120,80.0,4.0); mrr=_mr(nt,-480,120,${params.shukaRlo},${params.shukaRhi}); nt.links.new(nr.outputs['Fac'],mrr.inputs['Value']); nt.links.new(mrr.outputs['Result'],b.inputs['Roughness'])
+    nt.links.new(b.outputs['BSDF'],o.inputs['Surface']); return m
+
+# Crée tous les matériaux (procéduraux)
+created={n:f() for n,f in {'Mat_Peau_Naset':build_peau,'Mat_Or_Emission':build_or,'Mat_Yeux_Iris':build_yeux,'Mat_Cheveux_Naset':build_cheveux,'Mat_Drape_Ivoire':build_drape,'Mat_Shuka_Rouge':build_shuka}.items()}
+
+# Applique Mat_Peau_Naset aux mesh sélectionnés (change le nom pour un autre matériau)
+sel=[o for o in bpy.context.selected_objects if o.type=='MESH']
+for o in sel:
+    if o.data.materials: o.data.materials[0]=created['Mat_Peau_Naset']
+    else: o.data.materials.append(created['Mat_Peau_Naset'])
+print(f"[NASET] {len(created)} matériaux créés, peau appliquée à {len(sel)} mesh")
+
+# ── Rendu ──
+sc=bpy.context.scene; r=sc.render
+r.engine='CYCLES'; r.resolution_x=${params.resx}; r.resolution_y=${params.resy}; r.fps=${params.fps}
+try:
+    p=bpy.context.preferences.addons['cycles'].preferences
+    p.compute_device_type='OPTIX'; p.get_devices()
+    for d in p.devices: d.use=True
+except Exception as e: print('GPU:',e)
+sc.cycles.device='GPU'; sc.cycles.samples=${params.samples}
+sc.cycles.use_denoising=True
+sc.view_settings.view_transform='Filmic'
+try: sc.view_settings.look='${params.look}'
+except TypeError: pass
+print("[NASET] Rendu : Cycles GPU ${params.resx}x${params.resy} Filmic ${params.look}")
+`;
+}
+
+document.getElementById('gen').onclick=()=>{document.getElementById('out').value=genScript();};
+document.getElementById('copy').onclick=()=>{
+  const t=document.getElementById('out'); t.select();
+  navigator.clipboard.writeText(t.value).then(()=>{const b=document.getElementById('copy');b.textContent='Copié ✓';setTimeout(()=>b.textContent='Copier',1500);});
+};
+document.getElementById('dl').onclick=()=>{
+  const blob=new Blob([genScript()],{type:'text/x-python'});
+  const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='naset_params.py'; a.click();
+};
+document.getElementById('reset').onclick=()=>location.reload();
+
+render();
+</script>
+</body>
+</html>
