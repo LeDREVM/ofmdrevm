@@ -1,0 +1,14 @@
+# Config Netlify minimale.
+# Ce repo n'a pas de build : il sert des pages HTML statiques directement
+# (dashboards N'Aset, guides techniques). On publie la racine telle quelle.
+
+[build]
+  publish = "."
+  command = ""
+
+# Page d'accueil -> dashboard N'Aset OFM
+[[redirects]]
+  from = "/"
+  to = "/naset_dashboard.html"
+  status = 302
+  force = false
