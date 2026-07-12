@@ -136,3 +136,8 @@ n8n_data/
 # === Documentation générée ===
 docs/_build/
 site/
+# === Sous-modules tiers cassés (clones locaux, non versionnés ici) ===
+addons/character-dna-addon/
+addons/easymesh_batch_exporter/
+tools/SpeechCraft/
+tools/unreal-audio2lipsync/
