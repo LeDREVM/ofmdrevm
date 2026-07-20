@@ -144,3 +144,5 @@ tools/unreal-audio2lipsync/
 
 # MCP config (API keys)
 .mcp.json
+# Local Netlify folder
+.netlify
