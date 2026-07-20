@@ -142,5 +142,7 @@ addons/easymesh_batch_exporter/
 tools/SpeechCraft/
 tools/unreal-audio2lipsync/
 
+# MCP config (API keys)
+.mcp.json
 # Local Netlify folder
 .netlify
