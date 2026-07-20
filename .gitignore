@@ -141,3 +141,6 @@ addons/character-dna-addon/
 addons/easymesh_batch_exporter/
 tools/SpeechCraft/
 tools/unreal-audio2lipsync/
+
+# Local Netlify folder
+.netlify
