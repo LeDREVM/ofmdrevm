@@ -30,6 +30,24 @@ FRAME_END    = 2280
 FPS          = 24
 
 
+def _obj_fcurves(obj):
+    """Fcurves de l'action d'un objet — compatible Blender 5.0 (layered actions)
+    ou l'acces direct action.fcurves a ete supprime."""
+    ad = obj.animation_data
+    if not ad or not ad.action:
+        return []
+    act = ad.action
+    if hasattr(act, 'fcurves'):          # Blender <= 4.x
+        return act.fcurves
+    fcs = []
+    for layer in act.layers:             # Blender 5.0+
+        for strip in layer.strips:
+            cb = strip.channelbag(ad.action_slot) if ad.action_slot else None
+            if cb:
+                fcs.extend(cb.fcurves)
+    return fcs
+
+
 def hex_to_rgb(hex_str):
     hex_str = hex_str.lstrip('#')
     return tuple(int(hex_str[i:i+2], 16) / 255.0 for i in (0, 2, 4))
@@ -86,7 +104,8 @@ def setup_render():
     scene.render.resolution_y = 2160
     scene.render.resolution_percentage = 100
     scene.view_settings.view_transform = 'Filmic'
-    scene.view_settings.look           = 'Filmic - Medium High Contrast'
+    # Blender 5.0 : plus de prefixe 'Filmic - ' dans l'enum look
+    scene.view_settings.look           = 'Medium High Contrast'
     print("[RENDER] 4K · 24fps · Filmic Medium High Contrast")
 
 
@@ -189,7 +208,7 @@ def animate_s4_close():
     # Ease In sur les fcurves S4
     for holder in (cam, target):
         if holder.animation_data and holder.animation_data.action:
-            for fc in holder.animation_data.action.fcurves:
+            for fc in _obj_fcurves(holder):
                 for kp in fc.keyframe_points:
                     kp.interpolation = 'SINE'
                     kp.easing = 'EASE_IN'
@@ -225,7 +244,7 @@ def create_lights():
 
 def _set_interp(holder, mode):
     if holder.animation_data and holder.animation_data.action:
-        for fc in holder.animation_data.action.fcurves:
+        for fc in _obj_fcurves(holder):
             for kp in fc.keyframe_points:
                 kp.interpolation = mode
 
