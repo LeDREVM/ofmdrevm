@@ -105,6 +105,11 @@
   .pose-btn.on{background:rgba(201,150,58,.18); color:var(--gold-light); border-color:var(--gold)}
   #skel-toggle{position:absolute; top:12px; left:12px; background:rgba(20,18,31,.80); color:var(--muted); border:1px solid var(--line); border-radius:8px; padding:5px 12px; font-size:12px; cursor:pointer; font-family:inherit; z-index:10}
   #skel-toggle.on{color:var(--gold-light); border-color:var(--gold)}
+  .pipe-grid{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:4px 0}
+  .pipe-cat{flex:0 0 100%;font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin:6px 0 2px}
+  .pipe-btn{background:var(--panel-2);color:var(--muted);border:1px solid var(--line);border-radius:7px;padding:5px 11px;font-size:12.5px;cursor:pointer;min-height:32px;font-family:inherit;transition:color .15s,border-color .15s}
+  .pipe-btn:hover{color:var(--gold-light);border-color:var(--gold)}
+  .pipe-btn.on{background:rgba(201,150,58,.18);color:var(--gold-light);border-color:var(--gold)}
 </style>
 </head>
 <body>
@@ -237,6 +242,31 @@
       </div>
       <textarea id="rig-out" spellcheck="false" style="display:none;margin-top:12px;min-height:180px" aria-label="Script rig Blender"></textarea>
       <p class="hint" style="margin-top:10px">Après génération : <code>Scripting → Alt+P</code> dans Blender · Pour Rigify : active l'addon <code>Rigging → Rigify</code> dans les préférences.</p>
+    </div>
+
+    <!-- ════ PIPELINE & OUTILS ════ -->
+    <div class="card">
+      <h2>🚀 Pipeline &amp; Outils</h2>
+      <div class="pipe-grid" id="pipe-grid">
+        <span class="pipe-cat">Essentiels</span>
+        <button class="pipe-btn on" data-tool="send2ue">Send to UE5</button>
+        <button class="pipe-btn" data-tool="blender4ue">Blender4UE</button>
+        <button class="pipe-btn" data-tool="textools">UV / TexTools</button>
+        <button class="pipe-btn" data-tool="dreamtex">Dream Textures</button>
+        <span class="pipe-cat">Utiles</span>
+        <button class="pipe-btn" data-tool="texmixer">Texture Mixer</button>
+        <button class="pipe-btn" data-tool="comfyui">ComfyUI Bridge</button>
+        <button class="pipe-btn" data-tool="aistudio">AI Studio</button>
+        <button class="pipe-btn" data-tool="controlrig">ControlRig</button>
+        <button class="pipe-btn" data-tool="addonui">AddonUI-Forge</button>
+      </div>
+      <div class="btns" style="margin-top:10px">
+        <button id="pipe-gen">Générer script</button>
+        <button class="ghost" id="pipe-copy" style="display:none">Copier</button>
+        <button class="ghost" id="pipe-dl" style="display:none">Télécharger .py</button>
+      </div>
+      <textarea id="pipe-out" spellcheck="false" style="display:none;margin-top:12px;min-height:160px" aria-label="Script pipeline"></textarea>
+      <p class="hint" id="pipe-hint" style="margin-top:8px">Sélectionne un outil → <strong>Générer script</strong> → colle dans <code>Scripting → Alt+P</code></p>
     </div>
   </section>
 
@@ -615,6 +645,288 @@ document.getElementById('rig-dl').onclick=()=>{
   const blob=new Blob([genRig()],{type:'text/x-python'});
   const a=document.createElement('a'); a.href=URL.createObjectURL(blob);
   a.download='naset_rig.py'; a.click();
+};
+
+// ── Pipeline & Outils ────────────────────────────────────
+let activeTool='send2ue';
+document.querySelectorAll('.pipe-btn').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    document.querySelectorAll('.pipe-btn').forEach(b=>b.classList.remove('on'));
+    btn.classList.add('on');
+    activeTool=btn.dataset.tool;
+  });
+});
+
+function genPipeScript(tool){
+  const scripts={
+    send2ue:`"""
+N'Aset OFM — Send to Unreal Engine 5
+Addon source : tools/BlenderTools/send2ue/
+Installation : Edit > Preferences > Add-ons > Install from File
+"""
+import bpy
+
+if 'send2ue' not in bpy.context.preferences.addons:
+    print("[NASET] Addon 'Send to Unreal' non installe")
+    print("  -> Installe depuis : tools/BlenderTools/send2ue/")
+    print("  -> Edit > Preferences > Add-ons > Install from File")
+else:
+    p = bpy.context.scene.send2ue
+    p.unreal_mesh_folder_path = "/Game/Characters/NasetOFM/Meshes"
+    p.unreal_animation_folder_path = "/Game/Characters/NasetOFM/Animations"
+    p.unreal_skeleton_asset_path = "/Game/Characters/NasetOFM/SK_NasetOFM_Skeleton"
+    p.import_materials_and_textures = True
+    p.auto_stash_active_action = True
+    p.use_object_origin = True
+    print("[NASET] send2ue configure -> /Game/Characters/NasetOFM/")
+    print("[NASET] Etape suivante : selectionner mesh + armature -> Send to Unreal")
+`,
+    blender4ue:`"""
+N'Aset OFM — Blender for Unreal Engine (xavier150)
+Addon source : tools/Blender-For-UnrealEngine-Addons/
+Installation : Edit > Preferences > Add-ons > Install from File
+"""
+import bpy
+
+renames = []
+for obj in bpy.data.objects:
+    if 'Naset' not in obj.name:
+        continue
+    if obj.type == 'ARMATURE' and not obj.name.startswith('SK_'):
+        old = obj.name
+        obj.name = 'SK_NasetOFM'
+        renames.append(f"  Armature: {old} -> {obj.name}")
+    elif obj.type == 'MESH' and obj.find_armature():
+        if not obj.name.startswith('SK_'):
+            old = obj.name
+            obj.name = f"SK_{obj.name}"
+            renames.append(f"  Mesh: {old} -> {obj.name}")
+
+if renames:
+    print("[NASET] Convention UE5 appliquee :")
+    for r in renames:
+        print(r)
+else:
+    print("[NASET] Aucun objet 'Naset' a renommer (deja OK ou absent)")
+
+print()
+print("[NASET] BFU Panel (N) -> Asset Type: SkeletalMesh")
+print("  -> Export recursive -> FBX + textures -> UE5")
+`,
+    textools:`"""
+N'Aset OFM — UV Setup + TexTools
+Addon source : tools/TexTools-Blender/
+Installation : Edit > Preferences > Add-ons > Install from File
+"""
+import bpy
+
+def setup_uv(obj):
+    bpy.context.view_layer.objects.active = obj
+    bpy.ops.object.select_all(action='DESELECT')
+    obj.select_set(True)
+    bpy.ops.object.mode_set(mode='EDIT')
+    bpy.ops.mesh.select_all(action='SELECT')
+    has_tt = hasattr(bpy.ops.uv, 'textools_uv_unwrap')
+    if has_tt:
+        bpy.ops.uv.textools_uv_unwrap()
+        print(f"[NASET] TexTools unwrap : {obj.name}")
+    else:
+        bpy.ops.uv.smart_project(angle_limit=66.0, island_margin=0.02)
+        print(f"[NASET] Smart UV Project : {obj.name} (TexTools non charge)")
+    bpy.ops.object.mode_set(mode='OBJECT')
+
+meshes = [o for o in bpy.context.selected_objects if o.type == 'MESH']
+if not meshes:
+    meshes = [o for o in bpy.data.objects if o.type == 'MESH' and 'Naset' in o.name]
+
+for o in meshes:
+    setup_uv(o)
+
+print(f"[NASET] {len(meshes)} mesh(es) UV traite(s) -- cible : 4096x4096")
+`,
+    dreamtex:`"""
+N'Aset OFM — Dream Textures (Stable Diffusion dans Blender)
+Addon source : tools/dream-textures/
+Installation : Edit > Preferences > Add-ons > Install from File
+"""
+# Prompts optimises pour la palette N'Aset OFM
+PROMPTS = {
+    'peau':        "dark brown skin texture 4K seamless, subsurface scattering, "
+                   "pores detail, realistic Maasai woman skin, hex #6B3D2E, PBR albedo",
+    'or_sacre':    "ancient hammered gold texture 4K seamless, Egyptian jewelry, "
+                   "worn metal surface, hex #C9963A, PBR metallic 0.95 roughness 0.10",
+    'drape_ivoire':"ivory linen fabric texture 4K seamless, sheen, fine weave, "
+                   "Egyptian cotton, hex #FAFAF0, PBR roughness 0.60",
+    'shuka':       "red Maasai shuka woven textile 4K seamless, plaid pattern, "
+                   "cotton, hex #C0392B, PBR roughness 0.55",
+    'cheveux':     "black afro hair texture 4K, tight curls, natural, "
+                   "hex #0D0A08, roughness 0.60",
+}
+
+print("[NASET] Prompts Dream Textures :")
+for mat, prompt in PROMPTS.items():
+    print()
+    print(f"  [{mat}]")
+    print(f"  {prompt}")
+
+print()
+print("[NASET] Utilisation dans Blender :")
+print("  Shader Editor -> Add -> Dream Textures -> Generate Texture")
+print("  Steps : 30  |  Seed : 42  |  Format : 4096x4096")
+print("  Image Editor -> Save As NAset_[mat]_4K.png")
+`,
+    texmixer:`"""
+N'Aset OFM — Texture Mixer (layers PBR non-destructifs)
+Extension : https://extensions.blender.org/add-ons/texture-mixer/
+Version : 0.1.1 Alpha -- sauvegarder le .blend avant d'initialiser !
+"""
+LAYERS = [
+    ("Base Peau",      "Fill",  "Base Color", "#6B3D2E"),
+    ("SSS Variation",  "Paint", "Base Color", "#8B4E35"),
+    ("Pores Relief",   "Paint", "Normal",     "strength 0.30"),
+    ("Or Highlights",  "Fill",  "Metallic",   "value 0.95"),
+    ("Roughness Skin", "Paint", "Roughness",  "range 0.42-0.58"),
+]
+
+print("[NASET] Texture Mixer -- Procedure N'Aset :")
+print("  1. Selectionner le mesh de N'Aset")
+print("  2. N-Panel (N) -> Texture Mixer -> Initialize")
+print("     ATTENTION : Replace material -- garder une sauvegarde !")
+print()
+print("  3. Layers a creer (de bas en haut) :")
+for i, (name, ltype, chan, val) in enumerate(LAYERS, 1):
+    print(f"     {i}. [{ltype}] {name} -- {chan} : {val}")
+print()
+print("  4. Mode peinture : icone palette (Multi-Channel Paint)")
+print("  5. Export : onglet Export -> Bake -> NAset_[map]_4K.png")
+print("  !! Max 8 layers stables en Alpha v0.1.1")
+`,
+    comfyui:`"""
+N'Aset OFM — ComfyUI-BlenderAI-node (AIGODLIKE)
+Addon source : tools/ComfyUI-BlenderAI-node/
+Prerequis : ComfyUI installe separement (github.com/comfyanonymous/ComfyUI)
+"""
+print("[NASET] ComfyUI-BlenderAI-node -- Installation :")
+print("  1. Edit > Preferences > Add-ons > Install from File")
+print("     -> tools/ComfyUI-BlenderAI-node/")
+print()
+print("  2. Configurer le serveur ComfyUI :")
+print("     Add-on Preferences -> ComfyUI Host : 127.0.0.1:8188")
+print()
+print("[NASET] Nodes disponibles (Shader Editor) :")
+print("  * ComfyUI Generate  -> texture depuis un prompt")
+print("  * ComfyUI Inpaint   -> repeindre une zone du mesh")
+print("  * ComfyUI IP-Adapt  -> style transfer depuis une reference")
+print()
+print("[NASET] Workflow N'Aset :")
+print("  Reference mood board -> IP-Adapter -> texture 4K")
+print("  -> Bake -> NAset_[mat]_4K.png")
+`,
+    aistudio:`"""
+N'Aset OFM — Blender AI Studio (AIGODLIKE)
+Addon source : tools/BlenderAIStudio/
+Prerequis : AddonUI-Forge installe en premier
+"""
+print("[NASET] Blender AI Studio -- Installation :")
+print("  1. Installer AddonUI-Forge d'abord :")
+print("     Edit > Preferences > Add-ons > Install from File")
+print("     -> tools/AddonUI-Forge/")
+print()
+print("  2. Puis installer Blender AI Studio :")
+print("     -> tools/BlenderAIStudio/")
+print()
+print("[NASET] Fonctions cles pour N'Aset OFM :")
+print("  * Concept Art   -> visuels N'Aset depuis la vue camera")
+print("  * Storyboard    -> animer les scenes S1 a S5 en storyboard AI")
+print("  * Design Sheet  -> planches de costumes / bijoux")
+print("  * Inpainting    -> corriger des zones de rendu Cycles")
+print()
+print("[NASET] Resolutions : 1K / 2K / 4K")
+print("  -> Cible textures : 4K | Concepts : 2K")
+`,
+    controlrig:`"""
+N'Aset OFM — ControlRig (systeme de noeuds d'armature)
+Addon source : tools/ControlRig/
+Installation : Edit > Preferences > Add-ons > Install from File
+"""
+import bpy
+
+arm_obj = next((o for o in bpy.data.objects
+                if o.type == 'ARMATURE' and 'Naset' in o.name), None)
+
+if arm_obj:
+    print(f"[NASET] Armature trouvee : {arm_obj.name}")
+    print()
+    print("[NASET] Noeuds ControlRig recommandes pour N'Aset :")
+    print("  * CopyTransform (head -> target_look)   : regard qui suit")
+    print("  * IK (arm.L/R, leg.L/R)                 : IK bras / jambes")
+    print("  * CopyRotation (spine -> hip_ctrl)      : rotation colonne")
+    print("  * Damped Track (drape -> wind_target)   : tissu qui reagit au vent")
+    print("  * ForEach (finger_bones)                : iteration sur les doigts")
+    print()
+    print("[NASET] Etapes :")
+    print("  1. Selectionner l'armature")
+    print("  2. Properties -> Object Data -> ControlRig -> New Graph")
+    print("  3. Ajouter les noeuds depuis Add Node")
+else:
+    print("[NASET] Aucune armature 'Naset' trouvee dans la scene")
+    print("  -> Genere d'abord un rig via la section Rigging du dashboard")
+`,
+    addonui:`"""
+N'Aset OFM — AddonUI-Forge (framework UI Blender)
+Addon source : tools/AddonUI-Forge/
+Usage : creer un panneau N-Panel "N'Aset Studio" personnalise
+"""
+print("[NASET] AddonUI-Forge -- Installation :")
+print("  Edit > Preferences > Add-ons > Install from File")
+print("  -> tools/AddonUI-Forge/")
+print()
+print("[NASET] Exemple panneau N'Aset Studio :")
+print("""
+import bpy
+
+class NASET_PT_Studio(bpy.types.Panel):
+    bl_label = "N'Aset Studio"
+    bl_idname = "NASET_PT_Studio"
+    bl_space_type = 'VIEW_3D'
+    bl_region_type = 'UI'
+    bl_category = "N'Aset"
+
+    def draw(self, context):
+        layout = self.layout
+        layout.operator("naset.build_materials", text="Materiaux PBR")
+        layout.operator("naset.setup_rig",       text="Rig Rigify")
+        layout.operator("naset.export_ue5",      text="Export UE5")
+        layout.operator("naset.render_cycles",   text="Render 4K Cycles")
+
+def register():
+    bpy.utils.register_class(NASET_PT_Studio)
+
+register()
+""")
+`,
+  };
+  return scripts[tool] || `print("[NASET] Script pour '${tool}' non disponible")`;
+}
+
+document.getElementById('pipe-gen').onclick=()=>{
+  const out=document.getElementById('pipe-out');
+  out.value=genPipeScript(activeTool);
+  out.style.display='block';
+  document.getElementById('pipe-copy').style.display='';
+  document.getElementById('pipe-dl').style.display='';
+};
+document.getElementById('pipe-copy').onclick=()=>{
+  const t=document.getElementById('pipe-out'); t.select();
+  navigator.clipboard.writeText(t.value).then(()=>{
+    const b=document.getElementById('pipe-copy'); b.textContent='Copie !';
+    setTimeout(()=>b.textContent='Copier',1500);
+  });
+};
+document.getElementById('pipe-dl').onclick=()=>{
+  const blob=new Blob([genPipeScript(activeTool)],{type:'text/x-python'});
+  const a=document.createElement('a'); a.href=URL.createObjectURL(blob);
+  a.download=`naset_${activeTool}.py`; a.click();
 };
 </script>
 
