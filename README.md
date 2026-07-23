@@ -49,6 +49,22 @@ ofmdrevm/
 | Comprendre une scène du court métrage | `scenario/` |
 | Voir les couleurs / conventions du perso | `CLAUDE.md` ou `memory/projects/naset-ofm.md` |
 | Paramètres techniques par scène | `docs/reference_scenes.md` |
+| **Configurer les serveurs MCP** (Higgsfield, n8n, Netlify…) | `docs/MCP.md` |
+
+---
+
+## 🔌 Serveurs MCP
+
+Claude Code pilote les services externes du pipeline (Higgsfield, n8n, Netlify,
+Google Drive) via des **serveurs MCP**. La config réelle `.mcp.json` contient des
+clés API et n'est **pas** versionnée — copier le modèle et remplir `.env` :
+
+```bash
+cp .mcp.json.example .mcp.json
+cp .env.example .env   # puis remplir les clés
+```
+
+→ Guide complet : **`docs/MCP.md`**
 
 ---
 

@@ -1,0 +1,40 @@
+{
+  "//": "MCP — Modèle de configuration N'Aset OFM. Copier en .mcp.json (gitignoré) et remplir les clés.",
+  "//doc": "Voir docs/MCP.md pour le détail de chaque serveur.",
+  "mcpServers": {
+    "higgsfield": {
+      "//": "Génération image / vidéo / 3D / audio — serveur distant HTTP.",
+      "type": "http",
+      "url": "https://mcp.higgsfield.ai/mcp",
+      "headers": {
+        "Authorization": "Bearer ${HIGGSFIELD_API_KEY}"
+      }
+    },
+
+    "n8n": {
+      "//": "Pipeline d'automatisation AI. URL = webhook du node 'MCP Server Trigger' de ton instance n8n (à adapter).",
+      "type": "sse",
+      "url": "${N8N_HOST}/mcp/naset-pipeline/sse",
+      "headers": {
+        "Authorization": "Bearer ${N8N_API_KEY}"
+      }
+    },
+
+    "netlify": {
+      "//": "Déploiement des sites statiques (dashboard, moodboard, prompts).",
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "@netlify/mcp"],
+      "env": {
+        "NETLIFY_AUTH_TOKEN": "${NETLIFY_AUTH_TOKEN}"
+      }
+    },
+
+    "google-drive": {
+      "//": "Lecture / dépôt des assets sources (renders, textures, exports). Nécessite une config OAuth Google (voir docs/MCP.md).",
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-gdrive"]
+    }
+  }
+}
