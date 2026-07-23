@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>𓂀 N'Aset OFM — Pack Prompts Higgsfield</title>
+<style>
+  :root{
+    --or:#C9963A; --or-clair:#E8BC6A; --ivoire:#FAFAF0; --peau:#6B3D2E;
+    --cheveux:#0D0A08; --sombre:#1C1A3A; --shuka:#C0392B;
+    --bg:#0B0908; --card:#141013; --line:rgba(201,150,58,.25);
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:var(--bg);color:var(--ivoire);font-family:'Segoe UI',system-ui,sans-serif;line-height:1.55;padding-bottom:80px}
+  .wrap{max-width:960px;margin:0 auto;padding:0 20px}
+  header{padding:48px 0 28px;text-align:center;border-bottom:1px solid var(--line);
+    background:radial-gradient(ellipse at 50% -20%, rgba(201,150,58,.18), transparent 60%)}
+  header h1{font-size:1.9rem;letter-spacing:.06em;color:var(--or-clair);font-weight:600}
+  header .sub{color:var(--ivoire);opacity:.75;margin-top:8px;font-size:.95rem}
+  .meta-pills{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:18px}
+  .pill{border:1px solid var(--line);border-radius:99px;padding:5px 14px;font-size:.8rem;color:var(--or-clair);background:rgba(201,150,58,.07)}
+  h2{color:var(--or);font-size:1.15rem;letter-spacing:.08em;text-transform:uppercase;margin:44px 0 14px;display:flex;align-items:center;gap:10px}
+  h2::after{content:"";flex:1;height:1px;background:var(--line)}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px 22px;margin-bottom:16px}
+  .steps{counter-reset:step}
+  .step{display:flex;gap:14px;margin-bottom:14px;align-items:flex-start}
+  .step::before{counter-increment:step;content:counter(step);flex:0 0 28px;height:28px;border-radius:50%;
+    background:var(--or);color:var(--cheveux);font-weight:700;display:flex;align-items:center;justify-content:center;font-size:.85rem}
+  .step b{color:var(--or-clair)}
+  .promptbox{position:relative;background:#0F0D14;border:1px solid rgba(201,150,58,.35);border-radius:10px;
+    padding:14px 16px;margin:10px 0 4px;font-family:'Consolas','Menlo',monospace;font-size:.82rem;
+    color:#EDE6D6;white-space:pre-wrap;word-break:break-word}
+  .promptbox .lbl{position:absolute;top:-9px;left:12px;background:var(--card);padding:0 8px;font-family:'Segoe UI',sans-serif;
+    font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;color:var(--or)}
+  .copy{position:absolute;top:8px;right:8px;background:rgba(201,150,58,.15);border:1px solid var(--line);
+    color:var(--or-clair);border-radius:7px;padding:4px 12px;font-size:.72rem;cursor:pointer;font-family:'Segoe UI',sans-serif;transition:.15s}
+  .copy:hover{background:var(--or);color:var(--cheveux)}
+  .scene{border-left:3px solid var(--or);margin-bottom:26px}
+  .scene-head{display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:6px;margin-bottom:6px}
+  .scene-head h3{color:var(--or-clair);font-size:1.25rem}
+  .scene-head .frames{font-size:.78rem;color:var(--ivoire);opacity:.6;font-family:monospace}
+  .specs{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0 6px}
+  .spec{background:rgba(28,26,58,.55);border:1px solid rgba(250,250,240,.12);border-radius:8px;padding:4px 10px;font-size:.75rem}
+  .spec b{color:var(--or-clair);font-weight:600}
+  .shot{margin-top:18px;padding-top:14px;border-top:1px dashed rgba(201,150,58,.2)}
+  .shot h4{color:var(--ivoire);font-size:.95rem;margin-bottom:2px}
+  .shot .dur{color:var(--or);font-size:.78rem;font-family:monospace}
+  .note{font-size:.8rem;opacity:.7;margin-top:6px;font-style:italic}
+  .warn{background:rgba(192,57,43,.12);border:1px solid rgba(192,57,43,.4);border-radius:10px;padding:12px 16px;font-size:.85rem;margin:14px 0}
+  .palette{display:flex;gap:10px;flex-wrap:wrap}
+  .chip{flex:1 1 110px;border-radius:10px;overflow:hidden;border:1px solid var(--line);min-width:110px}
+  .chip .sw{height:52px}
+  .chip .info{padding:7px 10px;background:var(--card);font-size:.72rem}
+  .chip .info b{display:block;color:var(--or-clair)}
+  .check{list-style:none}
+  .check li{padding:6px 0 6px 28px;position:relative;font-size:.9rem}
+  .check li::before{content:"𓂀";position:absolute;left:0;color:var(--or);font-size:.8rem;top:8px}
+  table{width:100%;border-collapse:collapse;font-size:.83rem;margin-top:8px}
+  th,td{padding:7px 10px;text-align:left;border-bottom:1px solid rgba(250,250,240,.08)}
+  th{color:var(--or);font-weight:600;text-transform:uppercase;font-size:.72rem;letter-spacing:.08em}
+  td b{color:var(--or-clair)}
+  .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--or);color:var(--cheveux);
+    padding:9px 22px;border-radius:99px;font-weight:600;font-size:.85rem;transition:.25s;opacity:0;pointer-events:none}
+  .toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+  footer{text-align:center;margin-top:50px;font-size:.75rem;opacity:.5}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <h1>𓂀 N'ASET OFM — PACK PROMPTS HIGGSFIELD</h1>
+    <div class="sub">Divine Maasaï · Prêtresse Égyptienne Futuriste · Ordre du Feu Mystique</div>
+    <div class="meta-pills">
+      <span class="pill">16:9 cinéma</span><span class="pill">95 s · 5 scènes · 10 clips</span>
+      <span class="pill">Image-to-video · Soul ID</span><span class="pill">Montage 24 fps Premiere</span>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+
+<h2>Workflow général</h2>
+<div class="card steps">
+  <div class="step"><div><b>Créer le personnage (Soul ID / Character).</b> Sur Higgsfield, crée un personnage à partir de <b>N'Aset OFM – Divine Maasaï.jpeg</b> (ton image de référence). C'est lui qui garantit le même visage sur les 10 clips.</div></div>
+  <div class="step"><div><b>Générer la keyframe de chaque shot</b> en image (Popcorn / Image Mode) avec le personnage sélectionné + le <b>Prompt Image</b> du shot. Vérifie palette et cadrage avant d'animer.</div></div>
+  <div class="step"><div><b>Animer en image-to-video</b> avec le <b>Prompt Vidéo</b> du shot + le preset caméra indiqué. Un prompt = une tâche : le cadrage vit dans l'image, le mouvement vit dans la vidéo.</div></div>
+  <div class="step"><div><b>Enchaîner les clips d'une même scène</b> avec l'extraction de frame : exporte la dernière frame du clip N et utilise-la comme image de départ du clip N+1. Continuité garantie sur les dolly longs (Scène 2).</div></div>
+  <div class="step"><div><b>Monter dans Premiere Pro</b> : séquence 24 fps, conformer les clips, grade Filmic contraste moyen-fort, cut noir final à 95 s. Upscale 4K si besoin avant l'étalonnage.</div></div>
+</div>
+
+<div class="warn">⚠️ Règle d'or Higgsfield : <b>prompts courts et directs</b>. Une seule instruction caméra par clip. Esthétique OFM : <b>sacré + minimalisme</b> — effets subtils, jamais excessifs.</div>
+
+<h2>Blocs réutilisables</h2>
+<div class="card">
+  <div class="promptbox"><span class="lbl">Identité — à coller dans chaque prompt image</span><button class="copy">Copier</button>N'Aset, a majestic young African priestess, tall slender athletic silhouette, deep brown skin, black cornrow braids with red beads, wide multicolored Maasai beaded collar, crimson shuka drape over one shoulder, flowing ivory sacred cloth, gold Egyptian arm cuffs and wide gold bracelet, subtle dark kohl eyeliner, sovereign regal presence.</div>
+  <div class="promptbox"><span class="lbl">Style — à coller à la fin de chaque prompt image</span><button class="copy">Copier</button>Cinematic still, vast golden savanna, warm golden haze, sacred minimalism, filmic color grade, medium-high contrast, photorealistic, 16:9.</div>
+  <div class="promptbox"><span class="lbl">À éviter (champ négatif ou fin de prompt)</span><button class="copy">Copier</button>No modern clothing, no phone, no jeans, no text, no watermark, no excessive glow, no camera shake, no extra characters.</div>
+  <p class="note">L'image de référence contient un pull et un jean modernes : le bloc « À éviter » est indispensable pour que Soul ID ne garde que le visage, les tresses, le collier et les drapés.</p>
+</div>
+
+<h2>Scène 1 — L'Apparition</h2>
+<div class="card scene">
+  <div class="scene-head"><h3>S1 · Silhouette de dos</h3><span class="frames">frames 1–240 · 0–10 s</span></div>
+  <div class="specs"><span class="spec"><b>35mm</b> plan large</span><span class="spec">Caméra <b>fixe</b></span><span class="spec"><b>Contre-jour pur</b></span><span class="spec">Émission or : <b>0.0</b></span><span class="spec">1 clip · 10 s</span></div>
+
+  <div class="shot">
+    <h4>Shot 1A <span class="dur">· 10 s · Naset_S1_Shot01</span></h4>
+    <div class="promptbox"><span class="lbl">Prompt image (keyframe)</span><button class="copy">Copier</button>Extreme wide shot, 35mm lens, deep focus. [IDENTITÉ] seen from behind, standing motionless in a vast golden savanna at sunset, lone acacia trees on the horizon. Pure backlight: her silhouette almost black against the blazing golden sky, only a thin golden rim light on her shoulders. Ivory drape and crimson shuka lifted by the wind. Faint golden dust in the air. No jewelry glow. [STYLE]</div>
+    <div class="promptbox"><span class="lbl">Prompt vidéo (motion)</span><button class="copy">Copier</button>The camera is locked, completely static. The wind rises slowly: her ivory drape and crimson shuka ripple, the dry grass waves, fine golden dust drifts across the frame. She remains perfectly still, seen from behind. Subtle atmosphere only, no camera movement.</div>
+    <p class="note">Checklist Blender S1 respectée : visage non visible, silhouette quasi-noire, particules discrètes, aucune émission dorée.</p>
+  </div>
+</div>
+
+<h2>Scène 2 — L'Approche</h2>
+<div class="card scene">
+  <div class="scene-head"><h3>S2 · Dolly in 10 m → 2 m</h3><span class="frames">frames 241–960 · 10–40 s</span></div>
+  <div class="specs"><span class="spec"><b>50mm</b></span><span class="spec">Preset <b>Dolly In</b> lent</span><span class="spec">Lumière : contre-jour → <b>latérale chaude</b></span><span class="spec">Bijoux s'allument à ~21 s</span><span class="spec">3 clips · 10 s</span></div>
+  <p class="note">Enchaîne 2A → 2B → 2C par extraction de la dernière frame. Même preset caméra sur les trois clips pour un dolly sans saccade.</p>
+
+  <div class="shot">
+    <h4>Shot 2A <span class="dur">· 10 s (10–20 s) · Naset_S2_Shot01</span></h4>
+    <div class="promptbox"><span class="lbl">Prompt image (keyframe)</span><button class="copy">Copier</button>Wide shot from behind at ten meters, 50mm lens. [IDENTITÉ] standing still in the golden savanna, backlit by the low sun, drapes moving in the wind, warm haze, dust motes in the light beams. Jewelry unlit. [STYLE]</div>
+    <div class="promptbox"><span class="lbl">Prompt vidéo (motion)</span><button class="copy">Copier</button>Slow steady dolly in at eye level, moving straight toward her back. She stays still and sovereign, drapes ripple gently, golden dust floats through the backlight. Constant speed, no shake.</div>
+  </div>
+
+  <div class="shot">
+    <h4>Shot 2B <span class="dur">· 10 s (20–30 s) · Naset_S2_Shot02</span></h4>
+    <div class="promptbox"><span class="lbl">Prompt image (keyframe)</span><button class="copy">Copier</button>Medium shot from behind at five meters, 50mm lens. [IDENTITÉ], the light now raking from the side, warm golden side light sculpting her shoulders and braids, her gold cuffs beginning to glow very faintly. [STYLE]</div>
+    <div class="promptbox"><span class="lbl">Prompt vidéo (motion)</span><button class="copy">Copier</button>The slow dolly in continues at constant speed. The lighting shifts gradually from backlight to warm side light. Her gold jewelry starts to shimmer subtly. She remains still, drapes breathing in the wind. No shake.</div>
+  </div>
+
+  <div class="shot">
+    <h4>Shot 2C <span class="dur">· 10 s (30–40 s) · Naset_S2_Shot03</span></h4>
+    <div class="promptbox"><span class="lbl">Prompt image (keyframe)</span><button class="copy">Copier</button>Close medium shot at two meters, 50mm lens, shallow depth of field. [IDENTITÉ] seen from behind and slightly to the side, warm lateral light, gold jewelry glowing softly, beads of her collar catching the sun. [STYLE]</div>
+    <div class="promptbox"><span class="lbl">Prompt vidéo (motion)</span><button class="copy">Copier</button>The dolly in slows to a stop at two meters. She slowly turns her head to the right: her right profile is revealed in the warm side light, calm and regal. Not a full look to camera. Her earrings and beads sway slightly.</div>
+    <p class="note">Fidèle à la frame 720 du plan Blender : profil droit visible, jamais le regard complet.</p>
+  </div>
+</div>
+
+<h2>Scène 3 — Le Regard</h2>
+<div class="card scene">
+  <div class="scene-head"><h3>S3 · Portrait figé 85mm</h3><span class="frames">frames 961–1440 · 40–60 s</span></div>
+  <div class="specs"><span class="spec"><b>85mm</b> · f/1.8</span><span class="spec">Caméra <b>totalement fixe</b></span><span class="spec">Plongée <b>5°</b></span><span class="spec">Vent : <b>0</b> · particules suspendues</span><span class="spec">2 clips · 10 s</span></div>
+
+  <div class="shot">
+    <h4>Shot 3A <span class="dur">· 10 s (40–50 s) · Naset_S3_Shot01</span></h4>
+    <div class="promptbox"><span class="lbl">Prompt image (keyframe)</span><button class="copy">Copier</button>Close-up portrait, 85mm lens, f/1.8, very shallow depth of field, camera slightly above eye level. [IDENTITÉ] facing the camera, gazing directly into the lens, intense calm eyes with dark kohl, soft frontal light, golden rim light behind her, gold jewelry glowing softly, golden dust suspended motionless in the air, blurred savanna background. [STYLE]</div>
+    <div class="promptbox"><span class="lbl">Prompt vidéo (motion)</span><button class="copy">Copier</button>The camera is absolutely static, frozen sacred moment. Total silence: the wind has stopped, golden dust hangs motionless in the air. Only micro-movements: her gentle breathing, a steady unblinking gaze into the lens. Nothing else moves.</div>
+  </div>
+
+  <div class="shot">
+    <h4>Shot 3B <span class="dur">· 10 s (50–60 s) · Naset_S3_Shot02</span></h4>
+    <div class="promptbox"><span class="lbl">Prompt vidéo (motion — même keyframe, dernière frame de 3A)</span><button class="copy">Copier</button>Static camera, the frozen moment continues. She holds her steady gaze into the lens, one slow soft blink, subtle breathing, catchlights glimmering in her dark eyes. Dust still suspended. No camera movement at all.</div>
+    <p class="note">Pas de nouvelle keyframe : repars de la dernière frame de 3A pour un plan de 20 s parfaitement continu.</p>
+  </div>
+</div>
+
+<h2>Scène 4 — La Descente</h2>
+<div class="card scene">
+  <div class="scene-head"><h3>S4 · Les yeux se ferment</h3><span class="frames">frames 1441–1920 · 60–80 s</span></div>
+  <div class="specs"><span class="spec"><b>85mm</b> fixe</span><span class="spec">DOF f/1.8 → <b>f/1.4</b></span><span class="spec">Fermeture paupières <b>~4.4 s</b></span><span class="spec">Émission or 0.2 → <b>0.45</b></span><span class="spec">2 clips · 10 s</span></div>
+
+  <div class="shot">
+    <h4>Shot 4A <span class="dur">· 10 s (60–70 s) · Naset_S4_Shot01</span></h4>
+    <div class="promptbox"><span class="lbl">Prompt vidéo (motion — dernière frame de 3B)</span><button class="copy">Copier</button>Static camera, slow-motion feel. She holds her gaze for a few seconds, serene, then her eyelids very slowly begin to close, graceful and unhurried. The background blur deepens slightly. Golden dust starts a barely visible slow drift around her. Subtle, sacred, minimal.</div>
+  </div>
+
+  <div class="shot">
+    <h4>Shot 4B <span class="dur">· 10 s (70–80 s) · Naset_S4_Shot02</span></h4>
+    <div class="promptbox"><span class="lbl">Prompt image (keyframe)</span><button class="copy">Copier</button>Close-up portrait, 85mm lens, f/1.4. [IDENTITÉ] with eyes fully closed, serene as in deep meditation, a faint golden glow barely visible beneath her eyelids, her gold jewelry glowing noticeably warmer, soft frontal light, golden dust hovering around her, dreamy shallow focus. [STYLE]</div>
+    <div class="promptbox"><span class="lbl">Prompt vidéo (motion)</span><button class="copy">Copier</button>Static camera, deep stillness. Her eyes stay closed, slow meditative breathing. The golden glow of her jewelry rises gently, a faint warm light pulses beneath her closed eyelids, golden particles oscillate very slightly around her, like a held breath. Subtle only, never excessive.</div>
+  </div>
+</div>
+
+<h2>Scène 5 — L'Éveil</h2>
+<div class="card scene">
+  <div class="scene-head"><h3>S5 · Émission dorée · cut noir</h3><span class="frames">frames 1921–2280 · 80–95 s</span></div>
+  <div class="specs"><span class="spec"><b>85mm</b> fixe · f/1.4</span><span class="spec">Ouverture yeux <b>vive</b> (4 frames)</span><span class="spec">Iris or 1.2 · bijoux <b>2.0</b> · aura 0.15</span><span class="spec">2 clips · 7 s + 8 s</span></div>
+
+  <div class="shot">
+    <h4>Shot 5A <span class="dur">· 7 s (80–87 s) · Naset_S5_Shot01</span></h4>
+    <div class="promptbox"><span class="lbl">Prompt vidéo (motion — dernière frame de 4B)</span><button class="copy">Copier</button>Static camera. Her eyes snap open in an instant: her irises glow molten gold. Her gold jewelry flares into a warm radiant golden light, and a soft golden aura begins to rise from her skin. Powerful but controlled, sovereign, no lens flare excess.</div>
+  </div>
+
+  <div class="shot">
+    <h4>Shot 5B <span class="dur">· 8 s (87–95 s) · Naset_S5_Shot02</span></h4>
+    <div class="promptbox"><span class="lbl">Prompt image (keyframe)</span><button class="copy">Copier</button>Close-up portrait, 85mm lens, f/1.4. [IDENTITÉ] with glowing molten-gold irises, jewelry radiating intense warm golden light, a soft golden aura around her body, golden particles rising slowly around her, dark blurred background swallowed by warm light. [STYLE]</div>
+    <div class="promptbox"><span class="lbl">Prompt vidéo (motion)</span><button class="copy">Copier</button>Static camera. She holds a sovereign luminous gaze into the lens. The golden aura stabilizes around her body, golden particles rise slowly, the emission intensifies gradually until the frame is bathed in warm gold. She does not move. Hold the final intensity.</div>
+    <p class="note">Le cut noir final se fait au montage dans Premiere, à 95 s exactement.</p>
+  </div>
+</div>
+
+<h2>Réglages Higgsfield conseillés</h2>
+<div class="card">
+  <table>
+    <tr><th>Scène</th><th>Modèle vidéo</th><th>Preset caméra</th><th>Pourquoi</th></tr>
+    <tr><td><b>S1</b></td><td>Veo / Cinema Studio</td><td>Static</td><td>Atmosphère, vent, drapés — motion environnementale réaliste</td></tr>
+    <tr><td><b>S2</b></td><td>Kling (Motion Control)</td><td>Dolly In (lent)</td><td>Contrôle précis de la vitesse du travelling sur 3 clips</td></tr>
+    <tr><td><b>S3</b></td><td>Kling / Seedance</td><td>Static</td><td>Micro-mouvements maîtrisés, zéro dérive caméra</td></tr>
+    <tr><td><b>S4</b></td><td>Kling / Seedance</td><td>Static</td><td>Fermeture de paupières lente et propre</td></tr>
+    <tr><td><b>S5</b></td><td>Veo / Cinema Studio</td><td>Static</td><td>Effets d'émission lumineuse plus riches</td></tr>
+  </table>
+  <p class="note">Aspect 16:9 partout · un seul mouvement caméra par clip · si un modèle dérive (caméra qui bouge en plan fixe), ajoute « locked tripod shot » en tête du prompt vidéo.</p>
+</div>
+
+<h2>Palette officielle — jamais dévier</h2>
+<div class="card">
+  <div class="palette">
+    <div class="chip"><div class="sw" style="background:#C9963A"></div><div class="info"><b>#C9963A</b>Or sacré</div></div>
+    <div class="chip"><div class="sw" style="background:#E8BC6A"></div><div class="info"><b>#E8BC6A</b>Or clair</div></div>
+    <div class="chip"><div class="sw" style="background:#FAFAF0"></div><div class="info"><b>#FAFAF0</b>Blanc ivoire</div></div>
+    <div class="chip"><div class="sw" style="background:#6B3D2E"></div><div class="info"><b>#6B3D2E</b>Peau base</div></div>
+    <div class="chip"><div class="sw" style="background:#0D0A08"></div><div class="info"><b>#0D0A08</b>Cheveux</div></div>
+    <div class="chip"><div class="sw" style="background:#1C1A3A"></div><div class="info"><b>#1C1A3A</b>Khôl · ombres</div></div>
+    <div class="chip"><div class="sw" style="background:#C0392B"></div><div class="info"><b>#C0392B</b>Rouge Shúkà</div></div>
+  </div>
+  <p class="note">À utiliser comme référence d'étalonnage dans Premiere / After Effects — les modèles vidéo ne respectent pas les hex à la lettre, c'est le grade qui verrouille la palette.</p>
+</div>
+
+<h2>Checklist montage final</h2>
+<div class="card">
+  <ul class="check">
+    <li>Séquence Premiere <b>24 fps</b> · 3840×2160 — conformer chaque clip Higgsfield (souvent 30 fps natif → interpréter à 24)</li>
+    <li>Nommage : <b>Naset_S[scène]_Shot[nn]_v[N].mp4</b> — cohérent avec la convention <b>Naset_S[scene]_F[frame]</b> du repo</li>
+    <li>Vérifier la continuité identité entre clips (visage, collier, tresses) — regénérer un shot plutôt que d'accepter une dérive</li>
+    <li>Grade Filmic, contraste moyen-fort, dominante or #C9963A sur les hautes lumières</li>
+    <li>Montée sonore S5 puis <b>cut to black net à 95 s</b> — silence total en S3</li>
+    <li>Effets subtils partout — si un plan paraît « trop », il l'est</li>
+  </ul>
+</div>
+
+<footer>𓂀 N'Aset OFM · Ordre du Feu Mystique · Négus Dja — Guadeloupe · Pack Higgsfield v1</footer>
+</div>
+
+<div class="toast" id="toast">Copié ✓</div>
+<script>
+document.querySelectorAll('.copy').forEach(function(btn){
+  btn.addEventListener('click', function(){
+    var box = btn.parentElement.cloneNode(true);
+    box.querySelector('.copy').remove();
+    var lbl = box.querySelector('.lbl'); if(lbl) lbl.remove();
+    var text = box.textContent.trim();
+    function done(){ var t=document.getElementById('toast'); t.classList.add('show');
+      btn.textContent='Copié ✓'; setTimeout(function(){t.classList.remove('show');btn.textContent='Copier';},1400); }
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(text).then(done).catch(function(){fallback(text);done();});
+    } else { fallback(text); done(); }
+    function fallback(txt){ var ta=document.createElement('textarea'); ta.value=txt; ta.style.position='fixed'; ta.style.opacity='0';
+      document.body.appendChild(ta); ta.select(); try{document.execCommand('copy');}catch(e){} document.body.removeChild(ta); }
+  });
+});
+</script>
+</body>
+</html>
