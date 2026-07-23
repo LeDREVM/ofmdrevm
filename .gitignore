@@ -138,3 +138,13 @@ docs/_build/
 site/
 # External cloned addon repos (not project code)
 tools/
+# === Sous-modules tiers cassés (clones locaux, non versionnés ici) ===
+addons/character-dna-addon/
+addons/easymesh_batch_exporter/
+tools/SpeechCraft/
+tools/unreal-audio2lipsync/
+
+# MCP config (API keys)
+.mcp.json
+# Local Netlify folder
+.netlify
