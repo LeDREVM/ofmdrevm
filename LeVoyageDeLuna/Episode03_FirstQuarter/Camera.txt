@@ -1,0 +1,15 @@
+CAMERA — Episode 03 · First Quarter
+
+Plan 1 (0-5s)   : Plan large symétrique · 24mm · rivière au centre, reflet de la
+                  demi-lune. Composition miroir parfaite. Fixe.
+Plan 2 (5-11s)  : Plongée verticale · 35mm · au-dessus de la surface — main de Luna
+                  et main du reflet qui se rapprochent. Descente très lente.
+Plan 3 (11-14s) : Macro surface · 85mm · le contact + l'onde circulaire
+                  Fixe. L'onde sort du cadre.
+Plan 4 (14-20s) : Travelling latéral · 35mm · traversée à gué de profil
+                  Suit Luna. Les pierres s'allument à son passage. Fondu.
+
+Réglages globaux :
+- Symétrie stricte sur les plans 1 et 2 — l'axe = la surface de l'eau
+- f/4 sur le plan 1 (tout net pour le reflet), f/2 ailleurs
+- L'eau doit rester PARFAITEMENT calme sauf l'onde du plan 3

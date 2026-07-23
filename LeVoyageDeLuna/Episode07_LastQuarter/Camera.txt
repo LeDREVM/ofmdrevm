@@ -1,0 +1,17 @@
+CAMERA — Episode 07 · Last Quarter
+
+MIROIR DE E03 — reprendre les mêmes plans, inversés gauche/droite.
+
+Plan 1 (0-5s)   : Plan large symétrique · 24mm · rivière au centre, reflet du
+                  dernier quartier. MÊME cadre que E03-Plan1, flip horizontal.
+Plan 2 (5-12s)  : Travelling latéral · 35mm · traversée de profil (sens inverse
+                  de E03). Pas d'arrêt — la caméra non plus ne s'arrête pas.
+Plan 3 (12-15s) : Plongée verticale · 35mm · le regard vers le reflet plus
+                  lumineux. MÊME axe que E03-Plan2, mais BREF (3s au lieu de 6).
+Plan 4 (15-20s) : Plan rapproché · 50mm · dépôt de la sphère d'or au bord de
+                  l'eau, puis pano lent qui la suit s'éloignant. Fondu.
+
+Réglages globaux :
+- f/4 plan 1 (netteté reflet), f/2 ailleurs — identiques à E03
+- La durée raccourcie du plan "reflet" (3s vs 6s) DIT l'évolution : plus besoin
+  de longuement se chercher

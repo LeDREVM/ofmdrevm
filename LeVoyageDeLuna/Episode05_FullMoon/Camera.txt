@@ -1,0 +1,17 @@
+CAMERA — Episode 05 · Full Moon
+
+Plan 1 (0-6s)   : Grue descendante · 24mm · du ciel (pleine lune) vers le cercle
+                  de pierres. Mouvement vertical lent, révèle la géographie sacrée.
+Plan 2 (6-13s)  : Steadicam avant · 35mm · derrière Luna qui entre dans le cercle
+                  Les pierres s'allument de part et d'autre du cadre.
+Plan 3 (13-19s) : Orbite lente · 50mm · 90° autour de Luna bras ouverts
+                  Vitesse : 1 tour complet = 24s (on n'en fait qu'un quart).
+Plan 4 (19-21s) : Plan poitrine · 85mm · visage levé, fusion lumineuse
+                  Fixe. Légère surexposition contrôlée (+1 stop max).
+Plan 5 (21-25s) : Plan large final · 24mm · cercle + lucioles en suspension
+                  Grue remontante symétrique au plan 1. Fondu lent (2s).
+
+Réglages globaux :
+- f/2.8 · SEUL épisode avec mouvement de grue (souligne le pivot)
+- La surexposition du plan 4 ne doit JAMAIS écraser les détails du visage
+- Symétrie grue descend (ouverture) / grue monte (clôture)

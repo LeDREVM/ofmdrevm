@@ -1,0 +1,15 @@
+CAMERA — Episode 02 · Crescent
+
+Plan 1 (0-5s)   : Plan large · 24mm · horizon + lever du croissant
+                  Fixe. Le croissant entre dans le cadre par le bas.
+Plan 2 (5-12s)  : Travelling latéral · 35mm · suit Luna qui marche (profil)
+                  Vitesse alignée sur ses pas. Hauteur : 60cm (hauteur d'enfant).
+Plan 3 (12-17s) : Contre-champ · 50mm · Luna de face, sillage lumineux derrière elle
+                  Léger travelling arrière pour révéler le chemin complet.
+Plan 4 (17-20s) : Plan large final · 24mm · Luna petite dans le cadre + croissant
+                  Fixe. Fondu au noir lent (1.5s).
+
+Réglages globaux :
+- Profondeur de champ : f/2.8
+- La caméra reste à hauteur d'enfant tout l'épisode (60-80cm) — c'est SON regard
+- Mouvements fluides, jamais de coupe pendant un pas

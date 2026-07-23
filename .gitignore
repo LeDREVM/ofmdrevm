@@ -136,6 +136,8 @@ n8n_data/
 # === Documentation générée ===
 docs/_build/
 site/
+# External cloned addon repos (not project code)
+tools/
 # === Sous-modules tiers cassés (clones locaux, non versionnés ici) ===
 addons/character-dna-addon/
 addons/easymesh_batch_exporter/
