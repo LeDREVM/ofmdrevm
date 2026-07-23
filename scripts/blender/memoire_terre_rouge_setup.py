@@ -1,7 +1,7 @@
 """
 memoire_terre_rouge_setup.py
 Setup complet de la scène narrative "La Mémoire de la Terre Rouge" (N'Aset OFM · Guadeloupe).
-45 secondes · 1080 frames · 24fps · 6 scènes · 4K Cycles GPU.
+45 secondes · 1080 frames · 24fps · 6 scènes · 4K vertical 9:16 (2160×3840) · Cycles GPU.
 
 Version FUSIONNÉE — combine :
   · Soleil Guadeloupe (SUN + ciel) · terre rouge riche · silhouettes translucides
@@ -61,14 +61,29 @@ SCENES = [
     ('S6_Titre',         913, 1080, 'Cam_S5_Force'),   # S6 = noir/titre en post → réutilise S5
 ]
 
-# Caméras par scène : lens, f-stop, position, rotation (degrés X)
+# Caméras par scène : lens, f-stop, position, rotation (degrés X), distance de mise au point (m)
+# ⚠️ 'focus' est obligatoire : sans lui le DOF reste sur son défaut (10 m) et tout est flou.
+# ⚠️ Cam_S1 doit rester HORS du volume de Naset_Body (cylindre r=0.30 à l'origine),
+#    sinon la macro rend l'intérieur du mesh → image noire.
 CAMERAS = {
-    'Cam_S1_SolMacro':  {'lens': 100.0, 'fstop': 2.8, 'location': (0.0,  0.0, 0.10), 'rot_x': 80},
-    'Cam_S2_Apparition':{'lens': 50.0,  'fstop': 2.8, 'location': (0.0, -3.0, 1.65), 'rot_x': 90},
-    'Cam_S3_Memoire':   {'lens': 35.0,  'fstop': 8.0, 'location': (0.0, -8.0, 1.80), 'rot_x': 88},
-    'Cam_S4_Regard':    {'lens': 135.0, 'fstop': 1.4, 'location': (0.0, -0.8, 1.68), 'rot_x': 90},
-    'Cam_S5_Force':     {'lens': 50.0,  'fstop': 4.0, 'location': (0.0, -4.0, 1.65), 'rot_x': 90},
+    'Cam_S1_SolMacro':  {'lens': 100.0, 'fstop': 2.8, 'location': (0.0, -0.55, 0.10), 'rot_x': 80, 'focus': 0.55},
+    'Cam_S2_Apparition':{'lens': 50.0,  'fstop': 2.8, 'location': (0.0, -3.0,  1.65), 'rot_x': 90, 'focus': 3.0},
+    'Cam_S3_Memoire':   {'lens': 35.0,  'fstop': 8.0, 'location': (0.0, -8.0,  1.80), 'rot_x': 88, 'focus': 8.0},
+    'Cam_S4_Regard':    {'lens': 135.0, 'fstop': 1.4, 'location': (0.0, -0.8,  1.68), 'rot_x': 90, 'focus': 0.8},
+    'Cam_S5_Force':     {'lens': 50.0,  'fstop': 4.0, 'location': (0.0, -4.0,  1.65), 'rot_x': 90, 'focus': 4.0},
 }
+
+
+# ─── NETTOYAGE SCÈNE DE DÉPART ────────────────────────────────────────────────
+
+def clean_default_objects():
+    """Supprime Cube/Camera/Light du startup Blender.
+    Sans ça le Cube 2m reste planté à l'origine, devant N'Aset, dans TOUS les cadres."""
+    for name in ('Cube', 'Camera', 'Light'):
+        obj = bpy.data.objects.get(name)
+        if obj:
+            bpy.data.objects.remove(obj, do_unlink=True)
+            print(f"[CLEAN] {name} (startup Blender) supprimé")
 
 
 # ─── CONFIGURATION SCÈNE & RENDU ──────────────────────────────────────────────
@@ -85,8 +100,9 @@ def setup_scene_render():
 
     render = scene.render
     render.engine                = 'CYCLES'
-    render.resolution_x          = 3840
-    render.resolution_y          = 2160
+    # FORMAT FINAL 9:16 vertical (réseaux sociaux) — 4K portrait
+    render.resolution_x          = 2160
+    render.resolution_y          = 3840
     render.resolution_percentage = 100
 
     # GPU Cycles — activer les devices (sinon le 'GPU' seul ne suffit pas)
@@ -110,51 +126,78 @@ def setup_scene_render():
     scene.view_settings.view_transform = 'Filmic'
     scene.view_settings.look           = 'Medium High Contrast'   # Blender 5.0 : plus de préfixe "Filmic - "
 
-    print(f"[SETUP] {FRAME_START}–{FRAME_END} @ {FPS}fps · 4K Cycles GPU Filmic")
+    print(f"[SETUP] {FRAME_START}–{FRAME_END} @ {FPS}fps · 4K vertical 9:16 (2160×3840) · Cycles GPU Filmic")
 
 
 # ─── MATÉRIAUX ────────────────────────────────────────────────────────────────
 
 def create_material_terre_rouge():
-    """Sol terre rouge guadeloupéenne : couleur de base + variation sombre pilotée par noise."""
+    """Sol terre rouge guadeloupéenne : variation de couleur large + grain fin.
+
+    Deux échelles de bruit obligatoires : le sol fait 200 m mais S1 le cadre en macro
+    sur ~20 cm. Un seul noise basse fréquence y rend un aplat uni — le grain fin
+    (noise_fin) est ce qui rend la matière lisible dans le plan « le sol parle »."""
     mat = bpy.data.materials.get('Mat_TerreRouge') or bpy.data.materials.new('Mat_TerreRouge')
     mat.use_nodes = True
     nodes = mat.node_tree.nodes
     links = mat.node_tree.links
     nodes.clear()
 
-    out     = nodes.new('ShaderNodeOutputMaterial')
-    bsdf    = nodes.new('ShaderNodeBsdfPrincipled')
-    noise   = nodes.new('ShaderNodeTexNoise')
-    mix_rgb = nodes.new('ShaderNodeMixRGB')   # legacy mais fonctionnel en 5.0
-    bump    = nodes.new('ShaderNodeBump')
+    out       = nodes.new('ShaderNodeOutputMaterial')
+    bsdf      = nodes.new('ShaderNodeBsdfPrincipled')
+    texcoord  = nodes.new('ShaderNodeTexCoord')
+    noise     = nodes.new('ShaderNodeTexNoise')
+    noise_fin = nodes.new('ShaderNodeTexNoise')
+    mix_grain = nodes.new('ShaderNodeMixRGB')
+    mix_rgb   = nodes.new('ShaderNodeMixRGB')   # legacy mais fonctionnel en 5.0
+    bump      = nodes.new('ShaderNodeBump')
 
     mix_rgb.blend_type = 'MIX'
     mix_rgb.inputs['Color1'].default_value = COLOR['terre_rouge']
     mix_rgb.inputs['Color2'].default_value = COLOR['terre_sombre']
 
-    noise.inputs['Scale'].default_value     = 8.0
+    # ⚠️ Coordonnées Object (unités de la scène) et NON Generated : Generated normalise
+    # sur la bounding box, donc agrandir le sol diluerait le grain jusqu'à l'aplat en S1.
+    links.new(texcoord.outputs['Object'], noise.inputs['Vector'])
+    links.new(texcoord.outputs['Object'], noise_fin.inputs['Vector'])
+
+    # basse fréquence — grandes plaques de terre, ~12 m (visible en plan large S3/S5)
+    noise.inputs['Scale'].default_value     = 0.08
     noise.inputs['Detail'].default_value    = 6.0
     noise.inputs['Roughness'].default_value = 0.7
+
+    # haute fréquence — grain de terre, ~7 mm (visible en macro S1)
+    noise_fin.inputs['Scale'].default_value     = 150.0
+    noise_fin.inputs['Detail'].default_value    = 10.0
+    noise_fin.inputs['Roughness'].default_value = 0.85
+
+    # le grain assombrit localement la couleur, sans écraser la variation large
+    mix_grain.blend_type = 'MULTIPLY'
+    mix_grain.inputs['Fac'].default_value = 0.45
 
     bsdf.inputs['Roughness'].default_value          = 0.88
     bsdf.inputs['Metallic'].default_value           = 0.0
     bsdf.inputs['Specular IOR Level'].default_value = 0.15
 
-    bump.inputs['Strength'].default_value = 0.2
+    bump.inputs['Strength'].default_value = 0.45
 
-    links.new(noise.outputs['Fac'],     mix_rgb.inputs['Fac'])
-    links.new(mix_rgb.outputs['Color'], bsdf.inputs['Base Color'])
-    links.new(noise.outputs['Fac'],     bump.inputs['Height'])
-    links.new(bump.outputs['Normal'],   bsdf.inputs['Normal'])
-    links.new(bsdf.outputs['BSDF'],     out.inputs['Surface'])
+    links.new(noise.outputs['Fac'],       mix_rgb.inputs['Fac'])
+    links.new(mix_rgb.outputs['Color'],   mix_grain.inputs['Color1'])
+    links.new(noise_fin.outputs['Fac'],   mix_grain.inputs['Color2'])
+    links.new(mix_grain.outputs['Color'], bsdf.inputs['Base Color'])
+    links.new(noise_fin.outputs['Fac'],   bump.inputs['Height'])
+    links.new(bump.outputs['Normal'],     bsdf.inputs['Normal'])
+    links.new(bsdf.outputs['BSDF'],       out.inputs['Surface'])
 
-    noise.location   = (-600, -100)
-    mix_rgb.location = (-350, 100)
-    bump.location    = (-350, -200)
-    bsdf.location    = (-50, 0)
-    out.location     = (250, 0)
-    print("[MAT] Mat_TerreRouge créé (variation + bump)")
+    texcoord.location  = (-1050, -50)
+    noise.location     = (-800, 100)
+    noise_fin.location = (-800, -250)
+    mix_rgb.location   = (-550, 150)
+    mix_grain.location = (-320, 100)
+    bump.location      = (-320, -250)
+    bsdf.location      = (-50, 0)
+    out.location       = (250, 0)
+    print("[MAT] Mat_TerreRouge créé (variation large + grain macro + bump)")
     return mat
 
 
@@ -228,7 +271,9 @@ def create_ground():
     if 'Sol_TerreRouge' in bpy.data.objects:
         bpy.data.objects.remove(bpy.data.objects['Sol_TerreRouge'], do_unlink=True)
 
-    bpy.ops.mesh.primitive_plane_add(size=20, location=(0, 0, 0))
+    # 2000 m et non 20 m : le bord du plan doit tomber SOUS l'horizon du ciel,
+    # sinon une bande sombre apparaît entre les deux dans les plans larges (S3, S5).
+    bpy.ops.mesh.primitive_plane_add(size=2000, location=(0, 0, 0))
     sol = bpy.context.active_object
     sol.name = 'Sol_TerreRouge'
 
@@ -237,7 +282,7 @@ def create_ground():
     sub.render_levels = 5
 
     sol.data.materials.append(create_material_terre_rouge())
-    print("[OBJ] Sol_TerreRouge · 20m · subsurf 3/5")
+    print("[OBJ] Sol_TerreRouge · 2000m (jusqu'à l'horizon) · subsurf 3/5")
     return sol
 
 
@@ -274,9 +319,10 @@ def create_ancestors():
         if name in bpy.data.objects:
             bpy.data.objects.remove(bpy.data.objects[name], do_unlink=True)
 
-        # demi-cercle de rayon 5m, derrière (Y+)
+        # demi-cercle derrière (Y+) — étalement X 2.8m : en 9:16 le champ horizontal
+        # du 35mm à ~12m ne couvre que ±3.4m, un rayon de 4m coupait les extrêmes.
         angle = _m.pi * (i - 1) / (N_ANCETRES - 1)   # 0 → pi
-        x = -_m.cos(angle) * 4.0
+        x = -_m.cos(angle) * 2.8
         y =  3.5 + _m.sin(angle) * 1.5
         bpy.ops.mesh.primitive_cylinder_add(radius=0.22, depth=1.7, location=(x, y, 0.85))
         anc = bpy.context.active_object
@@ -299,7 +345,8 @@ def create_cameras():
         cam.data.lens = p['lens']
         cam.data.dof.use_dof = True
         cam.data.dof.aperture_fstop = p['fstop']
-        print(f"[CAM] {name} · {p['lens']}mm · f/{p['fstop']}")
+        cam.data.dof.focus_distance = p['focus']
+        print(f"[CAM] {name} · {p['lens']}mm · f/{p['fstop']} · focus {p['focus']}m")
 
 
 def bind_cameras_to_markers():
@@ -338,6 +385,41 @@ def create_lights():
         if p['type'] == 'AREA':
             lo.data.size = 2.0
     print("[LIGHT] Soleil Guadeloupe (SUN) · Ciel bleu · Rim or")
+
+
+# ─── CIEL (World) ─────────────────────────────────────────────────────────────
+
+def create_world():
+    """Ciel de Guadeloupe (Sky Texture Nishita) — sans ça le fond reste le gris
+    par défaut de Blender, visible dans tous les plans larges (S3, S5)."""
+    world = bpy.data.worlds.get('World_Gwadloup') or bpy.data.worlds.new('World_Gwadloup')
+    bpy.context.scene.world = world
+    world.use_nodes = True
+    nodes = world.node_tree.nodes
+    nodes.clear()
+
+    out = nodes.new('ShaderNodeOutputWorld')
+    bg  = nodes.new('ShaderNodeBackground')
+    sky = nodes.new('ShaderNodeTexSky')
+
+    # ⚠️ Blender 5.0 : 'NISHITA' renommé 'MULTIPLE_SCATTERING', 'dust_density' → 'aerosol_density'
+    sky.sky_type         = 'MULTIPLE_SCATTERING'
+    sky.sun_elevation    = math.radians(12)   # soleil bas — lumière rasante S1/S2
+    sky.sun_rotation     = math.radians(200)
+    sky.altitude         = 0
+    sky.air_density      = 1.4                # atmosphère chaude, horizon doré
+    sky.aerosol_density  = 2.2                # poussière — cohérent avec la terre rouge
+    sky.ground_albedo    = 0.25               # rebond de la terre rouge sur le ciel bas
+    sky.sun_disc         = False              # le soleil est déjà Key_Soleil_Gwadloup (SUN)
+    bg.inputs['Strength'].default_value = 0.6
+
+    world.node_tree.links.new(sky.outputs['Color'], bg.inputs['Color'])
+    world.node_tree.links.new(bg.outputs['Background'], out.inputs['Surface'])
+
+    sky.location = (-400, 0)
+    bg.location  = (-150, 0)
+    out.location = (100, 0)
+    print("[WORLD] World_Gwadloup · Multiple Scattering · soleil 12° · horizon doré")
 
 
 # ─── POUSSIÈRE ROUGE (S1) ─────────────────────────────────────────────────────
@@ -392,17 +474,33 @@ def animate_ancestors():
         if not mix:
             continue
         offset = i * 8   # apparition non-simultanée
+        # L'offset ne s'applique QU'À l'apparition. Le cut S5 (721) est net pour tous :
+        # décaler la disparition les laisserait traîner jusqu'à la frame 769 dans S5.
         keys = [
-            (336,  0.0),   # fin S2 — invisible
-            (380,  0.6),   # S3 — apparition
-            (720,  0.6),   # S4 — encore là
-            (721,  0.0),   # cut S5 — disparaissent
+            (336 + offset, 0.0),   # fin S2 — invisible
+            (380 + offset, 0.6),   # S3 — apparition échelonnée
+            (720,          0.6),   # S4 — encore là
+            (721,          0.0),   # cut S5 — disparaissent toutes ensemble
         ]
-        for frame, fac in keys:
-            f = frame + offset
+        for f, fac in keys:
             bpy.context.scene.frame_set(f)
             mix.inputs['Fac'].default_value = fac
             mix.inputs['Fac'].keyframe_insert('default_value', frame=f)
+
+        # ⚠️ Fac 0 ≠ invisible : la branche BSDF (Transmission 0.9) reste rendue en
+        # « verre fantôme » dans S1/S2/S5. On masque donc l'objet au rendu hors de
+        # sa fenêtre S3–S4 (les keyframes booléens sont steppés → pas d'interpolation).
+        vis_keys = [
+            (1,            True),    # S1/S2 — masqué
+            (336 + offset, False),   # entrée S3 (échelonnée) — visible
+            (720,          False),   # fin S4 — visible
+            (721,          True),    # cut S5 — masqué
+        ]
+        for f, hidden in vis_keys:
+            anc.hide_render = hidden
+            anc.keyframe_insert('hide_render', frame=f)
+            anc.hide_viewport = hidden
+            anc.keyframe_insert('hide_viewport', frame=f)
     print("[ANIM] Silhouettes ancêtres — apparition échelonnée S3")
 
 
@@ -467,7 +565,9 @@ def main():
     print("\n━━━ N'Aset OFM · La Mémoire de la Terre Rouge (fusion) ━━━")
     print("Guadeloupe · Mémoire ancestrale · 45s · 1080 frames\n")
 
+    clean_default_objects()
     setup_scene_render()
+    create_world()
     create_ground()
     ensure_naset_placeholder()
     create_material_or()
