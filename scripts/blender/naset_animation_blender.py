@@ -42,11 +42,28 @@ def set_fps(fps=24):
     print(f"[OFM] ✓ FPS = {fps}")
 
 
+def _obj_fcurves(obj):
+    """Fcurves de l'action d'un objet — compatible Blender 5.0 (layered actions)
+    ou l'acces direct action.fcurves a ete supprime."""
+    ad = obj.animation_data
+    if not ad or not ad.action:
+        return []
+    act = ad.action
+    if hasattr(act, 'fcurves'):          # Blender <= 4.x
+        return act.fcurves
+    fcs = []
+    for layer in act.layers:             # Blender 5.0+
+        for strip in layer.strips:
+            cb = strip.channelbag(ad.action_slot) if ad.action_slot else None
+            if cb:
+                fcs.extend(cb.fcurves)
+    return fcs
+
+
 def clear_keyframes(obj, data_path=None, frame_start=1, frame_end=9999):
     """Supprime les keyframes d'un objet dans une plage donnée."""
     if obj.animation_data and obj.animation_data.action:
-        action = obj.animation_data.action
-        for fc in action.fcurves:
+        for fc in _obj_fcurves(obj):
             if data_path is None or fc.data_path == data_path:
                 kp_to_remove = [kp for kp in fc.keyframe_points
                                  if frame_start <= kp.co.x <= frame_end]
@@ -57,7 +74,7 @@ def clear_keyframes(obj, data_path=None, frame_start=1, frame_end=9999):
 def smooth_interpolation(obj, data_path=None, frame_start=1, frame_end=9999):
     """Passe tous les keyframes en interpolation BEZIER (mouvement fluide)."""
     if obj.animation_data and obj.animation_data.action:
-        for fc in obj.animation_data.action.fcurves:
+        for fc in _obj_fcurves(obj):
             if data_path is None or fc.data_path == data_path:
                 for kp in fc.keyframe_points:
                     if frame_start <= kp.co.x <= frame_end:
@@ -69,7 +86,7 @@ def smooth_interpolation(obj, data_path=None, frame_start=1, frame_end=9999):
 def linear_interpolation(obj, data_path=None, frame_start=1, frame_end=9999):
     """Passe les keyframes en LINEAR (vitesse constante — travelling)."""
     if obj.animation_data and obj.animation_data.action:
-        for fc in obj.animation_data.action.fcurves:
+        for fc in _obj_fcurves(obj):
             if data_path is None or fc.data_path == data_path:
                 for kp in fc.keyframe_points:
                     if frame_start <= kp.co.x <= frame_end:
@@ -213,7 +230,7 @@ def setup_scene1_particles():
     settings.size_random = 0.5
 
     # Rendu en sphère
-    settings.render_type = 'SPHERE'
+    settings.render_type = 'HALO'  # Blender 5.0 : 'SPHERE' supprime de l'enum
 
     # Matériau or émissif — à créer séparément dans le Shader Editor
     # Ou assigne un matériau existant nommé "Mat_Or_Emission"
