@@ -1,0 +1,15 @@
+CAMERA — Episode 01 · New Moon
+
+Plan 1 (0-6s)   : Plan large fixe · 24mm · ciel étoilé + acacia silhouette
+                  Trépied, aucun mouvement. Laisser respirer.
+Plan 2 (6-13s)  : Travelling avant très lent · 35mm · vers le pied de l'arbre
+                  Vitesse : 0.1 m/s. Hauteur : 1m. Légère plongée.
+Plan 3 (13-18s) : Plan rapproché · 50mm · silhouette de Luna en formation
+                  Fixe. Mise au point douce, halo léger.
+Plan 4 (18-20s) : Insert yeux · 85mm · macro sur les deux points de lumière
+                  Fixe. Cut noir sec à 20s.
+
+Réglages globaux :
+- Profondeur de champ : f/2.0 (bokeh étoiles)
+- Exposition : sous-exposer -1 stop (protéger les noirs)
+- Pas de steadicam, pas de shake — tout est calme

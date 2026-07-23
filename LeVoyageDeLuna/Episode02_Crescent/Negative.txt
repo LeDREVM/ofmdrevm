@@ -1,0 +1,7 @@
+NEGATIVE PROMPT — Episode 02 · Crescent
+
+full moon, sun, daylight, bright sky, lens flare, oversaturated colors, neon,
+glow excess, light explosion, fast camera movement, shaky cam, fast cuts, cartoon,
+anime, illustration, painting, low quality, blurry, watermark, text, subtitles,
+logo, extra limbs, deformed face, deformed hands, multiple characters, crowd,
+buildings, vehicles, modern objects, running, jumping, purple gradient sky

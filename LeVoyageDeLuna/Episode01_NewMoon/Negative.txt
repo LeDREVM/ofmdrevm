@@ -1,0 +1,7 @@
+NEGATIVE PROMPT — Episode 01 · New Moon
+
+moon visible, moonlight, sun, daylight, bright sky, lens flare, oversaturated colors,
+neon, glow excess, light explosion, fast camera movement, shaky cam, fast cuts,
+cartoon, anime, illustration, painting, low quality, blurry, watermark, text,
+subtitles, logo, extra limbs, deformed face, multiple characters, crowd, buildings,
+vehicles, modern objects, rain, fog too dense, purple gradient sky

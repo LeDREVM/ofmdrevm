@@ -1,0 +1,15 @@
+CAMERA — Episode 04 · Gibbous
+
+Plan 1 (0-7s)   : Travelling arrière ascendant · 35mm · devant Luna qui monte
+                  La caméra recule en montant avec elle. Le duiker entre par la droite.
+Plan 2 (7-12s)  : Plan latéral · 50mm · Luna + duiker de profil, côte à côte
+                  Travelling doux aligné sur leur marche.
+Plan 3 (12-17s) : Plan large · 24mm · baobab au sommet + Luna assise + lune gibbeuse
+                  Fixe. Composition : baobab à gauche, lune en haut à droite.
+Plan 4 (17-20s) : Plan rapproché · 85mm · la main devant la lune (POV de Luna)
+                  Fixe. Le "presque" de la main épouse le "presque" de la lune. Fondu.
+
+Réglages globaux :
+- f/2.8 · hauteur d'enfant conservée sauf plan 3 (2m, respiration)
+- Le duiker ne regarde JAMAIS la caméra
+- Plan 4 : mise au point sur la main, lune en léger flou (bokeh rond)

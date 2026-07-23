@@ -1,0 +1,19 @@
+CAMERA — Episode 08 · New Beginning
+
+BOUCLE AVEC E01 — les plans 1, 2 et 5 reprennent les cadres exacts de E01.
+
+Plan 1 (0-6s)   : Plan large fixe · 24mm · acacia + ciel étoilé
+                  CADRE IDENTIQUE à E01-Plan1. Trépied.
+Plan 2 (6-12s)  : Plan rapproché · 50mm · Luna agenouillée, yeux qui se ferment
+                  CADRE IDENTIQUE à E01-Plan3 (où ils s'ouvraient).
+Plan 3 (12-18s) : Contre-plongée lente · 35mm · particules qui montent vers les
+                  étoiles. La caméra s'incline vers le ciel avec elles.
+Plan 4 (18-22s) : Pano circulaire lent · 24mm · les lueurs d'or pulsent dans
+                  l'herbe autour de l'arbre, une par une.
+Plan 5 (22-25s) : Travelling avant très lent · 35mm · vers le pied de l'arbre,
+                  nouvelles particules. IDENTIQUE à E01-Plan2. Cut noir sec.
+
+Réglages globaux :
+- f/2.0 · sous-exposition -1 stop (identique E01)
+- Le cut noir final doit tomber EXACTEMENT comme celui de E01 (même durée)
+- Vérifier au montage : E08 dernière frame → E01 première frame = raccord invisible
