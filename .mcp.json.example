@@ -12,9 +12,9 @@
     },
 
     "n8n": {
-      "//": "Pipeline d'automatisation AI (workflows N'Aset). Instance n8n auto-hébergée.",
-      "type": "http",
-      "url": "${N8N_HOST}/mcp",
+      "//": "Pipeline d'automatisation AI. URL = webhook du node 'MCP Server Trigger' de ton instance n8n (à adapter).",
+      "type": "sse",
+      "url": "${N8N_HOST}/mcp/naset-pipeline/sse",
       "headers": {
         "Authorization": "Bearer ${N8N_API_KEY}"
       }
@@ -31,10 +31,10 @@
     },
 
     "google-drive": {
-      "//": "Lecture / dépôt des assets sources (renders, textures, exports).",
+      "//": "Lecture / dépôt des assets sources (renders, textures, exports). Nécessite une config OAuth Google (voir docs/MCP.md).",
       "type": "stdio",
       "command": "npx",
-      "args": ["-y", "@google/drive-mcp"]
+      "args": ["-y", "@modelcontextprotocol/server-gdrive"]
     }
   }
 }

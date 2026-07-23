@@ -89,10 +89,13 @@ Orchestration des workflows de production (`workflows/*.json`). Instance
 
 | Champ | Valeur |
 |-------|--------|
-| Type | `http` |
-| URL | `${N8N_HOST}/mcp` |
+| Type | `sse` |
+| URL | webhook du node **MCP Server Trigger** de ton instance (ex. `${N8N_HOST}/mcp/naset-pipeline/sse`) |
 | Auth | `Authorization: Bearer ${N8N_API_KEY}` |
 | Clés `.env` | `N8N_HOST`, `N8N_API_KEY`, `N8N_WEBHOOK_URL` |
+
+> Pré-requis : ajouter un node **MCP Server Trigger** dans le workflow n8n
+> cible ; son URL SSE devient l'`url` ci-dessus.
 
 **Usage N'Aset** — piloter/déclencher les pipelines `NasetOFM_Story_Pipeline`,
 `NasetOFM_AI_Pipeline`, `naset_ofm_pipeline`. Permet à Claude de construire,
@@ -123,8 +126,8 @@ non versionnés dans Git.
 
 | Champ | Valeur |
 |-------|--------|
-| Type | `stdio` |
-| Auth | OAuth Google (au premier lancement) |
+| Type | `stdio` (`npx -y @modelcontextprotocol/server-gdrive`) |
+| Auth | OAuth Google — créer un projet Google Cloud, activer l'API Drive, exporter les identifiants OAuth, puis authentifier au premier lancement |
 
 **Usage N'Aset** — récupérer/archiver les fichiers de production qui restent
 hors du dépôt (voir conventions de nommage dans `CLAUDE.md`).

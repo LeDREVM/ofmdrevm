@@ -1,12 +1,37 @@
-
-<!-- NAV INTER-PAGES -->
-<div style="position:sticky;top:0;z-index:999;background:rgba(10,10,15,0.95);backdrop-filter:blur(8px);border-bottom:1px solid rgba(201,150,58,0.2);padding:10px 24px;display:flex;align-items:center;gap:8px;font-family:'Inter',sans-serif;font-size:13px;">
-  <span style="color:#C9963A;font-size:16px;margin-right:8px;">𓂀</span>
-  <a href="NasetOFM_Moodboard.html" style="padding:5px 14px;border-radius:6px;border:1px solid rgba(201,150,58,0.2);color:#8A8478;text-decoration:none;">Mood Board</a>
-  <a href="naset_full_technical_guide.html" style="padding:5px 14px;border-radius:6px;background:rgba(201,150,58,0.18);border:1px solid #C9963A;color:#E8BC6A;text-decoration:none;font-weight:500;">Guide Technique</a>
-  <a href="naset_ofm_character_database.html" style="padding:5px 14px;border-radius:6px;border:1px solid rgba(201,150,58,0.2);color:#8A8478;text-decoration:none;">Base de Données</a>
-</div>
-
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>𓂀 N'Aset OFM — Guide Technique</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
+:root{
+  --font-sans:'Inter',system-ui,-apple-system,sans-serif;
+  --font-mono:'JetBrains Mono',ui-monospace,'SF Mono',Menlo,monospace;
+  --color-background-primary:#0A0A0F;
+  --color-background-secondary:#14141C;
+  --color-text-primary:#F5F1E8;
+  --color-text-secondary:#B8B0A0;
+  --color-text-tertiary:#8A8478;
+  --color-border-secondary:rgba(201,150,58,0.30);
+  --color-border-tertiary:rgba(201,150,58,0.14);
+  --border-radius-md:8px;
+  --border-radius-lg:12px;
+  --color-background-info:rgba(58,130,201,0.12);   --color-text-info:#6FB0E8;
+  --color-background-success:rgba(80,170,90,0.12);  --color-text-success:#74C77E;
+  --color-background-warning:rgba(201,150,58,0.12); --color-text-warning:#E8BC6A;
+}
+html,body{background:var(--color-background-primary);margin:0}
+body{color:var(--color-text-primary);font-family:var(--font-sans);line-height:1.55;-webkit-font-smoothing:antialiased}
+.ofm-doc{max-width:1120px;margin:0 auto;padding:0 24px 56px}
+a{color:#E8BC6A}
+</style>
+</head>
+<body>
+<script defer src="/assets/ofm-nav.js"></script>
+<div class="ofm-doc">
 <style>
 *{box-sizing:border-box}
 .wrap{font-family:var(--font-sans);color:var(--color-text-primary);padding:1rem 0}
@@ -401,3 +426,7 @@ function copyCode(id){
   });
 }
 </script>
+
+</div>
+</body>
+</html>
